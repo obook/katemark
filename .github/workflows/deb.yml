@@ -79,13 +79,14 @@ jobs:
             > /etc/apt/sources.list.d/neon.list
 
       # file is what cpack reads the plugin's architecture with, gh uploads the package, git is
-      # for the checkout below.
+      # for the checkout below. ca-certificates is what lets git and gh reach GitHub: with
+      # --no-install-recommends nothing else brings it in.
       - name: install dependencies
         run: |
           set -Eeuo pipefail
           apt-get update
           apt-get install -y --no-install-recommends \
-            g++ cmake extra-cmake-modules gettext dpkg-dev file gh git $PACKAGES
+            ca-certificates g++ cmake extra-cmake-modules gettext dpkg-dev file gh git $PACKAGES
 
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
 
