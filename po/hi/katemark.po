@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: katemark\n"
 "Report-Msgid-Bugs-To: https://github.com/obook/katemark/issues\n"
-"POT-Creation-Date: 2026-10-03 12:50+0200\n"
+"POT-Creation-Date: 2026-10-03 20:12+0200\n"
 "PO-Revision-Date: 2026-10-03 12:00+0200\n"
 "Last-Translator: Katemark contributors\n"
 "Language-Team: Hindi\n"
@@ -60,7 +60,7 @@ msgstr ""
 "उसी लेआउट को सक्रिय संपादक थीम के रंगों में रंग देता है, ताकि पूर्वावलोकन Kate के बाकी "
 "हिस्सों के साथ घुल-मिल जाए।"
 
-#: src/configpage.cpp:76
+#: src/configpage.cpp:76 src/previewwidget.cpp:113
 #, kde-format
 msgid "Load media previews from remote URLs"
 msgstr "रिमोट URL से मीडिया पूर्वावलोकन लोड करें"
@@ -96,7 +96,7 @@ msgstr "अद्यतन के लिए जाँचें"
 msgid "Installed version: %1"
 msgstr "संस्थापित संस्करण: %1"
 
-#: src/configpage.cpp:129 src/configpage.cpp:134 src/pluginview.cpp:66
+#: src/configpage.cpp:129 src/configpage.cpp:134 src/pluginview.cpp:49
 #, kde-format
 msgid "Katemark"
 msgstr "Katemark"
@@ -137,187 +137,199 @@ msgstr "छवि चिपकाने से पहले दस्ताव�
 msgid "Could not save the image to %1"
 msgstr "छवि को %1 में सहेजा नहीं जा सका"
 
-#: src/pluginview.cpp:69
+#: src/pluginview.cpp:52
 #, kde-format
 msgid "Markdown Preview"
 msgstr "Markdown पूर्वावलोकन"
 
-#: src/pluginview.cpp:73
+#: src/pluginview.cpp:56
 #, kde-format
 msgid "Preview"
 msgstr "पूर्वावलोकन"
 
-#: src/pluginview.cpp:74
+#: src/pluginview.cpp:57
 #, kde-format
 msgid "Show or hide the Markdown preview beside the editor"
 msgstr "संपादक के बगल में Markdown पूर्वावलोकन दिखाएँ या छिपाएँ"
 
-#: src/pluginview.cpp:79
+#: src/pluginview.cpp:62
 #, kde-format
 msgid "Export Preview as PDF..."
 msgstr "पूर्वावलोकन को PDF के रूप में निर्यात करें..."
 
-#: src/pluginview.cpp:83
+#: src/pluginview.cpp:66
 #, kde-format
 msgid "Export Preview as HTML..."
 msgstr "पूर्वावलोकन को HTML के रूप में निर्यात करें..."
 
-#: src/pluginview.cpp:179
+#: src/pluginview.cpp:150
 #, kde-format
 msgid "Untitled"
 msgstr "शीर्षकहीन"
 
-#: src/pluginview.cpp:185
+#: src/pluginview.cpp:156
 #, kde-format
 msgid "Export as PDF"
 msgstr "PDF के रूप में निर्यात करें"
 
-#: src/pluginview.cpp:185
+#: src/pluginview.cpp:156
 #, kde-format
 msgid "Export as HTML"
 msgstr "HTML के रूप में निर्यात करें"
 
-#: src/pluginview.cpp:187
+#: src/pluginview.cpp:158
 #, kde-format
 msgid "PDF files (*.pdf)"
 msgstr "PDF फ़ाइलें (*.pdf)"
 
-#: src/pluginview.cpp:187
+#: src/pluginview.cpp:158
 #, kde-format
 msgid "HTML files (*.html)"
 msgstr "HTML फ़ाइलें (*.html)"
 
-#: src/pluginview.cpp:201
+#: src/pluginview.cpp:171
 #, kde-format
 msgid "Preview exported to %1"
 msgstr "पूर्वावलोकन %1 में निर्यात किया गया"
 
-#: src/pluginview.cpp:201
+#: src/pluginview.cpp:171
 #, kde-format
 msgid "Could not export the preview to %1"
 msgstr "पूर्वावलोकन को %1 में निर्यात नहीं किया जा सका"
 
-#: src/pluginviewedit.cpp:46
+#: src/pluginviewedit.cpp:82
 #, kde-format
 msgid "Bold"
 msgstr "गाढ़ा"
 
-#: src/pluginviewedit.cpp:49
+#: src/pluginviewedit.cpp:85
 #, kde-format
 msgid "Italic"
 msgstr "तिरछा"
 
-#: src/pluginviewedit.cpp:53
+#: src/pluginviewedit.cpp:89
 #, kde-format
 msgid "Strikethrough"
 msgstr "लिखकर काटें"
 
-#: src/pluginviewedit.cpp:60
+#: src/pluginviewedit.cpp:96
 #, kde-format
 msgid "Increase Heading Level"
 msgstr "शीर्षक स्तर बढ़ाएँ"
 
-#: src/pluginviewedit.cpp:67
+#: src/pluginviewedit.cpp:103
 #, kde-format
 msgid "Decrease Heading Level"
 msgstr "शीर्षक स्तर घटाएँ"
 
-#: src/pluginviewedit.cpp:73
+#: src/pluginviewedit.cpp:109
 #, kde-format
 msgid "Paste as Link"
 msgstr "लिंक के रूप में चिपकाएँ"
 
-#: src/pluginviewedit.cpp:76
+#: src/pluginviewedit.cpp:112
 #, kde-format
 msgid "Format Table"
 msgstr "तालिका प्रारूपित करें"
 
-#: src/previewwidget.cpp:28
+#: src/previewwidget.cpp:30
 #, kde-format
 msgctxt "@title GitHub alert"
 msgid "Note"
 msgstr "टिप्पणी"
 
-#: src/previewwidget.cpp:29
+#: src/previewwidget.cpp:31
 #, kde-format
 msgctxt "@title GitHub alert"
 msgid "Tip"
 msgstr "सुझाव"
 
-#: src/previewwidget.cpp:30
+#: src/previewwidget.cpp:32
 #, kde-format
 msgctxt "@title GitHub alert"
 msgid "Important"
 msgstr "महत्वपूर्ण"
 
-#: src/previewwidget.cpp:31
+#: src/previewwidget.cpp:33
 #, kde-format
 msgctxt "@title GitHub alert"
 msgid "Warning"
 msgstr "चेतावनी"
 
-#: src/previewwidget.cpp:32
+#: src/previewwidget.cpp:34
 #, kde-format
 msgctxt "@title GitHub alert"
 msgid "Caution"
 msgstr "सावधानी"
 
-#: src/previewwidget.cpp:33
+#: src/previewwidget.cpp:35
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Abstract"
 msgstr "सारांश"
 
-#: src/previewwidget.cpp:34
+#: src/previewwidget.cpp:36
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Info"
 msgstr "जानकारी"
 
-#: src/previewwidget.cpp:35
+#: src/previewwidget.cpp:37
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Todo"
 msgstr "कार्य"
 
-#: src/previewwidget.cpp:36
+#: src/previewwidget.cpp:38
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Success"
 msgstr "सफलता"
 
-#: src/previewwidget.cpp:37
+#: src/previewwidget.cpp:39
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Question"
 msgstr "प्रश्न"
 
-#: src/previewwidget.cpp:38
+#: src/previewwidget.cpp:40
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Failure"
 msgstr "विफलता"
 
-#: src/previewwidget.cpp:39
+#: src/previewwidget.cpp:41
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Danger"
 msgstr "खतरा"
 
-#: src/previewwidget.cpp:40
+#: src/previewwidget.cpp:42
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Bug"
 msgstr "बग"
 
-#: src/previewwidget.cpp:41
+#: src/previewwidget.cpp:43
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Example"
 msgstr "उदाहरण"
 
-#: src/previewwidget.cpp:42
+#: src/previewwidget.cpp:44
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Quote"
 msgstr "उद्धरण"
+
+#: src/previewwidget.cpp:61
+#, fuzzy, kde-format
+msgid "GitHub only"
+msgstr "GitHub"
+
+#: src/previewwidget.cpp:63
+#, kde-format
+msgid ""
+"Render only what GitHub renders, without the CodiMD, Obsidian and MkDocs "
+"syntax"
+msgstr ""

@@ -3,6 +3,10 @@
 
 #include "testhelpers.h"
 
+#include "settings.h"
+
+#include <QCheckBox>
+
 class RenderingTest : public PreviewTest
 {
     Q_OBJECT
@@ -18,6 +22,7 @@ private Q_SLOTS:
     void keepsFoldingAndUniqueIds();
     void rendersMathExtras();
     void rendersMkdocsAdmonitions();
+    void rendersGithubOnly();
 };
 
 // The libraries tested here come from qrc rather than the inlined page: the markdown-it plugins
@@ -197,6 +202,44 @@ void RenderingTest::rendersMkdocsAdmonitions()
     QCOMPARE(countElements(preview.get(), "div.markdown-alert-caution"), 1);
     QCOMPARE(countElements(preview.get(), "div.markdown-alert-caution > .markdown-alert-title"), 0);
     QCOMPARE(countElements(preview.get(), ".markdown-alert + p"), 1); // "the last line" is outside
+
+    delete doc;
+}
+
+// "GitHub only" leaves what GitHub does not know as it is written, keeps what GitHub
+// renders, and strikes text between single tildes as GitHub does. The check box of the
+// bar drives it through the settings.
+void RenderingTest::rendersGithubOnly()
+{
+    KTextEditor::Document *doc = openDocument();
+    QTRY_VERIFY(doc->text().contains(Body));
+    auto preview = std::make_unique<PreviewWidget>(nullptr, nullptr, doc);
+    QVERIFY(waitForPageText(preview.get(), Body));
+
+    doc->setText(QStringLiteral("# Title\n\n[TOC]\n\n:::info\nboxed\n:::\n\n==marked== ++inserted++ H~2~O [[Note]]\n\n"
+                                "!!! note\n    admonition body\n\n> [!faq] Obsidian title\n> callout body\n\n"
+                                "> [!NOTE]\n> alert body\n\n~struck out~ and $a^2$\n\nthe last line\n"));
+    QVERIFY(waitForPageText(preview.get(), QLatin1String("the last line")));
+    QCOMPARE(countElements(preview.get(), "ul.toc, .alert-info, mark, ins, sub"), 5);
+    QCOMPARE(countElements(preview.get(), ".markdown-alert"), 3);
+    QCOMPARE(countElements(preview.get(), "s"), 0);
+
+    auto *githubOnly = preview->findChild<QCheckBox *>();
+    QVERIFY(githubOnly && !githubOnly->isChecked());
+    githubOnly->click();
+    QVERIFY(Settings::self()->githubOnly());
+    QTRY_COMPARE(countElements(preview.get(), "ul.toc, .alert-info, mark, ins, sub"), 0);
+    QCOMPARE(countElements(preview.get(), ".markdown-alert"), 1); // the GitHub alert alone
+    QCOMPARE(countElements(preview.get(), "s"), 2); // "2" and "struck out"
+    QCOMPARE(countElements(preview.get(), ".katex"), 1);
+    QCOMPARE(countElements(preview.get(), "h1#title"), 1); // anchors still work
+    const QString text = pageText(preview.get());
+    QVERIFY2(text.contains(QLatin1String("[TOC]")) && text.contains(QLatin1String("[[Note]]")) && text.contains(QLatin1String("==marked==")), qPrintable(text));
+
+    // Changed from elsewhere, the setting is followed and the check box shows it.
+    Settings::self()->setGithubOnly(false);
+    QTRY_COMPARE(countElements(preview.get(), "mark"), 1);
+    QVERIFY(!githubOnly->isChecked());
 
     delete doc;
 }

@@ -75,9 +75,13 @@
   // GitHub alerts and Obsidian callouts are the same blockquote syntax. Obsidian adds
   // more types, an optional title after the marker and folding with "-" (collapsed) or
   // "+" (expanded).
-  function callouts(md) {
+  function callouts(md, options) {
     // "[!type]", then "-" or "+" when the callout folds, then the title if there is one.
     var MARKER = /^\[!([\w-]+)\]([+-]?)(?:[ \t]+|$)/;
+    if (options && options.githubOnly) {
+      // GitHub knows five types, alone on their line: no folding and no title.
+      MARKER = /^\[!(note|tip|important|warning|caution)\]()[ \t]*$/i;
+    }
 
     // Read the marker that opens the blockquote starting at tokens[i] and remove it from
     // the text. Returns null when the blockquote is an ordinary quote.

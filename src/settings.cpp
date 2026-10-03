@@ -36,6 +36,7 @@ void Settings::load()
     }
     m_loadRemoteMedia = cfg.readEntry("LoadRemoteMedia", false);
     m_mathMacros = cfg.readEntry("MathMacros", QString());
+    m_githubOnly = cfg.readEntry("GithubOnly", false);
 }
 
 void Settings::save() const
@@ -46,6 +47,7 @@ void Settings::save() const
     cfg.writeEntry("GithubVariant", QString::fromLatin1(variant));
     cfg.writeEntry("LoadRemoteMedia", m_loadRemoteMedia);
     cfg.writeEntry("MathMacros", m_mathMacros);
+    cfg.writeEntry("GithubOnly", m_githubOnly);
     cfg.sync();
 }
 
@@ -85,6 +87,16 @@ void Settings::setMathMacros(const QString &macros)
         return;
     }
     m_mathMacros = macros;
+    save();
+    Q_EMIT changed();
+}
+
+void Settings::setGithubOnly(bool enabled)
+{
+    if (m_githubOnly == enabled) {
+        return;
+    }
+    m_githubOnly = enabled;
     save();
     Q_EMIT changed();
 }

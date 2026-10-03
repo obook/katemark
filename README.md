@@ -24,9 +24,9 @@ tab of its own.
 
 ![Kate with a Markdown document on the left and its preview on the right: an alert area, formulas and a diagram, in GitHub's dark colors](assets/preview_dark.png)
 
-| CodiMD, Obsidian and MkDocs blocks | The colors of the editor theme |
-| :----------: | :-----------------: |
-| ![Alert areas, a callout and an admonition in GitHub's light colors](assets/syntax_light.png) | ![The same preview in the colors of the Solarized Light editor theme](assets/theme_matched.png) |
+| CodiMD, Obsidian and MkDocs blocks | The same document with "GitHub only" | The colors of the editor theme |
+| :----------: | :----------: | :-----------------: |
+| ![Alert areas, a callout and an admonition in GitHub's light colors](assets/syntax_light.png) | ![The same document with only GitHub's syntax rendered](assets/github_only.png) | ![A preview in the colors of the Solarized Light editor theme](assets/theme_matched.png) |
 
 ## Features
 
@@ -39,6 +39,7 @@ tab of its own.
 | Side panel | Docks the preview beside the editor and re-renders it as you type | fork |
 | Scroll sync | Scrolling the editor or the preview brings the other to the same place | fork |
 | More syntax | markdown-it extensions, CodiMD, Obsidian and MkDocs | fork |
+| GitHub only | A check box above the preview leaves out what GitHub would not render | fork |
 | Math | LaTeX formulas, rendered by KaTeX | fork |
 | Diagrams | Mermaid | fork |
 | Export | A PDF or a single self-contained HTML file | fork |
@@ -120,7 +121,8 @@ The documents in [`examples/`](examples) show what the preview renders:
 | To | Do this |
 |---|---|
 | Show or hide the preview | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>M</kbd>, the **Preview** button of the main toolbar or Tools > Preview |
-| Export what the preview shows | Tools > Export Preview as PDF or Tools > Export Preview as HTML |
+| See the document as GitHub will show it | Check **GitHub only** above the preview |
+| Export what the preview shows | The **PDF** and **HTML** buttons above the preview, or Tools > Export Preview as PDF and Tools > Export Preview as HTML |
 | Follow a link | Click it: a local file opens in Kate, a web address in your browser, a link to a heading scrolls the preview |
 | Zoom a Mermaid diagram | <kbd>Ctrl</kbd> + mouse wheel over it; a double click puts it back |
 | Paste a picture | Copy an image, then paste in the editor |
@@ -150,8 +152,12 @@ The documents in [`examples/`](examples) show what the preview renders:
 
 - Obsidian links resolve against the folder of the document, not across a
   vault.
--
-  [markdown-it-container](https://github.com/markdown-it/markdown-it-container)
+- With **GitHub only** checked, the preview reads the GitHub row alone, plus
+  what GitHub renders too: footnotes, emoji, math and Mermaid. It also
+  strikes `~text~` between single tildes, as GitHub does. The result is
+  close to GitHub's without being identical: the code highlighter and the
+  math engine differ.
+- [markdown-it-container](https://github.com/markdown-it/markdown-it-container)
   parses the `:::` blocks.
 - Math accepts what MathJax does where KaTeX is stricter: `\require{...}`,
   inline math over several lines, `\newcommand` on a command that exists.

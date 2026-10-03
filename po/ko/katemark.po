@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: katemark\n"
 "Report-Msgid-Bugs-To: https://github.com/obook/katemark/issues\n"
-"POT-Creation-Date: 2026-10-03 12:50+0200\n"
+"POT-Creation-Date: 2026-10-03 20:12+0200\n"
 "PO-Revision-Date: 2026-10-03 12:00+0200\n"
 "Last-Translator: Katemark contributors\n"
 "Language-Team: Korean\n"
@@ -60,7 +60,7 @@ msgstr ""
 "\"은 같은 레이아웃을 현재 편집기 테마의 색상으로 다시 칠하므로 미리 보기가 "
 "Kate의 나머지 부분과 어울립니다."
 
-#: src/configpage.cpp:76
+#: src/configpage.cpp:76 src/previewwidget.cpp:113
 #, kde-format
 msgid "Load media previews from remote URLs"
 msgstr "원격 URL에서 미디어 미리 보기 불러오기"
@@ -97,7 +97,7 @@ msgstr "업데이트 확인"
 msgid "Installed version: %1"
 msgstr "설치된 버전: %1"
 
-#: src/configpage.cpp:129 src/configpage.cpp:134 src/pluginview.cpp:66
+#: src/configpage.cpp:129 src/configpage.cpp:134 src/pluginview.cpp:49
 #, kde-format
 msgid "Katemark"
 msgstr "Katemark"
@@ -141,187 +141,199 @@ msgstr ""
 msgid "Could not save the image to %1"
 msgstr "이미지를 %1에 저장할 수 없음"
 
-#: src/pluginview.cpp:69
+#: src/pluginview.cpp:52
 #, kde-format
 msgid "Markdown Preview"
 msgstr "Markdown 미리 보기"
 
-#: src/pluginview.cpp:73
+#: src/pluginview.cpp:56
 #, kde-format
 msgid "Preview"
 msgstr "미리 보기"
 
-#: src/pluginview.cpp:74
+#: src/pluginview.cpp:57
 #, kde-format
 msgid "Show or hide the Markdown preview beside the editor"
 msgstr "편집기 옆의 Markdown 미리 보기 표시 또는 숨기기"
 
-#: src/pluginview.cpp:79
+#: src/pluginview.cpp:62
 #, kde-format
 msgid "Export Preview as PDF..."
 msgstr "미리 보기를 PDF로 내보내기..."
 
-#: src/pluginview.cpp:83
+#: src/pluginview.cpp:66
 #, kde-format
 msgid "Export Preview as HTML..."
 msgstr "미리 보기를 HTML로 내보내기..."
 
-#: src/pluginview.cpp:179
+#: src/pluginview.cpp:150
 #, kde-format
 msgid "Untitled"
 msgstr "제목 없음"
 
-#: src/pluginview.cpp:185
+#: src/pluginview.cpp:156
 #, kde-format
 msgid "Export as PDF"
 msgstr "PDF로 내보내기"
 
-#: src/pluginview.cpp:185
+#: src/pluginview.cpp:156
 #, kde-format
 msgid "Export as HTML"
 msgstr "HTML로 내보내기"
 
-#: src/pluginview.cpp:187
+#: src/pluginview.cpp:158
 #, kde-format
 msgid "PDF files (*.pdf)"
 msgstr "PDF 파일 (*.pdf)"
 
-#: src/pluginview.cpp:187
+#: src/pluginview.cpp:158
 #, kde-format
 msgid "HTML files (*.html)"
 msgstr "HTML 파일 (*.html)"
 
-#: src/pluginview.cpp:201
+#: src/pluginview.cpp:171
 #, kde-format
 msgid "Preview exported to %1"
 msgstr "미리 보기를 %1(으)로 내보냄"
 
-#: src/pluginview.cpp:201
+#: src/pluginview.cpp:171
 #, kde-format
 msgid "Could not export the preview to %1"
 msgstr "미리 보기를 %1(으)로 내보낼 수 없음"
 
-#: src/pluginviewedit.cpp:46
+#: src/pluginviewedit.cpp:82
 #, kde-format
 msgid "Bold"
 msgstr "굵게"
 
-#: src/pluginviewedit.cpp:49
+#: src/pluginviewedit.cpp:85
 #, kde-format
 msgid "Italic"
 msgstr "기울임꼴"
 
-#: src/pluginviewedit.cpp:53
+#: src/pluginviewedit.cpp:89
 #, kde-format
 msgid "Strikethrough"
 msgstr "취소선"
 
-#: src/pluginviewedit.cpp:60
+#: src/pluginviewedit.cpp:96
 #, kde-format
 msgid "Increase Heading Level"
 msgstr "머리글 단계 증가"
 
-#: src/pluginviewedit.cpp:67
+#: src/pluginviewedit.cpp:103
 #, kde-format
 msgid "Decrease Heading Level"
 msgstr "머리글 단계 감소"
 
-#: src/pluginviewedit.cpp:73
+#: src/pluginviewedit.cpp:109
 #, kde-format
 msgid "Paste as Link"
 msgstr "링크로 붙여넣기"
 
-#: src/pluginviewedit.cpp:76
+#: src/pluginviewedit.cpp:112
 #, kde-format
 msgid "Format Table"
 msgstr "표 형식 지정"
 
-#: src/previewwidget.cpp:28
+#: src/previewwidget.cpp:30
 #, kde-format
 msgctxt "@title GitHub alert"
 msgid "Note"
 msgstr "참고"
 
-#: src/previewwidget.cpp:29
+#: src/previewwidget.cpp:31
 #, kde-format
 msgctxt "@title GitHub alert"
 msgid "Tip"
 msgstr "팁"
 
-#: src/previewwidget.cpp:30
+#: src/previewwidget.cpp:32
 #, kde-format
 msgctxt "@title GitHub alert"
 msgid "Important"
 msgstr "중요"
 
-#: src/previewwidget.cpp:31
+#: src/previewwidget.cpp:33
 #, kde-format
 msgctxt "@title GitHub alert"
 msgid "Warning"
 msgstr "경고"
 
-#: src/previewwidget.cpp:32
+#: src/previewwidget.cpp:34
 #, kde-format
 msgctxt "@title GitHub alert"
 msgid "Caution"
 msgstr "주의"
 
-#: src/previewwidget.cpp:33
+#: src/previewwidget.cpp:35
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Abstract"
 msgstr "요약"
 
-#: src/previewwidget.cpp:34
+#: src/previewwidget.cpp:36
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Info"
 msgstr "정보"
 
-#: src/previewwidget.cpp:35
+#: src/previewwidget.cpp:37
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Todo"
 msgstr "할 일"
 
-#: src/previewwidget.cpp:36
+#: src/previewwidget.cpp:38
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Success"
 msgstr "성공"
 
-#: src/previewwidget.cpp:37
+#: src/previewwidget.cpp:39
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Question"
 msgstr "질문"
 
-#: src/previewwidget.cpp:38
+#: src/previewwidget.cpp:40
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Failure"
 msgstr "실패"
 
-#: src/previewwidget.cpp:39
+#: src/previewwidget.cpp:41
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Danger"
 msgstr "위험"
 
-#: src/previewwidget.cpp:40
+#: src/previewwidget.cpp:42
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Bug"
 msgstr "버그"
 
-#: src/previewwidget.cpp:41
+#: src/previewwidget.cpp:43
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Example"
 msgstr "예시"
 
-#: src/previewwidget.cpp:42
+#: src/previewwidget.cpp:44
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Quote"
 msgstr "인용"
+
+#: src/previewwidget.cpp:61
+#, fuzzy, kde-format
+msgid "GitHub only"
+msgstr "GitHub"
+
+#: src/previewwidget.cpp:63
+#, kde-format
+msgid ""
+"Render only what GitHub renders, without the CodiMD, Obsidian and MkDocs "
+"syntax"
+msgstr ""

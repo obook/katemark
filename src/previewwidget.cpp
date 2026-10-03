@@ -3,10 +3,13 @@
 #include "previewutil.h"
 #include "settings.h"
 
+#include <QAction>
+#include <QCheckBox>
 #include <QDesktopServices>
 #include <QIcon>
 #include <QJsonObject>
 #include <QTimer>
+#include <QToolBar>
 #include <QUrl>
 #include <QVBoxLayout>
 #include <QWebEngineProfile>
@@ -50,6 +53,23 @@ PreviewWidget::PreviewWidget(KTextEditor::MainWindow *mainWindow, KTextEditor::V
 {
     auto *layout = new QVBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+
+    // The bar above the preview: what the page renders on the left, the exports on the
+    // right once the window hands them over.
+    m_bar = new QToolBar(this);
+    m_bar->setIconSize(QSize(16, 16));
+    m_bar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    // A check box rather than a button: a flat button that is off reads as a mere label.
+    m_githubOnly = new QCheckBox(i18n("GitHub only"), m_bar);
+    m_githubOnly->setToolTip(i18n("Render only what GitHub renders, without the CodiMD, Obsidian and MkDocs syntax"));
+    m_githubOnly->setChecked(Settings::self()->githubOnly());
+    connect(m_githubOnly, &QCheckBox::toggled, Settings::self(), &Settings::setGithubOnly);
+    m_bar->addWidget(m_githubOnly);
+    auto *spacer = new QWidget(m_bar);
+    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    m_bar->addWidget(spacer);
+    layout->addWidget(m_bar);
 
     // Each preview owns an off-the-record profile carrying its own guard so multiple
     // open previews each confine to their own document folder.
@@ -97,12 +117,14 @@ PreviewWidget::PreviewWidget(KTextEditor::MainWindow *mainWindow, KTextEditor::V
         runJs(QStringLiteral("window.__setRemoteMediaHint(%1);").arg(jsLiteral(mediaHint)));
         applyTheme();
         applyMacros();
+        applySyntax();
         render();
     });
 
     connect(Settings::self(), &Settings::changed, this, &PreviewWidget::applyTheme);
     connect(Settings::self(), &Settings::changed, this, &PreviewWidget::applyMediaPolicy);
     connect(Settings::self(), &Settings::changed, this, &PreviewWidget::applyMacros);
+    connect(Settings::self(), &Settings::changed, this, &PreviewWidget::applySyntax);
 
     setWindowIcon(QIcon::fromTheme(QStringLiteral("text-markdown")));
     applyMediaPolicy();
@@ -193,6 +215,21 @@ void PreviewWidget::render()
 void PreviewWidget::applyMacros()
 {
     runJs(QStringLiteral("window.__setMacros(%1);").arg(jsLiteral(Settings::self()->mathMacros())));
+}
+
+// Tell the page which syntax to read, and keep the button in step with a change made
+// from the bar of another window.
+void PreviewWidget::applySyntax()
+{
+    const bool githubOnly = Settings::self()->githubOnly();
+    m_githubOnly->setChecked(githubOnly);
+    runJs(QStringLiteral("window.__setGithubOnly(%1);").arg(githubOnly ? QStringLiteral("true") : QStringLiteral("false")));
+}
+
+void PreviewWidget::addExportActions(const QList<QAction *> &actions)
+{
+    addActions(actions); // showContextMenu() lists them
+    m_bar->addActions(actions);
 }
 
 void PreviewWidget::scheduleRender()

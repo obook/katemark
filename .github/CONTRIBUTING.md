@@ -85,7 +85,7 @@ zip.
 | `src/pluginview.*` | Per-window actions, toolbar and menu wiring, the preview tool view |
 | `src/pluginviewedit.cpp` | The Markdown editing actions of the Tools menu |
 | `src/markdownedit.*`, `src/markdowntable.cpp` | What those actions do to the text: markers, headings, links, tables |
-| `src/previewwidget.*` | The preview widget: web view, attaching a document, rendering |
+| `src/previewwidget.*` | The preview widget: the bar, the web view, attaching a document, rendering |
 | `src/previewload.cpp` | Building the HTML page and loading it |
 | `src/previewtheme.*` | GitHub palettes and the colors derived from the editor theme |
 | `src/previewpage.h` | The request filter and the link handling of the web page |

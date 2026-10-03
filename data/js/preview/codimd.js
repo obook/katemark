@@ -132,9 +132,13 @@
     return list;
   }
 
-  function fillToc(article) {
+  // The headings get their ids in every case; [TOC] is only replaced when withToc is set.
+  function fillToc(article, withToc) {
     var headings = article.querySelectorAll("h1,h2,h3,h4,h5,h6");
     assignHeadingIds(headings);
+    if (!withToc) {
+      return;
+    }
     article.querySelectorAll("p").forEach(function (paragraph) {
       var match = TOC.exec(paragraph.textContent.trim());
       if (match) {

@@ -33,6 +33,11 @@ public:
         return m_ghVariant;
     }
     bool loadRemoteMedia() const { return m_loadRemoteMedia; }
+    // Render only what GitHub renders: no CodiMD, Obsidian or MkDocs syntax.
+    bool githubOnly() const
+    {
+        return m_githubOnly;
+    }
     // \newcommand lines defined before every document.
     QString mathMacros() const
     {
@@ -43,6 +48,7 @@ public:
     void setGhVariant(GhVariant variant);
     void setLoadRemoteMedia(bool enabled);
     void setMathMacros(const QString &macros);
+    void setGithubOnly(bool enabled);
 
     void load();
     void save() const;
@@ -57,4 +63,5 @@ private:
     GhVariant m_ghVariant = Auto;
     bool m_loadRemoteMedia = false;
     QString m_mathMacros;
+    bool m_githubOnly = false;
 };

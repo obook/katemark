@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: katemark\n"
 "Report-Msgid-Bugs-To: https://github.com/obook/katemark/issues\n"
-"POT-Creation-Date: 2026-10-03 12:50+0200\n"
+"POT-Creation-Date: 2026-10-03 20:12+0200\n"
 "PO-Revision-Date: 2026-10-03 12:00+0200\n"
 "Last-Translator: Katemark contributors\n"
 "Language-Team: Czech\n"
@@ -60,7 +60,7 @@ msgstr ""
 "obarví stejné rozvržení podle aktivního motivu editoru, takže náhled ladí se "
 "zbytkem aplikace Kate."
 
-#: src/configpage.cpp:76
+#: src/configpage.cpp:76 src/previewwidget.cpp:113
 #, kde-format
 msgid "Load media previews from remote URLs"
 msgstr "Načítat náhledy médií ze vzdálených URL"
@@ -97,7 +97,7 @@ msgstr "Zkontrolovat aktualizace"
 msgid "Installed version: %1"
 msgstr "Nainstalovaná verze: %1"
 
-#: src/configpage.cpp:129 src/configpage.cpp:134 src/pluginview.cpp:66
+#: src/configpage.cpp:129 src/configpage.cpp:134 src/pluginview.cpp:49
 #, kde-format
 msgid "Katemark"
 msgstr "Katemark"
@@ -140,187 +140,199 @@ msgstr "Před vložením obrázku dokument uložte: obrázek se ukládá vedle n
 msgid "Could not save the image to %1"
 msgstr "Nelze uložit obrázek do %1"
 
-#: src/pluginview.cpp:69
+#: src/pluginview.cpp:52
 #, kde-format
 msgid "Markdown Preview"
 msgstr "Náhled Markdown"
 
-#: src/pluginview.cpp:73
+#: src/pluginview.cpp:56
 #, kde-format
 msgid "Preview"
 msgstr "Náhled"
 
-#: src/pluginview.cpp:74
+#: src/pluginview.cpp:57
 #, kde-format
 msgid "Show or hide the Markdown preview beside the editor"
 msgstr "Zobrazit nebo skrýt náhled Markdown vedle editoru"
 
-#: src/pluginview.cpp:79
+#: src/pluginview.cpp:62
 #, kde-format
 msgid "Export Preview as PDF..."
 msgstr "Exportovat náhled jako PDF..."
 
-#: src/pluginview.cpp:83
+#: src/pluginview.cpp:66
 #, kde-format
 msgid "Export Preview as HTML..."
 msgstr "Exportovat náhled jako HTML..."
 
-#: src/pluginview.cpp:179
+#: src/pluginview.cpp:150
 #, kde-format
 msgid "Untitled"
 msgstr "Bez názvu"
 
-#: src/pluginview.cpp:185
+#: src/pluginview.cpp:156
 #, kde-format
 msgid "Export as PDF"
 msgstr "Exportovat jako PDF"
 
-#: src/pluginview.cpp:185
+#: src/pluginview.cpp:156
 #, kde-format
 msgid "Export as HTML"
 msgstr "Exportovat jako HTML"
 
-#: src/pluginview.cpp:187
+#: src/pluginview.cpp:158
 #, kde-format
 msgid "PDF files (*.pdf)"
 msgstr "Soubory PDF (*.pdf)"
 
-#: src/pluginview.cpp:187
+#: src/pluginview.cpp:158
 #, kde-format
 msgid "HTML files (*.html)"
 msgstr "Soubory HTML (*.html)"
 
-#: src/pluginview.cpp:201
+#: src/pluginview.cpp:171
 #, kde-format
 msgid "Preview exported to %1"
 msgstr "Náhled byl exportován do %1"
 
-#: src/pluginview.cpp:201
+#: src/pluginview.cpp:171
 #, kde-format
 msgid "Could not export the preview to %1"
 msgstr "Nelze exportovat náhled do %1"
 
-#: src/pluginviewedit.cpp:46
+#: src/pluginviewedit.cpp:82
 #, kde-format
 msgid "Bold"
 msgstr "Tučné"
 
-#: src/pluginviewedit.cpp:49
+#: src/pluginviewedit.cpp:85
 #, kde-format
 msgid "Italic"
 msgstr "Skloněné"
 
-#: src/pluginviewedit.cpp:53
+#: src/pluginviewedit.cpp:89
 #, kde-format
 msgid "Strikethrough"
 msgstr "Přeškrtnuté"
 
-#: src/pluginviewedit.cpp:60
+#: src/pluginviewedit.cpp:96
 #, kde-format
 msgid "Increase Heading Level"
 msgstr "Zvýšit úroveň záhlaví"
 
-#: src/pluginviewedit.cpp:67
+#: src/pluginviewedit.cpp:103
 #, kde-format
 msgid "Decrease Heading Level"
 msgstr "Snížit úroveň záhlaví"
 
-#: src/pluginviewedit.cpp:73
+#: src/pluginviewedit.cpp:109
 #, kde-format
 msgid "Paste as Link"
 msgstr "Vložit jako odkaz"
 
-#: src/pluginviewedit.cpp:76
+#: src/pluginviewedit.cpp:112
 #, kde-format
 msgid "Format Table"
 msgstr "Formátovat tabulku"
 
-#: src/previewwidget.cpp:28
+#: src/previewwidget.cpp:30
 #, kde-format
 msgctxt "@title GitHub alert"
 msgid "Note"
 msgstr "Poznámka"
 
-#: src/previewwidget.cpp:29
+#: src/previewwidget.cpp:31
 #, kde-format
 msgctxt "@title GitHub alert"
 msgid "Tip"
 msgstr "Tip"
 
-#: src/previewwidget.cpp:30
+#: src/previewwidget.cpp:32
 #, kde-format
 msgctxt "@title GitHub alert"
 msgid "Important"
 msgstr "Důležité"
 
-#: src/previewwidget.cpp:31
+#: src/previewwidget.cpp:33
 #, kde-format
 msgctxt "@title GitHub alert"
 msgid "Warning"
 msgstr "Varování"
 
-#: src/previewwidget.cpp:32
+#: src/previewwidget.cpp:34
 #, kde-format
 msgctxt "@title GitHub alert"
 msgid "Caution"
 msgstr "Pozor"
 
-#: src/previewwidget.cpp:33
+#: src/previewwidget.cpp:35
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Abstract"
 msgstr "Shrnutí"
 
-#: src/previewwidget.cpp:34
+#: src/previewwidget.cpp:36
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Info"
 msgstr "Informace"
 
-#: src/previewwidget.cpp:35
+#: src/previewwidget.cpp:37
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Todo"
 msgstr "Úkol"
 
-#: src/previewwidget.cpp:36
+#: src/previewwidget.cpp:38
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Success"
 msgstr "Úspěch"
 
-#: src/previewwidget.cpp:37
+#: src/previewwidget.cpp:39
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Question"
 msgstr "Otázka"
 
-#: src/previewwidget.cpp:38
+#: src/previewwidget.cpp:40
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Failure"
 msgstr "Selhání"
 
-#: src/previewwidget.cpp:39
+#: src/previewwidget.cpp:41
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Danger"
 msgstr "Nebezpečí"
 
-#: src/previewwidget.cpp:40
+#: src/previewwidget.cpp:42
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Bug"
 msgstr "Chyba"
 
-#: src/previewwidget.cpp:41
+#: src/previewwidget.cpp:43
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Example"
 msgstr "Příklad"
 
-#: src/previewwidget.cpp:42
+#: src/previewwidget.cpp:44
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Quote"
 msgstr "Citace"
+
+#: src/previewwidget.cpp:61
+#, fuzzy, kde-format
+msgid "GitHub only"
+msgstr "GitHub"
+
+#: src/previewwidget.cpp:63
+#, kde-format
+msgid ""
+"Render only what GitHub renders, without the CodiMD, Obsidian and MkDocs "
+"syntax"
+msgstr ""

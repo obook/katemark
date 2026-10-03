@@ -60,10 +60,13 @@ PluginView::PluginView(KTextEditor::Plugin *plugin, KTextEditor::MainWindow *mai
 
     // An export writes what the preview shows, so both are only offered while it shows.
     m_exportPdf = addAction(QStringLiteral("katemark_export_pdf"), i18n("Export Preview as PDF..."), QIcon::fromTheme(QStringLiteral("application-pdf")));
+    // What a toolbar shows beside the icon; the menu keeps the full text.
+    m_exportPdf->setIconText(QStringLiteral("PDF"));
     connect(m_exportPdf, &QAction::triggered, this, [this]() {
         exportPreview(true);
     });
     m_exportHtml = addAction(QStringLiteral("katemark_export_html"), i18n("Export Preview as HTML..."), QIcon::fromTheme(QStringLiteral("text-html")));
+    m_exportHtml->setIconText(QStringLiteral("HTML"));
     connect(m_exportHtml, &QAction::triggered, this, [this]() {
         exportPreview(false);
     });
@@ -194,8 +197,7 @@ void PluginView::syncPreview()
     } else {
         m_preview = new PreviewWidget(m_mainWindow, view, view->document(), m_toolView);
         connect(m_preview, &PreviewWidget::exported, this, &PluginView::onExported);
-        // Offered in the preview's context menu too.
-        m_preview->addActions({m_exportPdf, m_exportHtml});
+        m_preview->addExportActions({m_exportPdf, m_exportHtml});
         onToolViewShown(true);
     }
 }

@@ -3,6 +3,7 @@
 //   __setMarkdown(text)      render markdown source
 //   __setLabels(obj)         translated titles of the alerts and callouts
 //   __setMacros(tex)         math macros from the settings
+//   __setGithubOnly(on)      render only what GitHub renders
 //   __applyVars(obj)         set CSS custom properties on <html>
 //   __useHljsTheme(name)     enable one bundled hljs <style>, disable the rest
 //   __setCodeCss(css)        inject a generated hljs theme (Application mode)
@@ -19,55 +20,101 @@
   var katemark = window.katemark;
   var escapeHtml = katemark.escapeHtml;
 
-  var md = window.markdownit({
-    html: true,
-    linkify: true,
-    typographer: false,
-    breaks: false,
-    highlight: function (str, lang) {
-      if (lang === "mermaid") {
-        return '<pre class="mermaid">' + escapeHtml(str) + "</pre>";
+  // GitHub strikes text between single tildes too; markdown-it only knows "~~".
+  // ponytail: the closing tilde is the next one, without the flanking rules of the
+  // specification. Write a delimiter rule if a real document trips on it.
+  function singleTildeStrike(md) {
+    var TILDE = 0x7e;
+    md.inline.ruler.after("strikethrough", "single_tilde", function (state, silent) {
+      var src = state.src;
+      var start = state.pos;
+      var max = state.posMax;
+      if (src.charCodeAt(start) !== TILDE || src.charCodeAt(start + 1) === TILDE || src.charCodeAt(start - 1) === TILDE) {
+        return false;
       }
-      var hljs = window.hljs;
-      var body;
-      if (hljs && lang && hljs.getLanguage(lang)) {
-        try {
-          body = hljs.highlight(str, { language: lang, ignoreIllegals: true }).value;
-        } catch (e) {
+      var end = src.indexOf("~", start + 1);
+      if (end < 0 || end >= max || src.charCodeAt(end + 1) === TILDE) {
+        return false;
+      }
+      var inner = src.slice(start + 1, end);
+      if (inner === "" || /^\s|\s$|\n/.test(inner)) {
+        return false;
+      }
+      if (!silent) {
+        state.pos = start + 1;
+        state.posMax = end;
+        state.push("s_open", "s", 1).markup = "~";
+        state.md.inline.tokenize(state);
+        state.push("s_close", "s", -1).markup = "~";
+      }
+      state.pos = end + 1;
+      state.posMax = max;
+      return true;
+    });
+  }
+
+  // One parser per mode: the full one, and the one that reads GitHub's syntax alone.
+  function buildParser(githubOnly) {
+    var md = window.markdownit({
+      html: true,
+      linkify: true,
+      typographer: false,
+      breaks: false,
+      highlight: function (str, lang) {
+        if (lang === "mermaid") {
+          return '<pre class="mermaid">' + escapeHtml(str) + "</pre>";
+        }
+        var hljs = window.hljs;
+        var body;
+        if (hljs && lang && hljs.getLanguage(lang)) {
+          try {
+            body = hljs.highlight(str, { language: lang, ignoreIllegals: true }).value;
+          } catch (e) {
+            body = escapeHtml(str);
+          }
+        } else if (hljs) {
+          try {
+            body = hljs.highlightAuto(str).value;
+          } catch (e) {
+            body = escapeHtml(str);
+          }
+        } else {
           body = escapeHtml(str);
         }
-      } else if (hljs) {
-        try {
-          body = hljs.highlightAuto(str).value;
-        } catch (e) {
-          body = escapeHtml(str);
-        }
-      } else {
-        body = escapeHtml(str);
-      }
-      return '<pre class="hljs"><code>' + body + "</code></pre>";
-    },
-  });
+        return '<pre class="hljs"><code>' + body + "</code></pre>";
+      },
+    });
 
-  md.use(katemark.taskLists);
-  md.use(katemark.callouts);
-  md.use(katemark.wikiLinks);
-  md.use(katemark.comments);
-  // markdown-it plugins: ==mark==, ++ins++, H~2~O, 19^th^, footnotes, emoji, $math$.
-  md.use(window.markdownitMark);
-  md.use(window.markdownitIns);
-  md.use(window.markdownitSub);
-  md.use(window.markdownitSup);
-  md.use(window.markdownitFootnote);
-  // Emoji written by name: ":warning:". The plugin's "shortcuts" would also turn ":)" or
-  // ":/" into emoji, which bites in ordinary text, so they are off.
-  md.use(window.markdownitEmoji, { shortcuts: {} });
-  // Math between $...$ and $$...$$, and between \(...\) and \[...\] as in LaTeX.
-  md.use(window.texmath, { engine: katemark.lenientMath(), delimiters: ["dollars", "brackets"], katexOptions: katemark.mathOptions });
-  md.use(katemark.codimdContainers);
-  md.use(katemark.admonitions);
-  md.use(katemark.sourceLines);
+    md.use(katemark.taskLists);
+    md.use(katemark.callouts, { githubOnly: githubOnly });
+    if (githubOnly) {
+      md.use(singleTildeStrike);
+    } else {
+      md.use(katemark.wikiLinks);
+      md.use(katemark.comments);
+      // markdown-it plugins: ==mark==, ++ins++, H~2~O, 19^th^.
+      md.use(window.markdownitMark);
+      md.use(window.markdownitIns);
+      md.use(window.markdownitSub);
+      md.use(window.markdownitSup);
+    }
+    // GitHub renders these too: footnotes, emoji, $math$.
+    md.use(window.markdownitFootnote);
+    // Emoji written by name: ":warning:". The plugin's "shortcuts" would also turn ":)" or
+    // ":/" into emoji, which bites in ordinary text, so they are off.
+    md.use(window.markdownitEmoji, { shortcuts: {} });
+    // Math between $...$ and $$...$$, and between \(...\) and \[...\] as in LaTeX.
+    md.use(window.texmath, { engine: katemark.lenientMath(), delimiters: ["dollars", "brackets"], katexOptions: katemark.mathOptions });
+    if (!githubOnly) {
+      md.use(katemark.codimdContainers);
+      md.use(katemark.admonitions);
+    }
+    md.use(katemark.sourceLines);
+    return md;
+  }
 
+  var parsers = { all: buildParser(false), github: null };
+  var githubOnly = false;
   var current = "";
 
   // Which <details> blocks (foldable callouts, spoilers) are open, in document order.
@@ -97,8 +144,12 @@
     var folds = foldStates(el);
     katemark.resetMath();
     var fm = katemark.frontMatterTable(current);
+    if (githubOnly && !parsers.github) {
+      parsers.github = buildParser(true);
+    }
+    var md = githubOnly ? parsers.github : parsers.all;
     el.innerHTML = (fm ? fm.html : "") + md.render(fm ? fm.body : current, { lineOffset: fm ? fm.lines : 0 });
-    katemark.fillToc(el);
+    katemark.fillToc(el, !githubOnly);
     katemark.drawMermaid(el);
     katemark.explainBlockedMedia(el);
     restoreFoldStates(el, folds);
@@ -137,6 +188,11 @@
   // Name of the setting that blocks pictures from the web, or "" when they are allowed.
   window.__setRemoteMediaHint = function (text) {
     katemark.setRemoteMediaHint(text);
+    rerender();
+  };
+
+  window.__setGithubOnly = function (on) {
+    githubOnly = on;
     rerender();
   };
 

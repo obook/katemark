@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: katemark\n"
 "Report-Msgid-Bugs-To: https://github.com/obook/katemark/issues\n"
-"POT-Creation-Date: 2026-10-03 12:50+0200\n"
+"POT-Creation-Date: 2026-10-03 20:12+0200\n"
 "PO-Revision-Date: 2026-10-03 12:00+0200\n"
 "Last-Translator: Katemark contributors\n"
 "Language-Team: Romanian\n"
@@ -61,7 +61,7 @@ msgstr ""
 "editorului, astfel încât previzualizarea să se integreze cu restul "
 "aplicației Kate."
 
-#: src/configpage.cpp:76
+#: src/configpage.cpp:76 src/previewwidget.cpp:113
 #, kde-format
 msgid "Load media previews from remote URLs"
 msgstr "Încarcă previzualizări media de la URL-uri distante"
@@ -100,7 +100,7 @@ msgstr "Caută actualizări"
 msgid "Installed version: %1"
 msgstr "Versiune instalată: %1"
 
-#: src/configpage.cpp:129 src/configpage.cpp:134 src/pluginview.cpp:66
+#: src/configpage.cpp:129 src/configpage.cpp:134 src/pluginview.cpp:49
 #, kde-format
 msgid "Katemark"
 msgstr "Katemark"
@@ -145,187 +145,199 @@ msgstr ""
 msgid "Could not save the image to %1"
 msgstr "Imaginea nu a putut fi salvată în %1"
 
-#: src/pluginview.cpp:69
+#: src/pluginview.cpp:52
 #, kde-format
 msgid "Markdown Preview"
 msgstr "Previzualizare Markdown"
 
-#: src/pluginview.cpp:73
+#: src/pluginview.cpp:56
 #, kde-format
 msgid "Preview"
 msgstr "Previzualizare"
 
-#: src/pluginview.cpp:74
+#: src/pluginview.cpp:57
 #, kde-format
 msgid "Show or hide the Markdown preview beside the editor"
 msgstr "Arată sau ascunde previzualizarea Markdown lângă editor"
 
-#: src/pluginview.cpp:79
+#: src/pluginview.cpp:62
 #, kde-format
 msgid "Export Preview as PDF..."
 msgstr "Exportă previzualizarea ca PDF..."
 
-#: src/pluginview.cpp:83
+#: src/pluginview.cpp:66
 #, kde-format
 msgid "Export Preview as HTML..."
 msgstr "Exportă previzualizarea ca HTML..."
 
-#: src/pluginview.cpp:179
+#: src/pluginview.cpp:150
 #, kde-format
 msgid "Untitled"
 msgstr "Fără titlu"
 
-#: src/pluginview.cpp:185
+#: src/pluginview.cpp:156
 #, kde-format
 msgid "Export as PDF"
 msgstr "Exportă ca PDF"
 
-#: src/pluginview.cpp:185
+#: src/pluginview.cpp:156
 #, kde-format
 msgid "Export as HTML"
 msgstr "Exportă ca HTML"
 
-#: src/pluginview.cpp:187
+#: src/pluginview.cpp:158
 #, kde-format
 msgid "PDF files (*.pdf)"
 msgstr "Fișiere PDF (*.pdf)"
 
-#: src/pluginview.cpp:187
+#: src/pluginview.cpp:158
 #, kde-format
 msgid "HTML files (*.html)"
 msgstr "Fișiere HTML (*.html)"
 
-#: src/pluginview.cpp:201
+#: src/pluginview.cpp:171
 #, kde-format
 msgid "Preview exported to %1"
 msgstr "Previzualizare exportată în %1"
 
-#: src/pluginview.cpp:201
+#: src/pluginview.cpp:171
 #, kde-format
 msgid "Could not export the preview to %1"
 msgstr "Previzualizarea nu a putut fi exportată în %1"
 
-#: src/pluginviewedit.cpp:46
+#: src/pluginviewedit.cpp:82
 #, kde-format
 msgid "Bold"
 msgstr "Aldin"
 
-#: src/pluginviewedit.cpp:49
+#: src/pluginviewedit.cpp:85
 #, kde-format
 msgid "Italic"
 msgstr "Cursiv"
 
-#: src/pluginviewedit.cpp:53
+#: src/pluginviewedit.cpp:89
 #, kde-format
 msgid "Strikethrough"
 msgstr "Tăiat"
 
-#: src/pluginviewedit.cpp:60
+#: src/pluginviewedit.cpp:96
 #, kde-format
 msgid "Increase Heading Level"
 msgstr "Mărește nivelul de antet"
 
-#: src/pluginviewedit.cpp:67
+#: src/pluginviewedit.cpp:103
 #, kde-format
 msgid "Decrease Heading Level"
 msgstr "Micșorează nivelul de antet"
 
-#: src/pluginviewedit.cpp:73
+#: src/pluginviewedit.cpp:109
 #, kde-format
 msgid "Paste as Link"
 msgstr "Lipește ca legătură"
 
-#: src/pluginviewedit.cpp:76
+#: src/pluginviewedit.cpp:112
 #, kde-format
 msgid "Format Table"
 msgstr "Formatează tabelul"
 
-#: src/previewwidget.cpp:28
+#: src/previewwidget.cpp:30
 #, kde-format
 msgctxt "@title GitHub alert"
 msgid "Note"
 msgstr "Notă"
 
-#: src/previewwidget.cpp:29
+#: src/previewwidget.cpp:31
 #, kde-format
 msgctxt "@title GitHub alert"
 msgid "Tip"
 msgstr "Sfat"
 
-#: src/previewwidget.cpp:30
+#: src/previewwidget.cpp:32
 #, kde-format
 msgctxt "@title GitHub alert"
 msgid "Important"
 msgstr "Important"
 
-#: src/previewwidget.cpp:31
+#: src/previewwidget.cpp:33
 #, kde-format
 msgctxt "@title GitHub alert"
 msgid "Warning"
 msgstr "Avertisment"
 
-#: src/previewwidget.cpp:32
+#: src/previewwidget.cpp:34
 #, kde-format
 msgctxt "@title GitHub alert"
 msgid "Caution"
 msgstr "Atenție"
 
-#: src/previewwidget.cpp:33
+#: src/previewwidget.cpp:35
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Abstract"
 msgstr "Rezumat"
 
-#: src/previewwidget.cpp:34
+#: src/previewwidget.cpp:36
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Info"
 msgstr "Informații"
 
-#: src/previewwidget.cpp:35
+#: src/previewwidget.cpp:37
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Todo"
 msgstr "De făcut"
 
-#: src/previewwidget.cpp:36
+#: src/previewwidget.cpp:38
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Success"
 msgstr "Succes"
 
-#: src/previewwidget.cpp:37
+#: src/previewwidget.cpp:39
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Question"
 msgstr "Întrebare"
 
-#: src/previewwidget.cpp:38
+#: src/previewwidget.cpp:40
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Failure"
 msgstr "Eșec"
 
-#: src/previewwidget.cpp:39
+#: src/previewwidget.cpp:41
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Danger"
 msgstr "Pericol"
 
-#: src/previewwidget.cpp:40
+#: src/previewwidget.cpp:42
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Bug"
 msgstr "Defect"
 
-#: src/previewwidget.cpp:41
+#: src/previewwidget.cpp:43
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Example"
 msgstr "Exemplu"
 
-#: src/previewwidget.cpp:42
+#: src/previewwidget.cpp:44
 #, kde-format
 msgctxt "@title Obsidian callout"
 msgid "Quote"
 msgstr "Citat"
+
+#: src/previewwidget.cpp:61
+#, fuzzy, kde-format
+msgid "GitHub only"
+msgstr "GitHub"
+
+#: src/previewwidget.cpp:63
+#, kde-format
+msgid ""
+"Render only what GitHub renders, without the CodiMD, Obsidian and MkDocs "
+"syntax"
+msgstr ""

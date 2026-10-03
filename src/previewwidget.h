@@ -13,7 +13,9 @@ class QWebEngineView;
 class QWebEngineProfile;
 class QWebEngineUrlRequestInterceptor;
 class QTimer;
+class QToolBar;
 class QAction;
+class QCheckBox;
 class QKeyEvent;
 class QKeySequence;
 class QMouseEvent;
@@ -56,6 +58,10 @@ public:
     void exportPdf(const QString &path);
     void exportHtml(const QString &path);
 
+    // The export actions belong to the window. They are offered in the bar above the
+    // preview and in its context menu.
+    void addExportActions(const QList<QAction *> &actions);
+
 Q_SIGNALS:
     void exported(const QString &path, bool ok);
 
@@ -77,6 +83,7 @@ private:
     void render();
     void applyGithubLook(bool dark);
     void applyMacros();
+    void applySyntax();
     // 50 checks, 100 ms apart: an export waits at most 5 s for the page.
     void whenSettled(std::function<void()> then, int checksLeft = 50);
     void setView(KTextEditor::View *view);
@@ -97,6 +104,8 @@ private:
 
     QPointer<KTextEditor::MainWindow> m_mainWindow;
     QWebEngineView *m_web = nullptr;
+    QToolBar *m_bar = nullptr;
+    QCheckBox *m_githubOnly = nullptr;
     QWebEngineProfile *m_profile = nullptr;
     QWebEngineUrlRequestInterceptor *m_guard = nullptr;
     QTimer *m_debounce = nullptr;
