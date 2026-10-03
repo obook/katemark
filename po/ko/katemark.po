@@ -327,13 +327,13 @@ msgid "Quote"
 msgstr "인용"
 
 #: src/previewwidget.cpp:61
-#, fuzzy, kde-format
+#, kde-format
 msgid "GitHub only"
-msgstr "GitHub"
+msgstr "GitHub만"
 
 #: src/previewwidget.cpp:63
 #, kde-format
 msgid ""
 "Render only what GitHub renders, without the CodiMD, Obsidian and MkDocs "
 "syntax"
-msgstr ""
+msgstr "GitHub가 표시하는 것만 표시하며 CodiMD, Obsidian, MkDocs 문법은 제외합니다"

@@ -332,13 +332,13 @@ msgid "Quote"
 msgstr "Aipua"
 
 #: src/previewwidget.cpp:61
-#, fuzzy, kde-format
+#, kde-format
 msgid "GitHub only"
-msgstr "GitHub"
+msgstr "GitHub soilik"
 
 #: src/previewwidget.cpp:63
 #, kde-format
 msgid ""
 "Render only what GitHub renders, without the CodiMD, Obsidian and MkDocs "
 "syntax"
-msgstr ""
+msgstr "Erakutsi GitHubek erakusten duena soilik, CodiMD, Obsidian eta MkDocs sintaxirik gabe"

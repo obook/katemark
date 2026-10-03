@@ -332,13 +332,13 @@ msgid "Quote"
 msgstr "Παράθεση"
 
 #: src/previewwidget.cpp:61
-#, fuzzy, kde-format
+#, kde-format
 msgid "GitHub only"
-msgstr "GitHub"
+msgstr "Μόνο GitHub"
 
 #: src/previewwidget.cpp:63
 #, kde-format
 msgid ""
 "Render only what GitHub renders, without the CodiMD, Obsidian and MkDocs "
 "syntax"
-msgstr ""
+msgstr "Απόδοση μόνο όσων αποδίδει το GitHub, χωρίς τη σύνταξη των CodiMD, Obsidian και MkDocs"

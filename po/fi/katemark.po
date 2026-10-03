@@ -328,13 +328,13 @@ msgid "Quote"
 msgstr "Lainaus"
 
 #: src/previewwidget.cpp:61
-#, fuzzy, kde-format
+#, kde-format
 msgid "GitHub only"
-msgstr "GitHub"
+msgstr "Vain GitHub"
 
 #: src/previewwidget.cpp:63
 #, kde-format
 msgid ""
 "Render only what GitHub renders, without the CodiMD, Obsidian and MkDocs "
 "syntax"
-msgstr ""
+msgstr "Näytä vain se, minkä GitHub näyttää, ilman CodiMD-, Obsidian- ja MkDocs-syntaksia"

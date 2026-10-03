@@ -326,13 +326,13 @@ msgid "Quote"
 msgstr "Citát"
 
 #: src/previewwidget.cpp:61
-#, fuzzy, kde-format
+#, kde-format
 msgid "GitHub only"
-msgstr "GitHub"
+msgstr "Iba GitHub"
 
 #: src/previewwidget.cpp:63
 #, kde-format
 msgid ""
 "Render only what GitHub renders, without the CodiMD, Obsidian and MkDocs "
 "syntax"
-msgstr ""
+msgstr "Zobraziť iba to, čo zobrazuje GitHub, bez syntaxe CodiMD, Obsidian a MkDocs"
