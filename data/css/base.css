@@ -27,3 +27,178 @@ body {
     padding: 16px 16px 64px;
   }
 }
+
+/* CodiMD alert areas: Bootstrap 3 alert colors on light, tinted equivalents on dark. */
+.markdown-body .alert {
+  padding: 15px;
+  margin-bottom: 16px;
+  border: 1px solid var(--alert-border);
+  border-radius: 4px;
+  color: var(--alert-fg);
+  background: var(--alert-bg);
+}
+
+.markdown-body .alert > :last-child {
+  margin-bottom: 0;
+}
+
+.markdown-body .alert-title {
+  font-weight: 600;
+}
+
+.markdown-body .alert-success {
+  --alert-fg: #3c763d;
+  --alert-bg: #dff0d8;
+  --alert-border: #d6e9c6;
+}
+
+.markdown-body .alert-info {
+  --alert-fg: #31708f;
+  --alert-bg: #d9edf7;
+  --alert-border: #bce8f1;
+}
+
+.markdown-body .alert-warning {
+  --alert-fg: #8a6d3b;
+  --alert-bg: #fcf8e3;
+  --alert-border: #faebcc;
+}
+
+.markdown-body .alert-danger {
+  --alert-fg: #a94442;
+  --alert-bg: #f2dede;
+  --alert-border: #ebccd1;
+}
+
+html[data-pv-scheme="dark"] .markdown-body .alert-success {
+  --alert-fg: #a3d9a5;
+  --alert-bg: rgba(60, 118, 61, 0.25);
+  --alert-border: rgba(60, 118, 61, 0.6);
+}
+
+html[data-pv-scheme="dark"] .markdown-body .alert-info {
+  --alert-fg: #9fd3ea;
+  --alert-bg: rgba(49, 112, 143, 0.25);
+  --alert-border: rgba(49, 112, 143, 0.6);
+}
+
+html[data-pv-scheme="dark"] .markdown-body .alert-warning {
+  --alert-fg: #e6cf9a;
+  --alert-bg: rgba(138, 109, 59, 0.25);
+  --alert-border: rgba(138, 109, 59, 0.6);
+}
+
+html[data-pv-scheme="dark"] .markdown-body .alert-danger {
+  --alert-fg: #f0a8a6;
+  --alert-bg: rgba(169, 68, 66, 0.25);
+  --alert-border: rgba(169, 68, 66, 0.6);
+}
+
+.markdown-body details > summary {
+  cursor: pointer;
+}
+
+.markdown-body ul.toc {
+  list-style: none;
+  padding-left: 0;
+}
+
+/* Math: texmath wraps KaTeX output in <eq> (inline) and <eqn> (display). */
+.markdown-body eq {
+  display: inline-block;
+}
+
+.markdown-body eqn {
+  display: block;
+}
+
+.markdown-body .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.markdown-body pre.mermaid {
+  padding: 0;
+  text-align: center;
+  background: transparent;
+}
+
+.markdown-body pre.mermaid-error {
+  text-align: left;
+  color: var(--fgColor-danger, #d1242f);
+}
+
+/* github-markdown already rules off the footnotes section. */
+.markdown-body .footnotes-sep {
+  display: none;
+}
+
+/* PDF export: the page margins replace the screen gutters. */
+@media print {
+  .markdown-body {
+    max-width: none;
+    padding: 0;
+  }
+
+  .markdown-body .alert,
+  .markdown-body pre,
+  .markdown-body tr,
+  .markdown-body img {
+    break-inside: avoid;
+  }
+}
+
+/* Obsidian callouts reuse GitHub's alert styles; these are the two additions. */
+.markdown-body .markdown-alert.markdown-alert-quote .markdown-alert-title {
+  color: var(--fgColor-muted);
+}
+
+.markdown-body details.markdown-alert > summary.markdown-alert-title {
+  cursor: pointer;
+}
+
+.markdown-body details.markdown-alert > summary.markdown-alert-title::after {
+  margin-left: 8px;
+  content: "\25B8";
+}
+
+.markdown-body details.markdown-alert[open] > summary.markdown-alert-title::after {
+  content: "\25BE";
+}
+
+.markdown-body details.markdown-alert[open] > summary.markdown-alert-title {
+  margin-bottom: 16px;
+}
+
+/* A paragraph that held only an Obsidian comment. */
+.markdown-body p:empty {
+  display: none;
+}
+
+/* A numbered equation, "$$...$$ (1)": the number sits to the right of the formula. */
+.markdown-body section.eqno {
+  display: flex;
+  align-items: center;
+}
+
+.markdown-body section.eqno > eqn {
+  width: 100%;
+  margin-left: 3em;
+}
+
+.markdown-body section.eqno > span {
+  width: 3em;
+  text-align: right;
+}
+
+/* The note that stands in for a picture from the web kept out by the settings. */
+.markdown-body .blocked-media {
+  display: inline-block;
+  padding: 8px 12px;
+  border: 1px dashed var(--borderColor-default, #d1d9e0);
+  border-radius: 6px;
+  color: var(--fgColor-muted, #59636e);
+  font-size: 85%;
+  text-align: left;
+  word-break: break-all;
+}

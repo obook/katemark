@@ -32,12 +32,23 @@ find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS
     SyntaxHighlighting
 )
 
+add_definitions(-DTRANSLATION_DOMAIN="katdown")
+
 kcoreaddons_add_plugin(katdown
     INSTALL_NAMESPACE "kf6/ktexteditor"
     SOURCES
         src/plugin.cpp
         src/pluginview.cpp
+        src/pluginviewedit.cpp
         src/previewwidget.cpp
+        src/previewtheme.cpp
+        src/previewload.cpp
+        src/previewexport.cpp
+        src/previewscroll.cpp
+        src/previewinput.cpp
+        src/imagepaste.cpp
+        src/markdownedit.cpp
+        src/markdowntable.cpp
         src/configpage.cpp
         src/settings.cpp
         data/resources.qrc
@@ -66,3 +77,15 @@ target_link_libraries(katdown PRIVATE
 if(BUILD_TESTING)
     add_subdirectory(tests)
 endif()
+
+ki18n_install(po)
+
+# "cpack -G DEB", run in the build directory, makes an installable package.
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Markdown preview plugin for the Kate editor")
+set(CPACK_PACKAGE_CONTACT "Olivier Booklage <olivier.booklage@ac-bordeaux.fr>")
+set(CPACK_PACKAGE_HOMEPAGE_URL "https://github.com/obook/katdown")
+set(CPACK_STRIP_FILES ON)
+set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
+set(CPACK_DEBIAN_PACKAGE_SECTION "editors")
+set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+include(CPack)

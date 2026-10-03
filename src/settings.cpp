@@ -35,6 +35,7 @@ void Settings::load()
         m_ghVariant = Auto;
     }
     m_loadRemoteMedia = cfg.readEntry("LoadRemoteMedia", false);
+    m_mathMacros = cfg.readEntry("MathMacros", QString());
 }
 
 void Settings::save() const
@@ -44,6 +45,7 @@ void Settings::save() const
     const char *variant = m_ghVariant == Light ? "light" : m_ghVariant == Dark ? "dark" : "auto";
     cfg.writeEntry("GithubVariant", QString::fromLatin1(variant));
     cfg.writeEntry("LoadRemoteMedia", m_loadRemoteMedia);
+    cfg.writeEntry("MathMacros", m_mathMacros);
     cfg.sync();
 }
 
@@ -73,6 +75,16 @@ void Settings::setLoadRemoteMedia(bool enabled)
         return;
     }
     m_loadRemoteMedia = enabled;
+    save();
+    Q_EMIT changed();
+}
+
+void Settings::setMathMacros(const QString &macros)
+{
+    if (m_mathMacros == macros) {
+        return;
+    }
+    m_mathMacros = macros;
     save();
     Q_EMIT changed();
 }

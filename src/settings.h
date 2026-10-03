@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QObject>
+#include <QString>
 
 /**
  * Plugin-wide settings, persisted in the application's KSharedConfig under the
@@ -32,10 +33,16 @@ public:
         return m_ghVariant;
     }
     bool loadRemoteMedia() const { return m_loadRemoteMedia; }
+    // \newcommand lines defined before every document.
+    QString mathMacros() const
+    {
+        return m_mathMacros;
+    }
 
     void setMode(Mode mode);
     void setGhVariant(GhVariant variant);
     void setLoadRemoteMedia(bool enabled);
+    void setMathMacros(const QString &macros);
 
     void load();
     void save() const;
@@ -49,4 +56,5 @@ private:
     Mode m_mode = GitHub;
     GhVariant m_ghVariant = Auto;
     bool m_loadRemoteMedia = false;
+    QString m_mathMacros;
 };

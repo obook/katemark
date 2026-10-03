@@ -1,0 +1,115 @@
+// pluginviewedit.cpp
+// PluginView: the Markdown editing actions of the Tools menu, pasting a picture, and the
+// messages shown over the editor.
+// Author: Olivier Booklage
+// Date: October 2026
+// License: GPL-3.0-or-later
+
+#include "imagepaste.h"
+#include "markdownedit.h"
+#include "pluginview.h"
+
+#include <QAction>
+#include <QIcon>
+#include <QKeySequence>
+
+#include <KActionCollection>
+#include <KLocalizedString>
+#include <KTextEditor/Document>
+#include <KTextEditor/MainWindow>
+#include <KTextEditor/Message>
+#include <KTextEditor/View>
+
+namespace
+{
+// How long a message stays over the editor before it hides itself.
+constexpr int MessageTimeoutMs = 5000;
+} // namespace
+
+// Show a short message at the top of the active view, the way Kate reports its own events.
+void PluginView::showMessage(const QString &text, bool isError)
+{
+    KTextEditor::View *view = m_mainWindow->activeView();
+    if (!view) {
+        return;
+    }
+    auto *message = new KTextEditor::Message(text, isError ? KTextEditor::Message::Error : KTextEditor::Message::Positive);
+    message->setView(view);
+    message->setAutoHide(MessageTimeoutMs);
+    view->document()->postMessage(message);
+}
+
+// Runs after Kate's own paste, which does nothing with a picture (see onViewChanged).
+void PluginView::pasteImage()
+{
+    KTextEditor::View *view = markdownView();
+    if (!view) {
+        return;
+    }
+    QString error;
+    if (!pasteClipboardImage(view, &error) && !error.isEmpty()) {
+        showMessage(error, true);
+    }
+}
+
+// The active view when it shows a Markdown document, nullptr otherwise.
+KTextEditor::View *PluginView::markdownView() const
+{
+    KTextEditor::View *view = m_mainWindow->activeView();
+    if (!view || !isMarkdown(view->document())) {
+        return nullptr;
+    }
+    return view;
+}
+
+// Register one editing action. It does nothing unless a Markdown document is active.
+void PluginView::addEditAction(const QString &name, const QString &text, const QString &iconName, const QKeySequence &shortcut, const EditFunction &edit)
+{
+    QAction *action = addAction(name, text, QIcon::fromTheme(iconName));
+    actionCollection()->setDefaultShortcut(action, shortcut);
+    connect(action, &QAction::triggered, this, [this, edit]() {
+        KTextEditor::View *view = markdownView();
+        if (view) {
+            edit(view);
+        }
+    });
+}
+
+// The shortcuts are ones that Kate and its bundled plugins leave free. Ctrl+B and Ctrl+I,
+// usual in other Markdown editors, are Kate's bookmark and indentation shortcuts.
+void PluginView::addEditActions()
+{
+    addEditAction(QStringLiteral("katdown_bold"), i18n("Bold"), QStringLiteral("format-text-bold"), QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_B), [](KTextEditor::View *view) {
+        toggleInlineMarker(view, QStringLiteral("**"));
+    });
+    addEditAction(QStringLiteral("katdown_italic"), i18n("Italic"), QStringLiteral("format-text-italic"), QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_E), [](KTextEditor::View *view) {
+        toggleInlineMarker(view, QStringLiteral("*"));
+    });
+    addEditAction(QStringLiteral("katdown_strikethrough"),
+                  i18n("Strikethrough"),
+                  QStringLiteral("format-text-strikethrough"),
+                  QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_S),
+                  [](KTextEditor::View *view) {
+                      toggleInlineMarker(view, QStringLiteral("~~"));
+                  });
+    addEditAction(QStringLiteral("katdown_heading_up"),
+                  i18n("Increase Heading Level"),
+                  QStringLiteral("format-indent-more"),
+                  QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_Equal),
+                  [](KTextEditor::View *view) {
+                      shiftHeadingLevel(view, 1);
+                  });
+    addEditAction(QStringLiteral("katdown_heading_down"),
+                  i18n("Decrease Heading Level"),
+                  QStringLiteral("format-indent-less"),
+                  QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_Minus),
+                  [](KTextEditor::View *view) {
+                      shiftHeadingLevel(view, -1);
+                  });
+    addEditAction(QStringLiteral("katdown_paste_link"), i18n("Paste as Link"), QStringLiteral("insert-link"), QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_V), [](KTextEditor::View *view) {
+        pasteClipboardLink(view);
+    });
+    addEditAction(QStringLiteral("katdown_format_table"), i18n("Format Table"), QStringLiteral("table"), QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_F), [](KTextEditor::View *view) {
+        formatTableAtCursor(view);
+    });
+}

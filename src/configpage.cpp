@@ -12,6 +12,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QPlainTextEdit>
 #include <QPushButton>
 #include <QUrl>
 #include <QVBoxLayout>
@@ -80,6 +81,18 @@ ConfigPage::ConfigPage(QWidget *parent)
     remoteHint->setEnabled(false);
     outer->addWidget(remoteHint);
 
+    outer->addWidget(new QLabel(i18n("Math macros:"), this));
+    m_macros = new QPlainTextEdit(this);
+    m_macros->setPlaceholderText(QStringLiteral("\\newcommand{\\vect}[1]{\\overrightarrow{#1}}"));
+    // Four lines are enough to show a few macros; the field scrolls beyond that.
+    m_macros->setFixedHeight(4 * m_macros->fontMetrics().lineSpacing() + 12);
+    outer->addWidget(m_macros);
+
+    auto *macrosHint = new QLabel(i18n("The \\newcommand lines written here are available in the formulas of every document."), this);
+    macrosHint->setWordWrap(true);
+    macrosHint->setEnabled(false);
+    outer->addWidget(macrosHint);
+
     m_net = new QNetworkAccessManager(this);
 
     auto *updateRow = new QHBoxLayout();
@@ -98,6 +111,9 @@ ConfigPage::ConfigPage(QWidget *parent)
     reset();
 
     connect(m_remoteMedia, &QCheckBox::toggled, this, [this]() { Q_EMIT changed(); });
+    connect(m_macros, &QPlainTextEdit::textChanged, this, [this]() {
+        Q_EMIT changed();
+    });
     connect(m_mode, &QComboBox::currentIndexChanged, this, [this]() {
         syncEnabled();
         Q_EMIT changed();
@@ -132,7 +148,7 @@ void ConfigPage::syncEnabled()
 void ConfigPage::checkForUpdates()
 {
     m_checkButton->setEnabled(false);
-    m_updateStatus->setText(i18n("Checking…"));
+    m_updateStatus->setText(i18n("Checking..."));
 
     QNetworkRequest req(QUrl(QStringLiteral("https://api.github.com/repos/uwuclxdy/katdown/releases/latest")));
     req.setRawHeader("Accept", "application/vnd.github+json");
@@ -175,6 +191,7 @@ void ConfigPage::apply()
     s->setMode(static_cast<Settings::Mode>(m_mode->currentData().toInt()));
     s->setGhVariant(static_cast<Settings::GhVariant>(m_variant->currentData().toInt()));
     s->setLoadRemoteMedia(m_remoteMedia->isChecked());
+    s->setMathMacros(m_macros->toPlainText());
 }
 
 void ConfigPage::reset()
@@ -183,6 +200,7 @@ void ConfigPage::reset()
     m_mode->setCurrentIndex(m_mode->findData(s->mode()));
     m_variant->setCurrentIndex(m_variant->findData(s->ghVariant()));
     m_remoteMedia->setChecked(s->loadRemoteMedia());
+    m_macros->setPlainText(s->mathMacros());
     syncEnabled();
 }
 
@@ -191,5 +209,6 @@ void ConfigPage::defaults()
     m_mode->setCurrentIndex(m_mode->findData(Settings::GitHub));
     m_variant->setCurrentIndex(m_variant->findData(Settings::Auto));
     m_remoteMedia->setChecked(false);
+    m_macros->clear();
     syncEnabled();
 }

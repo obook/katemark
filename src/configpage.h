@@ -5,6 +5,7 @@
 class QCheckBox;
 class QComboBox;
 class QLabel;
+class QPlainTextEdit;
 class QPushButton;
 class QNetworkAccessManager;
 
@@ -33,6 +34,7 @@ private:
     QComboBox *m_mode = nullptr;
     QComboBox *m_variant = nullptr;
     QCheckBox *m_remoteMedia = nullptr;
+    QPlainTextEdit *m_macros = nullptr;
     QPushButton *m_checkButton = nullptr;
     QLabel *m_updateStatus = nullptr;
     QNetworkAccessManager *m_net = nullptr;

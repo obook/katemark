@@ -2,23 +2,19 @@
 #include "previewwidget.h"
 
 #include <QAction>
+#include <QEvent>
 #include <QFile>
+#include <QFileDialog>
+#include <QFileInfo>
 #include <QIcon>
 #include <QKeySequence>
-#include <QSet>
-#include <QTimer>
-#include <QUrl>
-
-#include <utility>
 
 #include <KActionCollection>
-#include <KConfigGroup>
 #include <KLocalizedString>
 #include <KXMLGUIFactory>
-#include <KTextEditor/Application>
 #include <KTextEditor/Document>
-#include <KTextEditor/Editor>
 #include <KTextEditor/MainWindow>
+#include <KTextEditor/Plugin>
 #include <KTextEditor/View>
 
 namespace
@@ -33,53 +29,10 @@ QString readUiRc()
 }
 } // namespace
 
-PluginView::PluginView(QObject *plugin, KTextEditor::MainWindow *mainWindow)
-    : QObject(plugin)
-    , KXMLGUIClient()
-    , m_mainWindow(mainWindow)
+// A document is Markdown by its highlighting mode, or by its file extension when the
+// mode was not detected.
+bool PluginView::isMarkdown(KTextEditor::Document *doc)
 {
-    setComponentName(QStringLiteral("katdown"), i18n("Katdown"));
-
-    m_action = actionCollection()->addAction(QStringLiteral("katdown_show"));
-    m_action->setText(i18n("Preview"));
-    m_action->setToolTip(i18n("Open a GitHub-styled preview of this Markdown document in a new tab"));
-    m_action->setIcon(QIcon::fromTheme(QStringLiteral("text-markdown"), QIcon::fromTheme(QStringLiteral("view-preview"))));
-    actionCollection()->setDefaultShortcut(m_action, QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_M));
-    connect(m_action, &QAction::triggered, this, &PluginView::showPreview);
-
-    setXML(readUiRc());
-
-    m_mainWindow->guiFactory()->addClient(this);
-
-    connect(m_mainWindow, &KTextEditor::MainWindow::viewChanged, this, &PluginView::updateActionState);
-    connect(m_mainWindow, &KTextEditor::MainWindow::widgetRemoved, this, &PluginView::onWidgetRemoved);
-    watchApplication();
-
-    updateActionState();
-}
-
-void PluginView::watchApplication()
-{
-    KTextEditor::Application *app = KTextEditor::Editor::instance()->application();
-    if (!app) {
-        return;
-    }
-    connect(app, &KTextEditor::Application::documentCreated, this, &PluginView::onDocumentCreated, Qt::UniqueConnection);
-    connect(app, &KTextEditor::Application::documentWillBeDeleted, this, &PluginView::onDocumentWillBeDeleted, Qt::UniqueConnection);
-}
-
-PluginView::~PluginView()
-{
-    m_mainWindow->guiFactory()->removeClient(this);
-}
-
-bool PluginView::currentIsMarkdown() const
-{
-    KTextEditor::View *view = m_mainWindow->activeView();
-    if (!view) {
-        return false;
-    }
-    KTextEditor::Document *doc = view->document();
     if (doc->highlightingMode().compare(QLatin1String("Markdown"), Qt::CaseInsensitive) == 0) {
         return true;
     }
@@ -88,158 +41,161 @@ bool PluginView::currentIsMarkdown() const
         || path.endsWith(QLatin1String(".mkd"), Qt::CaseInsensitive);
 }
 
-void PluginView::updateActionState()
+PluginView::PluginView(KTextEditor::Plugin *plugin, KTextEditor::MainWindow *mainWindow)
+    : QObject(plugin)
+    , KXMLGUIClient()
+    , m_mainWindow(mainWindow)
 {
-    m_action->setEnabled(currentIsMarkdown());
+    setComponentName(QStringLiteral("katdown"), i18n("Katdown"));
+
+    const QIcon icon = QIcon::fromTheme(QStringLiteral("text-markdown"), QIcon::fromTheme(QStringLiteral("view-preview")));
+    m_toolView = m_mainWindow->createToolView(plugin, QStringLiteral("katdown"), KTextEditor::MainWindow::Right, icon, i18n("Markdown Preview"));
+    // Kate has no signal for a tool view being shown; its Show event is the cue.
+    m_toolView->installEventFilter(this);
+
+    QAction *toggle = addAction(QStringLiteral("katdown_show"), i18n("Preview"), icon);
+    toggle->setToolTip(i18n("Show or hide the Markdown preview beside the editor"));
+    actionCollection()->setDefaultShortcut(toggle, QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_M));
+    connect(toggle, &QAction::triggered, this, &PluginView::togglePreview);
+
+    // An export writes what the preview shows, so both are only offered while it shows.
+    m_exportPdf = addAction(QStringLiteral("katdown_export_pdf"), i18n("Export Preview as PDF..."), QIcon::fromTheme(QStringLiteral("application-pdf")));
+    connect(m_exportPdf, &QAction::triggered, this, [this]() {
+        exportPreview(true);
+    });
+    m_exportHtml = addAction(QStringLiteral("katdown_export_html"), i18n("Export Preview as HTML..."), QIcon::fromTheme(QStringLiteral("text-html")));
+    connect(m_exportHtml, &QAction::triggered, this, [this]() {
+        exportPreview(false);
+    });
+    onToolViewShown(false);
+    addEditActions();
+
+    setXML(readUiRc());
+
+    m_mainWindow->guiFactory()->addClient(this);
+
+    connect(m_mainWindow, &KTextEditor::MainWindow::viewChanged, this, &PluginView::onViewChanged);
+    onViewChanged(m_mainWindow->activeView());
 }
 
-void PluginView::showPreview()
+// Register an action under a name that data/ui.rc places in the menu and the toolbar.
+QAction *PluginView::addAction(const QString &name, const QString &text, const QIcon &icon)
+{
+    QAction *action = actionCollection()->addAction(name);
+    action->setText(text);
+    action->setIcon(icon);
+    return action;
+}
+
+PluginView::~PluginView()
+{
+    m_mainWindow->guiFactory()->removeClient(this);
+    delete m_toolView;
+}
+
+bool PluginView::eventFilter(QObject *obj, QEvent *event)
+{
+    if (obj == m_toolView && event->type() == QEvent::Show) {
+        onToolViewShown(true);
+        // Queued, not direct: building the preview's QWebEngineView makes Qt recreate
+        // the window, which re-delivers Show to the tool view in the middle of that
+        // construction and would build a second preview.
+        QMetaObject::invokeMethod(this, &PluginView::syncPreview, Qt::QueuedConnection);
+    } else if (obj == m_toolView && event->type() == QEvent::Hide) {
+        onToolViewShown(false);
+    }
+    return QObject::eventFilter(obj, event);
+}
+
+void PluginView::onToolViewShown(bool shown)
+{
+    // Nothing to export until a Markdown document has been shown in the panel.
+    const bool canExport = shown && m_preview;
+    m_exportPdf->setEnabled(canExport);
+    m_exportHtml->setEnabled(canExport);
+    if (m_preview) {
+        m_preview->setPaused(!shown);
+    }
+}
+
+void PluginView::onViewChanged(KTextEditor::View *view)
+{
+    // Each view has its own paste action. Kate's own slot runs first and does nothing
+    // with an image; ours then takes it. UniqueConnection: coming back to a view must
+    // not connect it a second time.
+    QAction *paste = nullptr;
+    if (view) {
+        paste = view->action(QStringLiteral("edit_paste"));
+    }
+    if (paste) {
+        connect(paste, &QAction::triggered, this, &PluginView::pasteImage, Qt::UniqueConnection);
+    }
+    // A document becomes Markdown when it is saved as .md or switched to that mode;
+    // the preview has to pick it up then, not at the next change of tab.
+    if (view) {
+        KTextEditor::Document *doc = view->document();
+        connect(doc, &KTextEditor::Document::documentUrlChanged, this, &PluginView::syncPreview, Qt::UniqueConnection);
+        connect(doc, &KTextEditor::Document::highlightingModeChanged, this, &PluginView::syncPreview, Qt::UniqueConnection);
+    }
+    syncPreview();
+}
+
+void PluginView::exportPreview(bool pdf)
+{
+    if (!m_preview) {
+        return; // the panel is open but no Markdown document was ever shown in it
+    }
+    // Suggest the document's own name and folder, with the export's extension.
+    const QFileInfo source(m_preview->documentUrl().toLocalFile());
+    QString suggested = i18n("Untitled");
+    if (!source.fileName().isEmpty()) {
+        suggested = source.absolutePath() + QLatin1Char('/') + source.completeBaseName();
+    }
+    suggested += pdf ? QStringLiteral(".pdf") : QStringLiteral(".html");
+    const QString path = QFileDialog::getSaveFileName(m_mainWindow->window(),
+                                                      pdf ? i18n("Export as PDF") : i18n("Export as HTML"),
+                                                      suggested,
+                                                      pdf ? i18n("PDF files (*.pdf)") : i18n("HTML files (*.html)"));
+    if (path.isEmpty()) {
+        return;
+    }
+    if (pdf) {
+        m_preview->exportPdf(path);
+    } else {
+        m_preview->exportHtml(path);
+    }
+}
+
+void PluginView::onExported(const QString &path, bool ok)
+{
+    showMessage(ok ? i18n("Preview exported to %1", path) : i18n("Could not export the preview to %1", path), !ok);
+}
+
+void PluginView::togglePreview()
+{
+    if (m_toolView->isVisible()) {
+        m_mainWindow->hideToolView(m_toolView);
+    } else {
+        m_mainWindow->showToolView(m_toolView);
+    }
+}
+
+// Point the preview at the active view's document. Only while the tool view is showing,
+// so the web view is not created until the preview is first used. A non-Markdown view
+// leaves the last preview in place.
+void PluginView::syncPreview()
 {
     KTextEditor::View *view = m_mainWindow->activeView();
-    if (!view) {
+    if (!m_toolView->isVisible() || !view || !isMarkdown(view->document())) {
         return;
     }
-    if (PreviewWidget *preview = openPreview(view->document(), view)) {
-        m_mainWindow->activateWidget(preview);
-    }
-}
-
-PreviewWidget *PluginView::openPreview(KTextEditor::Document *doc, KTextEditor::View *view)
-{
-    if (!doc) {
-        return nullptr;
-    }
-    if (PreviewWidget *existing = m_previews.value(doc)) {
-        return existing;
-    }
-
-    auto *preview = new PreviewWidget(m_mainWindow, view, doc);
-    if (!m_mainWindow->addWidget(preview)) {
-        delete preview;
-        return nullptr;
-    }
-    trackPreview(doc, preview);
-    return preview;
-}
-
-void PluginView::trackPreview(KTextEditor::Document *doc, PreviewWidget *preview)
-{
-    m_previews.insert(doc, preview);
-    // documentWillBeDeleted is the signal that carries the preview over to m_detached;
-    // this only keeps a dangling key out of the hash if a host never emits it.
-    connect(doc, &QObject::destroyed, this, [this, doc]() {
-        m_previews.remove(doc);
-    });
-}
-
-KTextEditor::View *PluginView::viewForDocument(KTextEditor::Document *doc) const
-{
-    const auto views = m_mainWindow->views();
-    for (KTextEditor::View *view : views) {
-        if (view->document() == doc) {
-            return view;
-        }
-    }
-    return nullptr;
-}
-
-void PluginView::writeSessionConfig(KConfigGroup &config)
-{
-    QStringList urls;
-    // Frozen previews count too: they are still open tabs, and their document is
-    // already gone by the time a session is saved on shutdown.
-    auto collect = [&urls](const QPointer<PreviewWidget> &preview) {
-        if (!preview) {
-            return;
-        }
-        const QString url = preview->documentUrl().toString();
-        if (!url.isEmpty() && !urls.contains(url)) {
-            urls << url;
-        }
-    };
-    for (const auto &preview : std::as_const(m_previews)) {
-        collect(preview);
-    }
-    for (const auto &preview : std::as_const(m_detached)) {
-        collect(preview);
-    }
-    config.writeEntry("previews", urls);
-}
-
-void PluginView::readSessionConfig(const KConfigGroup &config)
-{
-    const QStringList urls = config.readEntry("previews", QStringList());
-    m_pendingPreviews = QSet<QString>(urls.cbegin(), urls.cend());
-    if (m_pendingPreviews.isEmpty()) {
-        return;
-    }
-    // Kate restores plugin session config before (and around) its documents, so the
-    // documents we want previews for usually don't exist yet at this point. Defer the
-    // lookup to the next event-loop turn; documents created later are picked up by the
-    // documentCreated watch.
-    watchApplication();
-    QTimer::singleShot(0, this, &PluginView::rescanDocuments);
-}
-
-void PluginView::onDocumentCreated()
-{
-    // A freshly created document may not have its URL set yet; re-scan next turn.
-    QTimer::singleShot(0, this, &PluginView::rescanDocuments);
-}
-
-// Match documents against previews waiting on them: previews frozen by an editor tab
-// closing, and previews the session restore has not placed yet.
-void PluginView::rescanDocuments()
-{
-    KTextEditor::Application *app = KTextEditor::Editor::instance()->application();
-    if (!app) {
-        return;
-    }
-    const auto docs = app->documents();
-    for (KTextEditor::Document *doc : docs) {
-        const QString url = doc->url().toString();
-        if (url.isEmpty()) {
-            continue;
-        }
-        if (PreviewWidget *preview = m_detached.take(url)) {
-            if (!m_previews.contains(doc)) {
-                preview->attachDocument(doc, viewForDocument(doc));
-                trackPreview(doc, preview);
-            }
-        } else if (m_pendingPreviews.remove(url)) {
-            openPreview(doc, viewForDocument(doc));
-        }
-    }
-}
-
-// The document dies with its editor tab; hand the preview its frozen copy and file it
-// under the url so reopening the file re-attaches the same tab.
-void PluginView::onDocumentWillBeDeleted(KTextEditor::Document *doc)
-{
-    PreviewWidget *preview = m_previews.take(doc);
-    if (!preview) {
-        return;
-    }
-    preview->detachDocument();
-    const QString url = preview->documentUrl().toString();
-    if (url.isEmpty()) {
-        return;
-    }
-    m_detached.insert(url, preview);
-}
-
-void PluginView::onWidgetRemoved(QWidget *widget)
-{
-    for (auto it = m_previews.begin(); it != m_previews.end(); ++it) {
-        if (it.value() == widget) {
-            m_previews.erase(it);
-            return;
-        }
-    }
-    for (auto it = m_detached.begin(); it != m_detached.end(); ++it) {
-        if (it.value() == widget) {
-            m_detached.erase(it);
-            return;
-        }
+    if (m_preview) {
+        m_preview->attachDocument(view->document(), view);
+    } else {
+        m_preview = new PreviewWidget(m_mainWindow, view, view->document(), m_toolView);
+        connect(m_preview, &PreviewWidget::exported, this, &PluginView::onExported);
+        // Offered in the preview's context menu too.
+        m_preview->addActions({m_exportPdf, m_exportHtml});
+        onToolViewShown(true);
     }
 }

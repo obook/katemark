@@ -9,6 +9,27 @@
     <file>js/markdown-it.min.js</file>
     <file>js/highlight.min.js</file>
     <file>js/js-yaml.min.js</file>
+    <file>css/katex.min.css</file>
+    <file>js/markdown-it-container.min.js</file>
+    <file>js/markdown-it-mark.min.js</file>
+    <file>js/markdown-it-ins.min.js</file>
+    <file>js/markdown-it-sub.min.js</file>
+    <file>js/markdown-it-sup.min.js</file>
+    <file>js/markdown-it-footnote.min.js</file>
+    <file>js/markdown-it-emoji.min.js</file>
+    <file>js/katex.min.js</file>
+    <file>js/texmath.js</file>
+    <file>js/mermaid.min.js</file>
+    <file>js/preview/core.js</file>
+    <file>js/preview/frontmatter.js</file>
+    <file>js/preview/callouts.js</file>
+    <file>js/preview/codimd.js</file>
+    <file>js/preview/mkdocs.js</file>
+    <file>js/preview/obsidian.js</file>
+    <file>js/preview/math.js</file>
+    <file>js/preview/mermaid.js</file>
+    <file>js/preview/scroll.js</file>
+    <file>js/preview/media.js</file>
     <file>js/preview.js</file>
     <file>ui.rc</file>
   </qresource>

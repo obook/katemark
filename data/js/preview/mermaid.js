@@ -1,0 +1,157 @@
+// mermaid.js
+// Mermaid diagrams: loads the library on first use and draws the ```mermaid blocks.
+//
+// Part of the preview page: adds its functions to window.katdown (see core.js).
+// Author: Olivier Booklage
+// Date: October 2026
+// License: GPL-3.0-or-later
+(function () {
+  "use strict";
+
+  var katdown = window.katdown;
+
+  // Mermaid weighs about 5 MB, so it loads only once a document has a ```mermaid block.
+  var mermaidLoading = null;
+
+  // Finished SVGs by diagram source. The preview re-renders on every edit; without this
+  // each diagram would drop back to its source text and be laid out again every time.
+  var mermaidSvg = new Map();
+
+  // Number given to the next diagram: Mermaid wants a distinct id for each drawing.
+  var mermaidSeq = 0;
+
+  // Diagrams being drawn right now; an export waits until there are none.
+  var mermaidPending = 0;
+  // Counts the changes of color scheme. A drawing started under an earlier scheme has
+  // the wrong colors and is dropped when it arrives.
+  var mermaidScheme = 0;
+
+  function configureMermaid() {
+    window.mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: "strict",
+      suppressErrorRendering: true,
+      theme: katdown.isDark() ? "dark" : "default",
+    });
+  }
+
+  // Load the library on first use. The Promise is kept, so later calls wait for the same
+  // download instead of starting another.
+  function loadMermaid() {
+    if (!mermaidLoading) {
+      mermaidLoading = new Promise(function (resolve, reject) {
+        var script = document.createElement("script");
+        script.src = "qrc:/katdown/js/mermaid.min.js";
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      }).then(configureMermaid);
+    }
+    return mermaidLoading;
+  }
+
+  // Draw one diagram in the background, then put the SVG in its block, or the error
+  // under the source when Mermaid rejects it. The block may be gone by then, replaced
+  // by a newer render: isConnected tells whether it is still in the page.
+  function renderDiagram(block, source) {
+    var scheme = mermaidScheme;
+    mermaidPending++;
+    loadMermaid()
+      .then(function () {
+        return window.mermaid.render("katdown-mermaid-" + ++mermaidSeq, source);
+      })
+      .finally(function () {
+        mermaidPending--;
+      })
+      .then(
+        function (diagram) {
+          if (scheme !== mermaidScheme) {
+            return;
+          }
+          mermaidSvg.set(source, diagram.svg);
+          if (block.isConnected) {
+            block.innerHTML = diagram.svg;
+          }
+        },
+        function (error) {
+          if (block.isConnected) {
+            block.classList.add("mermaid-error");
+            block.textContent = source + "\n" + ((error && error.message) || error);
+          }
+        }
+      );
+  }
+
+  function drawMermaid(article) {
+    var previous = mermaidSvg;
+    mermaidSvg = new Map(); // keep only the diagrams still in the document
+    article.querySelectorAll("pre.mermaid").forEach(function (block) {
+      var source = block.textContent;
+      if (previous.has(source)) {
+        mermaidSvg.set(source, previous.get(source));
+        block.innerHTML = previous.get(source);
+      } else {
+        renderDiagram(block, source);
+      }
+    });
+  }
+
+  // True while a diagram is still being drawn: an export waits for the end.
+  function mermaidBusy() {
+    return mermaidPending > 0;
+  }
+
+  // Diagrams bake their colors into the SVG. After a change of color scheme, forget the
+  // ones already drawn. Returns false when Mermaid was never loaded: nothing to redraw.
+  function resetMermaid() {
+    if (!window.mermaid) {
+      return false;
+    }
+    configureMermaid();
+    mermaidSvg.clear();
+    mermaidScheme++;
+    return true;
+  }
+
+  // Ctrl + wheel over a diagram zooms it; its block then scrolls to move around, and a
+  // double click puts the diagram back. A new render also does: the zoom is not kept.
+  var ZOOM_STEP = 1.15;
+  var ZOOM_MIN = 0.25;
+  var ZOOM_MAX = 8;
+
+  function diagramUnder(event) {
+    var block = event.target.closest ? event.target.closest("pre.mermaid") : null;
+    return block ? block.querySelector("svg") : null;
+  }
+
+  function zoomDiagram(event) {
+    var svg = diagramUnder(event);
+    if (!svg || !event.ctrlKey) {
+      return;
+    }
+    event.preventDefault(); // otherwise Ctrl + wheel zooms the whole page
+    var factor = event.deltaY < 0 ? ZOOM_STEP : 1 / ZOOM_STEP;
+    var zoom = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, Number(svg.dataset.zoom || 1) * factor));
+    svg.dataset.zoom = zoom;
+    // Mermaid sizes a diagram with "max-width"; the drawing's own width is in viewBox.
+    svg.style.maxWidth = "none";
+    svg.style.width = svg.viewBox.baseVal.width * zoom + "px";
+  }
+
+  function resetDiagramZoom(event) {
+    var svg = diagramUnder(event);
+    if (svg && svg.dataset.zoom) {
+      delete svg.dataset.zoom;
+      svg.style.width = "";
+      svg.style.maxWidth = svg.viewBox.baseVal.width + "px";
+    }
+  }
+
+  // "passive: false" is what allows preventDefault() in a wheel listener.
+  document.addEventListener("wheel", zoomDiagram, { passive: false });
+  document.addEventListener("dblclick", resetDiagramZoom);
+
+  katdown.drawMermaid = drawMermaid;
+  katdown.mermaidBusy = mermaidBusy;
+  katdown.resetMermaid = resetMermaid;
+})();

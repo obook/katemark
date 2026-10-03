@@ -1,8 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<gui name="katdown" version="2" xmlns="http://www.kde.org/standards/kxmlgui/1.0">
+<gui name="katdown" version="4" xmlns="http://www.kde.org/standards/kxmlgui/1.0">
   <MenuBar>
     <Menu name="tools">
       <Action name="katdown_show" group="tools_operations" />
+      <Action name="katdown_export_pdf" group="tools_operations" />
+      <Action name="katdown_export_html" group="tools_operations" />
+      <Menu name="katdown_markdown" group="tools_operations">
+        <text>Markdown</text>
+        <Action name="katdown_bold" />
+        <Action name="katdown_italic" />
+        <Action name="katdown_strikethrough" />
+        <Separator />
+        <Action name="katdown_heading_up" />
+        <Action name="katdown_heading_down" />
+        <Separator />
+        <Action name="katdown_paste_link" />
+        <Action name="katdown_format_table" />
+      </Menu>
     </Menu>
   </MenuBar>
   <ToolBar name="mainToolBar" noMerge="0">
