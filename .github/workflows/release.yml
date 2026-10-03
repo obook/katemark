@@ -1,11 +1,11 @@
 # Cut a GitHub Release on every v* tag push. Releases exist purely as version markers: the
-# plugin's in-app update check (Settings -> Katdown) compares the installed version
-# against the latest release tag. This job builds nothing itself; windows.yml runs on the same tag
-# and attaches the Windows zip once this has created the release. Linux installs stay on the AUR
-# package and build-from-source, never a release download.
+# plugin's in-app update check (Settings -> Katemark) compares the installed version
+# against the latest release tag. This job builds nothing itself; windows.yml and deb.yml run on
+# the same tag and attach the Windows zip and the Debian packages once this has created the
+# release.
 #
 # Tagging discipline: the tag must match project(VERSION) in CMakeLists.txt (and the Version in
-# src/katdown.json), otherwise the in-app check reports a phantom update. The job hard
+# src/katemark.json), otherwise the in-app check reports a phantom update. The job hard
 # fails on a mismatch so a stale version bump can't ship.
 #
 # actions/checkout is SHA-pinned because this workflow runs with a write-scoped GITHUB_TOKEN.

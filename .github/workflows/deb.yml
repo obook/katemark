@@ -1,0 +1,119 @@
+# Build the Debian packages and attach them to the release, one per distribution.
+#
+# Why one package per distribution: a Kate plugin only loads in a Kate built with the same Qt or a
+# newer one, and KDE neon and Ubuntu name the Qt and KDE Frameworks packages differently, so the
+# dependencies of one package do not resolve on the other. Each package is built in a container
+# of the distribution it is for.
+#
+# KDE neon has no small base image, so its build starts from the Ubuntu release neon is based on
+# and adds the neon archive, which is how neon itself is put together.
+#
+# build.sh does the work, tests included, so a package made here is the one a contributor gets
+# from the same script. It runs on tags (to attach the packages) and on demand (to check that both
+# still build before tagging).
+#
+# The images are pinned by digest and actions/checkout by SHA because the tag path runs with a
+# write-scoped GITHUB_TOKEN. apt is what picks the Qt and KDE versions; the digest only fixes the
+# starting point.
+
+name: deb
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write  # only used by the release-upload step, which is tag-gated
+    strategy:
+      # A package that fails to build must not keep the other one off the release.
+      fail-fast: false
+      matrix:
+        include:
+          - target: neon
+            image: ubuntu:24.04@sha256:a853f94d226358a79c740cfc7bce0c289748f3fe3488d921d038ccd752c61b60
+            packages: >-
+              qt6-webengine-dev kf6-ktexteditor-dev kf6-kcoreaddons-dev kf6-ki18n-dev
+              kf6-kconfig-dev kf6-kxmlgui-dev kf6-syntax-highlighting-dev
+          - target: ubuntu26.04
+            image: ubuntu:26.04@sha256:3595d7fc4286a33fad0fd853a4063e654287a9c3787437d7937c94ca3f7a804e
+            packages: >-
+              qt6-webengine-dev libkf6texteditor-dev libkf6coreaddons-dev libkf6i18n-dev
+              libkf6config-dev libkf6xmlgui-dev libkf6syntaxhighlighting-dev
+    container:
+      image: ${{ matrix.image }}
+    env:
+      DEBIAN_FRONTEND: noninteractive
+      TARGET: ${{ matrix.target }}
+      PACKAGES: ${{ matrix.packages }}
+
+    steps:
+      # The key is fetched from the archive it signs, so the pinned fingerprint is what makes it
+      # trustworthy. It is the one in /etc/apt/keyrings/neon-archive-keyring.asc on a neon system.
+      - name: add the KDE neon archive
+        if: matrix.target == 'neon'
+        run: |
+          set -Eeuo pipefail
+          apt-get update
+          apt-get install -y --no-install-recommends ca-certificates curl gnupg
+          curl -fsSL https://archive.neon.kde.org/public.key -o /tmp/neon.asc
+          fingerprint=$(gpg --show-keys --with-colons /tmp/neon.asc | awk -F: '$1 == "fpr" { print $10; exit }')
+          if [ "$fingerprint" != "444DABCF3667D0283F894EDDE6D4736255751E5D" ]; then
+            echo "::error::unexpected KDE neon archive key: $fingerprint"
+            exit 1
+          fi
+          install -D -m 644 /tmp/neon.asc /etc/apt/keyrings/neon-archive-keyring.asc
+          echo "deb [signed-by=/etc/apt/keyrings/neon-archive-keyring.asc] https://archive.neon.kde.org/user noble main" \
+            > /etc/apt/sources.list.d/neon.list
+
+      # file is what cpack reads the plugin's architecture with, gh uploads the package, git is
+      # for the checkout below.
+      - name: install dependencies
+        run: |
+          set -Eeuo pipefail
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            g++ cmake extra-cmake-modules gettext dpkg-dev file gh git $PACKAGES
+
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+
+      - name: build, test and package
+        run: ./build.sh
+
+      # cpack gives both packages the same name; a release cannot hold two files of one name.
+      - name: name the package after its distribution
+        run: |
+          set -Eeuo pipefail
+          package=$(echo build/katemark_*_amd64.deb)
+          mv "$package" "$(basename "${package%_amd64.deb}")_${TARGET}_amd64.deb"
+
+      - name: attach to release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -Eeuo pipefail
+          tag="$GITHUB_REF_NAME"
+          # release.yml creates the release on the same tag push. Wait for it rather than creating
+          # a second, competing release.
+          for attempt in $(seq 1 20); do
+            if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+              gh release upload "$tag" katemark_*.deb --repo "$GITHUB_REPOSITORY" --clobber
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "::error::release $tag never appeared; is release.yml failing?"
+          exit 1

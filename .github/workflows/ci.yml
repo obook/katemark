@@ -1,7 +1,7 @@
 # Build the plugin on Linux and run the test suite on every push and PR. Nothing else covers
 # Linux: release.yml only reacts to tags, windows.yml only builds the Windows payload, and the
 # AUR package builds on the user's own machine, so a commit that broke the Arch build used to
-# reach katdown-git users before it reached anyone here.
+# reach katemark-git users before it reached anyone here.
 #
 # Arch in a container rather than a native ubuntu runner: Ubuntu's KF6 packages trail the
 # frameworks this targets, and the AUR package is how Linux users install this, so the gate
@@ -17,7 +17,7 @@ name: ci
 
 on:
   push:
-    branches: [mommy]
+    branches: [main]
     paths-ignore:
       - '**/*.md'
       - 'assets/**'
