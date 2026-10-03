@@ -1,8 +1,8 @@
 Katemark for Kate on Windows
-===========================
+============================
 
 Katemark is a Kate plugin that renders a GitHub-styled preview of the Markdown file you are
-editing, in a tab next to it.
+editing, in a panel beside the editor.
 
 
 What is in here

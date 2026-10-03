@@ -52,6 +52,7 @@ tab of its own.
 |---|---|
 | KDE neon | [Install the package](#debian-package) `katemark_<version>_neon_amd64.deb` |
 | Kubuntu 26.04 | [Install the package](#debian-package) `katemark_<version>_ubuntu26.04_amd64.deb` |
+| Windows | [Install the zip](#windows) `katemark-<version>-windows-x86_64.zip` |
 | Another Debian or Ubuntu release | [Build the package](#build-from-source) with `build.sh` |
 | Any other Linux | [Build from source](#build-from-source) |
 | Kubuntu 24.04 | Not possible: its Kate still uses KDE Frameworks 5 |
@@ -71,13 +72,36 @@ sudo apt install ./katemark_*_amd64.deb
 system named in its file, because KDE neon and Ubuntu name their Qt and KDE
 Frameworks packages differently.
 
-### Arch Linux and Windows
+### Windows
+
+Download `katemark-<version>-windows-x86_64.zip` from the [latest
+release](https://github.com/obook/katemark/releases/latest), unzip it, close
+Kate and run this in an **elevated** PowerShell:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File install.ps1
+```
+
+It finds Kate on its own, or takes `-KateDir "D:\Kate"`. `-WhatIf` shows
+what it would do, `-Uninstall` removes exactly what it installed.
+
+The zip is about 90 MB and unpacks to 220 MB: Kate for Windows ships no Qt
+WebEngine, so the runtime comes with the plugin. It installs next to
+`kate.exe`, where Windows looks for the libraries a plugin needs.
+
+- Kate has to come from the [installer](https://kate-editor.org/get-it/).
+  The Microsoft Store version is not supported.
+- The build targets the Qt 6.11 of Kate's own Windows build. `install.ps1`
+  refuses to install on another version.
+- The zip is built by a workflow and nobody has tried it on Windows since
+  the fork: please report what you see.
+
+### Arch Linux
 
 The AUR package
-[`katdown-git`](https://aur.archlinux.org/packages/katdown-git) and the
-Windows zip come from the [original
-project](https://github.com/uwuclxdy/katdown#installation) and lack the
-features marked "fork" above.
+[`katdown-git`](https://aur.archlinux.org/packages/katdown-git) installs the
+original Katdown, without the features marked "fork" above. For Katemark,
+[build from source](#build-from-source).
 
 ## First steps
 
