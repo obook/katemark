@@ -145,7 +145,7 @@ Besides GitHub's own syntax, the preview renders:
 - Math in `$...$`, `$$...$$`, `\(...\)` and `\[...\]`, rendered by KaTeX and tolerant of what MathJax accepts (`\require{...}`, inline math over several lines, `\newcommand` on a command that exists). A macro defined in a formula serves the formulas after it, and `$$...$$ (1)` numbers an equation.
 - Mermaid diagrams in ` ```mermaid ` blocks. <kbd>Ctrl</kbd> + wheel zooms a diagram, a double click puts it back.
 
-`examples/` has one demonstration document each for CodiMD, Obsidian and MkDocs.
+`examples/` has one demonstration document each for GitHub, CodiMD, Obsidian and MkDocs.
 
 Tools, then Markdown, has editing helpers for the document itself:
 
