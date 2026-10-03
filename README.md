@@ -56,7 +56,7 @@ Two limits worth knowing before you download it:
 ### Build from source
 
 ```bash
-git clone -b codimd https://github.com/obook/katdown.git
+git clone https://github.com/obook/katdown.git
 cd katdown
 cmake -B build -S . -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=/usr
 cmake --build build
