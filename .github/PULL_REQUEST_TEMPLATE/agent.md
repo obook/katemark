@@ -24,7 +24,7 @@ describe the behavior you changed, say whether you updated them.
 
 <!--
 Three short lines:
-- tool + model + operator, e.g. `Claude Code (claude-fable-5), operated by @handle`
+- tool + model + operator, e.g. `tool name (model), operated by @handle`
 - ran: exact commands + outcomes; add "operator verified: ..." if known, else "operator verification: unknown"
 - unsure: decisions made without operator input, whatever you're least confident about. "none" only if you mean it
 Redact tokens and credentials from anything you paste.

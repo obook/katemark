@@ -92,6 +92,6 @@ body:
     attributes:
       label: Agent
       description: Tool + model + operator handle.
-      placeholder: "e.g. Claude Code (claude-fable-5), operated by @handle"
+      placeholder: "e.g. tool name (model), operated by @handle"
     validations:
       required: true
