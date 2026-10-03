@@ -60,7 +60,7 @@ QString embedLocalImages(const QString &html)
 // no script. Image paths stay relative to the document's folder.
 QString standaloneHtml(const QString &title, const QString &body)
 {
-    const QString base = QStringLiteral(":/katdown/css/");
+    const QString base = QStringLiteral(":/katemark/css/");
     QString css = readAsset(base + QStringLiteral("github-markdown.css")) + readAsset(base + QStringLiteral("base.css"))
         + readAsset(base + QStringLiteral("hljs-github.min.css"));
     if (body.contains(QLatin1String("class=\"katex"))) {

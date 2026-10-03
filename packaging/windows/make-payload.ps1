@@ -5,7 +5,7 @@ Assemble the Windows distribution: the plugin plus the Qt WebEngine runtime Kate
 .DESCRIPTION
 The file list is explicit rather than whatever windeployqt produces, for two reasons. windeployqt
 deploys the closure a generic Qt app might need (QML debug tooling, geolocation backends, a PDF
-module, a bundled VC redist installer), roughly 42 MB of which katdown never touches. And it fails
+module, a bundled VC redist installer), roughly 42 MB of which katemark never touches. And it fails
 part way on a Craft layout, because it looks for the WebEngine .pak files under a resources\
 subdirectory that Craft does not create.
 
@@ -36,7 +36,7 @@ not put there, so a payload that duplicated Kate's own Qt would refuse to instal
 Craft installation the files come from (the one that built the plugin).
 
 .PARAMETER PluginDll
-Path to the built katdown.dll.
+Path to the built katemark.dll.
 
 .PARAMETER OutDir
 Directory to assemble into. Created if absent, cleared if it already holds a payload.
@@ -45,7 +45,7 @@ Directory to assemble into. Created if absent, cleared if it already holds a pay
 Optional path for a zip of the assembled tree.
 
 .EXAMPLE
-.\make-payload.ps1 -CraftRoot C:\CraftRoot -PluginDll build\bin\kf6\ktexteditor\katdown.dll -OutDir dist
+.\make-payload.ps1 -CraftRoot C:\CraftRoot -PluginDll build\bin\kf6\ktexteditor\katemark.dll -OutDir dist
 #>
 #Requires -Version 5.1
 [CmdletBinding()]
@@ -125,7 +125,7 @@ foreach ($src in $Files.Keys) {
     $total += (Get-Item $to).Length
 }
 
-$pluginDest = Join-Path $payloadDir 'bin\kf6\ktexteditor\katdown.dll'
+$pluginDest = Join-Path $payloadDir 'bin\kf6\ktexteditor\katemark.dll'
 New-Item -ItemType Directory -Path (Split-Path -Parent $pluginDest) -Force | Out-Null
 Copy-Item -LiteralPath $PluginDll -Destination $pluginDest -Force
 $total += (Get-Item $pluginDest).Length
@@ -147,7 +147,7 @@ if ($Zip) {
     # Compress into a temp file, never straight into $OutDir: the usual call site puts the zip
     # inside the directory being zipped, and an archive that grows while it is its own input is a
     # good way to ship a corrupt one.
-    $staging = Join-Path ([System.IO.Path]::GetTempPath()) ("katdown-" + [System.IO.Path]::GetRandomFileName() + ".zip")
+    $staging = Join-Path ([System.IO.Path]::GetTempPath()) ("katemark-" + [System.IO.Path]::GetRandomFileName() + ".zip")
     Compress-Archive -Path (Join-Path $OutDir '*') -DestinationPath $staging -CompressionLevel Optimal
     Move-Item -LiteralPath $staging -Destination $Zip -Force
     Write-Host ("Wrote {0} ({1:N0} bytes)" -f $Zip, (Get-Item $Zip).Length)

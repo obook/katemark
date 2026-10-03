@@ -1,6 +1,6 @@
 ---
 title: GitHub demo
-author: Katdown
+author: Katemark
 tags: [markdown, preview]
 ---
 

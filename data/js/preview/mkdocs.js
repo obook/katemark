@@ -2,15 +2,15 @@
 // MkDocs admonitions: "!!! note" followed by an indented body, "??? note" for a folded
 // one and "???+ note" for one that folds but starts open.
 //
-// Part of the preview page: adds its functions to window.katdown (see core.js).
+// Part of the preview page: adds its functions to window.katemark (see core.js).
 // Author: Olivier Booklage
 // Date: October 2026
 // License: GPL-3.0-or-later
 (function () {
   "use strict";
 
-  var katdown = window.katdown;
-  var escapeHtml = katdown.escapeHtml;
+  var katemark = window.katemark;
+  var escapeHtml = katemark.escapeHtml;
 
   // The marker, the type, then an optional title in double quotes. An empty title, "",
   // asks for no title at all.
@@ -62,7 +62,7 @@
         return true;
       }
       var foldable = match[1] !== "!!!";
-      var look = katdown.calloutLook(match[2].toLowerCase());
+      var look = katemark.calloutLook(match[2].toLowerCase());
       var bodyEnd = findBodyEnd(state, startLine, endLine);
       var tag = foldable ? "details" : "div";
 
@@ -85,7 +85,7 @@
       if (titleHtml) {
         var title = state.push("html_block", "", 0);
         title.block = true;
-        title.content = katdown.calloutTitle(look, titleHtml, foldable ? "summary" : "p");
+        title.content = katemark.calloutTitle(look, titleHtml, foldable ? "summary" : "p");
       }
 
       parseBody(state, startLine + 1, bodyEnd);
@@ -97,5 +97,5 @@
     }
   }
 
-  katdown.admonitions = admonitions;
+  katemark.admonitions = admonitions;
 })();

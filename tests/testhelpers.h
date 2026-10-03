@@ -104,7 +104,7 @@ protected:
         m_path = m_dir.filePath(QStringLiteral("sample.md"));
         QFile f(m_path);
         QVERIFY(f.open(QIODevice::WriteOnly));
-        QVERIFY(f.write(QByteArrayLiteral("# katdown\n\nthe cached body line.\n")) > 0);
+        QVERIFY(f.write(QByteArrayLiteral("# katemark\n\nthe cached body line.\n")) > 0);
         f.close();
 
         QFile png(m_dir.filePath(ImageName));

@@ -1,5 +1,5 @@
-// What the page makes of each syntax: CodiMD, Obsidian, math written for MathJax, and
-// the ordinary Markdown these additions must leave alone.
+// What the page makes of each syntax: the markdown-it plugins, CodiMD, Obsidian, math written
+// for MathJax, and the ordinary Markdown these additions must leave alone.
 
 #include "testhelpers.h"
 
@@ -20,7 +20,7 @@ private Q_SLOTS:
     void rendersMkdocsAdmonitions();
 };
 
-// The CodiMD extensions come from qrc rather than the inlined page: the markdown-it plugins
+// The libraries tested here come from qrc rather than the inlined page: the markdown-it plugins
 // and KaTeX at page start, Mermaid on demand. A library that failed to load leaves its
 // markup unrendered, which is what each selector here would miss.
 void RenderingTest::rendersCodimdExtensions()

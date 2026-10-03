@@ -1,14 +1,14 @@
 // media.js
 // Says why a picture from the web is missing when the settings keep it out.
 //
-// Part of the preview page: adds its functions to window.katdown (see core.js).
+// Part of the preview page: adds its functions to window.katemark (see core.js).
 // Author: Olivier Booklage
 // Date: October 2026
 // License: GPL-3.0-or-later
 (function () {
   "use strict";
 
-  var katdown = window.katdown;
+  var katemark = window.katemark;
 
   // Translated name of the setting that lets pictures from the web in. The host sends it
   // while that setting is off, and an empty text while it is on.
@@ -40,6 +40,6 @@
     });
   }
 
-  katdown.setRemoteMediaHint = setRemoteMediaHint;
-  katdown.explainBlockedMedia = explainBlockedMedia;
+  katemark.setRemoteMediaHint = setRemoteMediaHint;
+  katemark.explainBlockedMedia = explainBlockedMedia;
 })();

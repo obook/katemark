@@ -1,17 +1,18 @@
-# Maintainer: uwuclxdy <uwuclxdy@pm.me>
+# Maintainer: Olivier Booklage <olivier.booklage@ac-bordeaux.fr>
+# Contributor: uwuclxdy <uwuclxdy@pm.me>
 
-pkgname=katdown-git
-_pkgbase=katdown
+pkgname=katemark-git
+_pkgbase=katemark
 pkgver=r3.f4f7b4c
 pkgrel=3
 pkgdesc="GitHub-styled live Markdown preview for Kate (KTextEditor/KF6)"
 arch=('x86_64')
-url="https://github.com/uwuclxdy/katdown"
+url="https://github.com/obook/katemark"
 license=('GPL-3.0-or-later')
 depends=('ktexteditor' 'syntax-highlighting' 'kxmlgui' 'kconfig' 'ki18n' 'kcoreaddons' 'qt6-base' 'qt6-webengine')
 makedepends=('git' 'cmake' 'extra-cmake-modules')
-provides=('katdown')
-conflicts=('katdown')
+provides=('katemark')
+conflicts=('katemark')
 source=("git+$url.git")
 sha256sums=('SKIP')
 

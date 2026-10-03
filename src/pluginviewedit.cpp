@@ -79,37 +79,37 @@ void PluginView::addEditAction(const QString &name, const QString &text, const Q
 // usual in other Markdown editors, are Kate's bookmark and indentation shortcuts.
 void PluginView::addEditActions()
 {
-    addEditAction(QStringLiteral("katdown_bold"), i18n("Bold"), QStringLiteral("format-text-bold"), QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_B), [](KTextEditor::View *view) {
+    addEditAction(QStringLiteral("katemark_bold"), i18n("Bold"), QStringLiteral("format-text-bold"), QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_B), [](KTextEditor::View *view) {
         toggleInlineMarker(view, QStringLiteral("**"));
     });
-    addEditAction(QStringLiteral("katdown_italic"), i18n("Italic"), QStringLiteral("format-text-italic"), QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_E), [](KTextEditor::View *view) {
+    addEditAction(QStringLiteral("katemark_italic"), i18n("Italic"), QStringLiteral("format-text-italic"), QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_E), [](KTextEditor::View *view) {
         toggleInlineMarker(view, QStringLiteral("*"));
     });
-    addEditAction(QStringLiteral("katdown_strikethrough"),
+    addEditAction(QStringLiteral("katemark_strikethrough"),
                   i18n("Strikethrough"),
                   QStringLiteral("format-text-strikethrough"),
                   QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_S),
                   [](KTextEditor::View *view) {
                       toggleInlineMarker(view, QStringLiteral("~~"));
                   });
-    addEditAction(QStringLiteral("katdown_heading_up"),
+    addEditAction(QStringLiteral("katemark_heading_up"),
                   i18n("Increase Heading Level"),
                   QStringLiteral("format-indent-more"),
                   QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_Equal),
                   [](KTextEditor::View *view) {
                       shiftHeadingLevel(view, 1);
                   });
-    addEditAction(QStringLiteral("katdown_heading_down"),
+    addEditAction(QStringLiteral("katemark_heading_down"),
                   i18n("Decrease Heading Level"),
                   QStringLiteral("format-indent-less"),
                   QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_Minus),
                   [](KTextEditor::View *view) {
                       shiftHeadingLevel(view, -1);
                   });
-    addEditAction(QStringLiteral("katdown_paste_link"), i18n("Paste as Link"), QStringLiteral("insert-link"), QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_V), [](KTextEditor::View *view) {
+    addEditAction(QStringLiteral("katemark_paste_link"), i18n("Paste as Link"), QStringLiteral("insert-link"), QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_V), [](KTextEditor::View *view) {
         pasteClipboardLink(view);
     });
-    addEditAction(QStringLiteral("katdown_format_table"), i18n("Format Table"), QStringLiteral("table"), QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_F), [](KTextEditor::View *view) {
+    addEditAction(QStringLiteral("katemark_format_table"), i18n("Format Table"), QStringLiteral("table"), QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_F), [](KTextEditor::View *view) {
         formatTableAtCursor(view);
     });
 }

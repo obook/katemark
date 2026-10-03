@@ -1,6 +1,6 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
-  <qresource prefix="/katdown">
+  <qresource prefix="/katemark">
     <file>preview.html</file>
     <file>css/github-markdown.css</file>
     <file>css/base.css</file>

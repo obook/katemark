@@ -2,15 +2,15 @@
 // CodiMD syntax: :::success / :::info / :::warning / :::danger alert areas, :::spoiler
 // and the [TOC] table of contents.
 //
-// Part of the preview page: adds its functions to window.katdown (see core.js).
+// Part of the preview page: adds its functions to window.katemark (see core.js).
 // Author: Olivier Booklage
 // Date: October 2026
 // License: GPL-3.0-or-later
 (function () {
   "use strict";
 
-  var katdown = window.katdown;
-  var slugify = katdown.slugify;
+  var katemark = window.katemark;
+  var slugify = katemark.slugify;
 
   // CodiMD alert areas (:::success / :::info / :::warning / :::danger) under their
   // Docusaurus names too, with an optional title (":::info Title" or ":::info[Title]"),
@@ -144,6 +144,6 @@
     });
   }
 
-  katdown.codimdContainers = codimdContainers;
-  katdown.fillToc = fillToc;
+  katemark.codimdContainers = codimdContainers;
+  katemark.fillToc = fillToc;
 })();

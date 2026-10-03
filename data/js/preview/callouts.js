@@ -2,14 +2,14 @@
 // GitHub alerts (> [!NOTE]) and Obsidian callouts (> [!faq]- Title), and the look they
 // share with the MkDocs admonitions of mkdocs.js.
 //
-// Part of the preview page: adds its functions to window.katdown (see core.js).
+// Part of the preview page: adds its functions to window.katemark (see core.js).
 // GitHub alerts by uwuclxdy; Obsidian callouts by Olivier Booklage, October 2026.
 // License: GPL-3.0-or-later
 (function () {
   "use strict";
 
-  var katdown = window.katdown;
-  var escapeHtml = katdown.escapeHtml;
+  var katemark = window.katemark;
+  var escapeHtml = katemark.escapeHtml;
 
   var ICONS = {
     note: '<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" style="fill:currentColor;margin-right:8px"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/></svg>',
@@ -64,7 +64,7 @@
       return { tone: "note", icon: ICONS.note, title: name.charAt(0).toUpperCase() + name.slice(1) };
     }
     var tone = TONES[type];
-    return { tone: tone, icon: ICONS[tone] || ICONS.note, title: katdown.labels[type] };
+    return { tone: tone, icon: ICONS[tone] || ICONS.note, title: katemark.labels[type] };
   }
 
   // The title line of a block: <p> for a plain one, <summary> for one that folds.
@@ -169,7 +169,7 @@
     });
   }
 
-  katdown.callouts = callouts;
-  katdown.calloutLook = calloutLook;
-  katdown.calloutTitle = calloutTitle;
+  katemark.callouts = callouts;
+  katemark.calloutLook = calloutLook;
+  katemark.calloutTitle = calloutTitle;
 })();

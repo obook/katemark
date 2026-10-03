@@ -21,7 +21,7 @@ namespace
 {
 QString readUiRc()
 {
-    QFile f(QStringLiteral(":/katdown/ui.rc"));
+    QFile f(QStringLiteral(":/katemark/ui.rc"));
     if (!f.open(QIODevice::ReadOnly)) {
         return QString();
     }
@@ -46,24 +46,24 @@ PluginView::PluginView(KTextEditor::Plugin *plugin, KTextEditor::MainWindow *mai
     , KXMLGUIClient()
     , m_mainWindow(mainWindow)
 {
-    setComponentName(QStringLiteral("katdown"), i18n("Katdown"));
+    setComponentName(QStringLiteral("katemark"), i18n("Katemark"));
 
     const QIcon icon = QIcon::fromTheme(QStringLiteral("text-markdown"), QIcon::fromTheme(QStringLiteral("view-preview")));
-    m_toolView = m_mainWindow->createToolView(plugin, QStringLiteral("katdown"), KTextEditor::MainWindow::Right, icon, i18n("Markdown Preview"));
+    m_toolView = m_mainWindow->createToolView(plugin, QStringLiteral("katemark"), KTextEditor::MainWindow::Right, icon, i18n("Markdown Preview"));
     // Kate has no signal for a tool view being shown; its Show event is the cue.
     m_toolView->installEventFilter(this);
 
-    QAction *toggle = addAction(QStringLiteral("katdown_show"), i18n("Preview"), icon);
+    QAction *toggle = addAction(QStringLiteral("katemark_show"), i18n("Preview"), icon);
     toggle->setToolTip(i18n("Show or hide the Markdown preview beside the editor"));
     actionCollection()->setDefaultShortcut(toggle, QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_M));
     connect(toggle, &QAction::triggered, this, &PluginView::togglePreview);
 
     // An export writes what the preview shows, so both are only offered while it shows.
-    m_exportPdf = addAction(QStringLiteral("katdown_export_pdf"), i18n("Export Preview as PDF..."), QIcon::fromTheme(QStringLiteral("application-pdf")));
+    m_exportPdf = addAction(QStringLiteral("katemark_export_pdf"), i18n("Export Preview as PDF..."), QIcon::fromTheme(QStringLiteral("application-pdf")));
     connect(m_exportPdf, &QAction::triggered, this, [this]() {
         exportPreview(true);
     });
-    m_exportHtml = addAction(QStringLiteral("katdown_export_html"), i18n("Export Preview as HTML..."), QIcon::fromTheme(QStringLiteral("text-html")));
+    m_exportHtml = addAction(QStringLiteral("katemark_export_html"), i18n("Export Preview as HTML..."), QIcon::fromTheme(QStringLiteral("text-html")));
     connect(m_exportHtml, &QAction::triggered, this, [this]() {
         exportPreview(false);
     });

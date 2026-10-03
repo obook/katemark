@@ -2,15 +2,15 @@
 // Obsidian syntax: wiki links, image embeds with a size, %%comments%%.
 // The callouts are in callouts.js, with the GitHub alerts they extend.
 //
-// Part of the preview page: adds its functions to window.katdown (see core.js).
+// Part of the preview page: adds its functions to window.katemark (see core.js).
 // Author: Olivier Booklage
 // Date: October 2026
 // License: GPL-3.0-or-later
 (function () {
   "use strict";
 
-  var katdown = window.katdown;
-  var slugify = katdown.slugify;
+  var katemark = window.katemark;
+  var slugify = katemark.slugify;
 
   // Obsidian wiki links: [[Note]], [[Note|label]], [[Note#Heading]], and image embeds
   // ![[image.png|300]] or ![[image.png|300x200]].
@@ -159,6 +159,6 @@
     }
   }
 
-  katdown.wikiLinks = wikiLinks;
-  katdown.comments = comments;
+  katemark.wikiLinks = wikiLinks;
+  katemark.comments = comments;
 })();

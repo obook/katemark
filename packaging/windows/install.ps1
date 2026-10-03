@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-Install or remove Katdown in a Kate for Windows installation.
+Install or remove Katemark in a Kate for Windows installation.
 
 .DESCRIPTION
-Katdown is a KTextEditor plugin whose preview is a QWebEngineView, and Kate for Windows ships no
+Katemark is a KTextEditor plugin whose preview is a QWebEngineView, and Kate for Windows ships no
 Qt WebEngine. A plugin DLL's transitive imports resolve from the host process directory, so the
 WebEngine runtime has to sit next to kate.exe rather than next to the plugin. This script copies
 the payload tree over the Kate install and records every file it wrote, so -Uninstall can remove
@@ -47,7 +47,7 @@ $RequiredQtMinor = '6.11'
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $PayloadDir = Join-Path $ScriptDir 'payload'
-$ManifestRel = 'bin\kf6\ktexteditor\katdown-manifest.txt'
+$ManifestRel = 'bin\kf6\ktexteditor\katemark-manifest.txt'
 
 function Fail([string]$Message) {
     throw $Message
@@ -106,7 +106,7 @@ function Assert-QtVersion([string]$Dir) {
         Fail @"
 Kate at '$Dir' ships Qt $version, and this package was built against Qt $RequiredQtMinor.x.
 Installing it would produce a plugin that never loads, with no error shown in Kate.
-Grab the katdown build matching your Kate, or update Kate.
+Grab the katemark build matching your Kate, or update Kate.
 "@
     }
     return $version
@@ -142,7 +142,7 @@ function Invoke-Install([string]$Dir) {
     $previous = Read-Manifest $Dir
 
     # Never overwrite a file that is not ours: a later Kate could start shipping WebEngine itself,
-    # and replacing its copy with ours would break Kate rather than just Katdown.
+    # and replacing its copy with ours would break Kate rather than just Katemark.
     $collisions = @()
     foreach ($file in $payload) {
         $rel = Get-RelativePath $PayloadDir $file.FullName
@@ -154,13 +154,13 @@ function Invoke-Install([string]$Dir) {
     if ($collisions.Count -gt 0 -and -not $Force) {
         $list = ($collisions | Select-Object -First 10) -join "`n  "
         Fail @"
-These files already exist in '$Dir' and were not put there by Katdown:
+These files already exist in '$Dir' and were not put there by Katemark:
   $list
 $(if ($collisions.Count -gt 10) { "  ... and $($collisions.Count - 10) more`n" })Re-run with -Force to overwrite them.
 "@
     }
 
-    Write-Host "Installing Katdown into $Dir (Kate's Qt $qtVersion)"
+    Write-Host "Installing Katemark into $Dir (Kate's Qt $qtVersion)"
     $written = New-Object System.Collections.Generic.List[string]
     foreach ($file in $payload) {
         $written.Add((Get-RelativePath $PayloadDir $file.FullName))
@@ -196,7 +196,7 @@ $(if ($collisions.Count -gt 10) { "  ... and $($collisions.Count - 10) more`n" }
     $orphans = @($previous | Where-Object { $written -notcontains $_ })
     foreach ($rel in $orphans) {
         $path = Join-Path $Dir $rel
-        if ((Test-Path $path) -and $PSCmdlet.ShouldProcess($path, 'Remove (left over from a previous Katdown)')) {
+        if ((Test-Path $path) -and $PSCmdlet.ShouldProcess($path, 'Remove (left over from a previous Katemark)')) {
             Remove-Item -LiteralPath $path -Force
         }
     }
@@ -205,14 +205,14 @@ $(if ($collisions.Count -gt 10) { "  ... and $($collisions.Count - 10) more`n" }
     if ($orphans.Count -gt 0) {
         Write-Host "Removed $($orphans.Count) files left over from a previous version."
     }
-    Write-Host "Enable it in Kate: Settings, then Configure Kate, then Plugins, then check Katdown."
+    Write-Host "Enable it in Kate: Settings, then Configure Kate, then Plugins, then check Katemark."
 }
 
 function Invoke-Uninstall([string]$Dir) {
     $manifestPath = Join-Path $Dir $ManifestRel
     $entries = Read-Manifest $Dir
     if ($entries.Count -eq 0) {
-        Fail "No Katdown manifest at '$manifestPath'. Nothing recorded as installed in '$Dir'."
+        Fail "No Katemark manifest at '$manifestPath'. Nothing recorded as installed in '$Dir'."
     }
 
     $removed = 0

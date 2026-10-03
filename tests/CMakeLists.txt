@@ -1,6 +1,6 @@
 find_package(Qt6 ${QT_MIN_VERSION} REQUIRED COMPONENTS Test Network)
 
-set(KATDOWN_TEST_LIBRARIES
+set(KATEMARK_TEST_LIBRARIES
     Qt6::Test
     Qt6::Network
     Qt6::Widgets
@@ -13,7 +13,7 @@ set(KATDOWN_TEST_LIBRARIES
 
 # The preview's sources live in a plugin, which a program cannot link against. They are
 # compiled once here, as an object library, and shared by the test programs.
-add_library(katdowntestcore OBJECT
+add_library(katemarktestcore OBJECT
     ../src/previewwidget.cpp
     ../src/previewtheme.cpp
     ../src/previewload.cpp
@@ -26,12 +26,12 @@ add_library(katdowntestcore OBJECT
     ../src/settings.cpp
     ../data/resources.qrc
 )
-target_include_directories(katdowntestcore PUBLIC ../src)
-target_link_libraries(katdowntestcore PUBLIC ${KATDOWN_TEST_LIBRARIES})
+target_include_directories(katemarktestcore PUBLIC ../src)
+target_link_libraries(katemarktestcore PUBLIC ${KATEMARK_TEST_LIBRARIES})
 
 foreach(test previewlifecycletest renderingtest interactiontest editingtest)
     add_executable(${test} ${test}.cpp)
-    target_link_libraries(${test} PRIVATE katdowntestcore)
+    target_link_libraries(${test} PRIVATE katemarktestcore)
     add_test(NAME ${test} COMMAND ${test})
 
     # Runs headless, and keeps its config out of the developer's own Kate settings.

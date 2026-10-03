@@ -2,14 +2,14 @@
 // Makes KaTeX accept the formulas of documents written for MathJax (CodiMD), and keeps
 // the macros defined along the way.
 //
-// Part of the preview page: adds its functions to window.katdown (see core.js).
+// Part of the preview page: adds its functions to window.katemark (see core.js).
 // Author: Olivier Booklage
 // Date: October 2026
 // License: GPL-3.0-or-later
 (function () {
   "use strict";
 
-  var katdown = window.katdown;
+  var katemark = window.katemark;
 
   // Macros defined so far in the document being rendered (\newcommand, \def...). With
   // globalGroup, KaTeX writes each definition into this object, so it serves the
@@ -96,8 +96,8 @@
     };
   }
 
-  katdown.lenientMath = lenientMath;
-  katdown.mathOptions = mathOptions;
-  katdown.resetMath = resetMath;
-  katdown.setGlobalMacros = setGlobalMacros;
+  katemark.lenientMath = lenientMath;
+  katemark.mathOptions = mathOptions;
+  katemark.resetMath = resetMath;
+  katemark.setGlobalMacros = setGlobalMacros;
 })();

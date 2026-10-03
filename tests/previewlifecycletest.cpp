@@ -97,7 +97,7 @@ void PreviewLifecycleTest::loadsImageBesideTheDocument()
     auto preview = std::make_unique<PreviewWidget>(nullptr, nullptr, doc);
     QVERIFY(waitForPageText(preview.get(), Body));
 
-    doc->setText(QStringLiteral("# katdown\n\n![red](%1)\n").arg(ImageName));
+    doc->setText(QStringLiteral("# katemark\n\n![red](%1)\n").arg(ImageName));
     const int width = waitForImageWidth(preview.get());
     QVERIFY2(width == ImageWidth, qPrintable(QStringLiteral("image beside the document did not load, naturalWidth is %1").arg(width)));
 

@@ -1,7 +1,7 @@
-# Publish katdown-git to the AUR on push.
+# Publish katemark-git to the AUR on push.
 #
 # Triggers when the packaging files change, regenerates .SRCINFO from aur/PKGBUILD, and pushes
-# PKGBUILD + .SRCINFO to ssh://aur@aur.archlinux.org/katdown-git.git. The first run
+# PKGBUILD + .SRCINFO to ssh://aur@aur.archlinux.org/katemark-git.git. The first run
 # creates the AUR package; later runs fast-forward it.
 #
 # Required repo secrets:
@@ -96,7 +96,7 @@ jobs:
 
           cd "$work"
           git init -q
-          git remote add aur "ssh://aur@aur.archlinux.org/katdown-git.git"
+          git remote add aur "ssh://aur@aur.archlinux.org/katemark-git.git"
           # Base on existing AUR history when the package already exists so the push is a clean
           # fast-forward; otherwise start fresh (legitimate first publish creates the package).
           # A -git package recomputes pkgver() on the user's machine at build time, so the static

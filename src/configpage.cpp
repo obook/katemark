@@ -21,11 +21,11 @@
 
 namespace
 {
-const QString repoUrl = QStringLiteral("https://github.com/uwuclxdy/katdown");
+const QString repoUrl = QStringLiteral("https://github.com/obook/katemark");
 
 QString currentVersion()
 {
-    return QStringLiteral(KATDOWN_VERSION);
+    return QStringLiteral(KATEMARK_VERSION);
 }
 
 // Compare dotted numeric versions ("0.10.0" > "0.9.1"). Returns -1/0/1. Any non-numeric
@@ -126,12 +126,12 @@ ConfigPage::ConfigPage(QWidget *parent)
 
 QString ConfigPage::name() const
 {
-    return i18n("Katdown");
+    return i18n("Katemark");
 }
 
 QString ConfigPage::fullName() const
 {
-    return i18n("Katdown");
+    return i18n("Katemark");
 }
 
 QIcon ConfigPage::icon() const
@@ -150,9 +150,9 @@ void ConfigPage::checkForUpdates()
     m_checkButton->setEnabled(false);
     m_updateStatus->setText(i18n("Checking..."));
 
-    QNetworkRequest req(QUrl(QStringLiteral("https://api.github.com/repos/uwuclxdy/katdown/releases/latest")));
+    QNetworkRequest req(QUrl(QStringLiteral("https://api.github.com/repos/obook/katemark/releases/latest")));
     req.setRawHeader("Accept", "application/vnd.github+json");
-    req.setRawHeader("User-Agent", "katdown");
+    req.setRawHeader("User-Agent", "katemark");
     req.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
 
     QNetworkReply *reply = m_net->get(req);

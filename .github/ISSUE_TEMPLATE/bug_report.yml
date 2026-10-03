@@ -28,7 +28,7 @@ body:
       label: Environment
       description: Kate's version is under Help, then About Kate.
       value: |
-        katdown version:
+        katemark version:
         Kate version:
         OS:
         installation method (AUR / Windows zip / built from source):

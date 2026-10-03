@@ -1,4 +1,4 @@
-// Render glue for the Katdown plugin.
+// Render glue for the Katemark plugin.
 // Exposes a small API the C++ side drives via runJavaScript():
 //   __setMarkdown(text)      render markdown source
 //   __setLabels(obj)         translated titles of the alerts and callouts
@@ -10,14 +10,14 @@
 //   __scrollToLine(line, atEnd) / __topLine()   scroll sync (preview/scroll.js)
 //   __settled() / __exportBody()                used by the PDF and HTML exports
 //
-// The syntax extensions live in preview/*.js, which add themselves to window.katdown
+// The syntax extensions live in preview/*.js, which add themselves to window.katemark
 // before this file runs.
 
 (function () {
   "use strict";
 
-  var katdown = window.katdown;
-  var escapeHtml = katdown.escapeHtml;
+  var katemark = window.katemark;
+  var escapeHtml = katemark.escapeHtml;
 
   var md = window.markdownit({
     html: true,
@@ -49,24 +49,24 @@
     },
   });
 
-  md.use(katdown.taskLists);
-  md.use(katdown.callouts);
-  md.use(katdown.wikiLinks);
-  md.use(katdown.comments);
-  // CodiMD text extensions: ==mark==, ++ins++, H~2~O, 19^th^, footnotes, emoji, $math$.
+  md.use(katemark.taskLists);
+  md.use(katemark.callouts);
+  md.use(katemark.wikiLinks);
+  md.use(katemark.comments);
+  // markdown-it plugins: ==mark==, ++ins++, H~2~O, 19^th^, footnotes, emoji, $math$.
   md.use(window.markdownitMark);
   md.use(window.markdownitIns);
   md.use(window.markdownitSub);
   md.use(window.markdownitSup);
   md.use(window.markdownitFootnote);
-  // Emoji written by name, as in CodiMD: ":warning:". The plugin's "shortcuts" would
-  // also turn ":)" or ":/" into emoji, which bites in ordinary text, so they are off.
+  // Emoji written by name: ":warning:". The plugin's "shortcuts" would also turn ":)" or
+  // ":/" into emoji, which bites in ordinary text, so they are off.
   md.use(window.markdownitEmoji, { shortcuts: {} });
   // Math between $...$ and $$...$$, and between \(...\) and \[...\] as in LaTeX.
-  md.use(window.texmath, { engine: katdown.lenientMath(), delimiters: ["dollars", "brackets"], katexOptions: katdown.mathOptions });
-  md.use(katdown.codimdContainers);
-  md.use(katdown.admonitions);
-  md.use(katdown.sourceLines);
+  md.use(window.texmath, { engine: katemark.lenientMath(), delimiters: ["dollars", "brackets"], katexOptions: katemark.mathOptions });
+  md.use(katemark.codimdContainers);
+  md.use(katemark.admonitions);
+  md.use(katemark.sourceLines);
 
   var current = "";
 
@@ -95,12 +95,12 @@
       return;
     }
     var folds = foldStates(el);
-    katdown.resetMath();
-    var fm = katdown.frontMatterTable(current);
+    katemark.resetMath();
+    var fm = katemark.frontMatterTable(current);
     el.innerHTML = (fm ? fm.html : "") + md.render(fm ? fm.body : current, { lineOffset: fm ? fm.lines : 0 });
-    katdown.fillToc(el);
-    katdown.drawMermaid(el);
-    katdown.explainBlockedMedia(el);
+    katemark.fillToc(el);
+    katemark.drawMermaid(el);
+    katemark.explainBlockedMedia(el);
     restoreFoldStates(el, folds);
   }
 
@@ -130,24 +130,24 @@
 
   // \newcommand lines from the settings, defined before every document.
   window.__setMacros = function (tex) {
-    katdown.setGlobalMacros(tex);
+    katemark.setGlobalMacros(tex);
     rerender();
   };
 
   // Name of the setting that blocks pictures from the web, or "" when they are allowed.
   window.__setRemoteMediaHint = function (text) {
-    katdown.setRemoteMediaHint(text);
+    katemark.setRemoteMediaHint(text);
     rerender();
   };
 
   window.__setLabels = function (labels) {
-    katdown.labels = labels;
+    katemark.labels = labels;
   };
 
   // True once nothing is still being drawn or loaded: an export waits for this.
   window.__settled = function () {
     return (
-      !katdown.mermaidBusy() &&
+      !katemark.mermaidBusy() &&
       Array.prototype.every.call(document.images, function (img) {
         return img.complete;
       })
@@ -195,11 +195,11 @@
   };
 
   window.__setColorScheme = function (dark) {
-    var changed = dark !== katdown.isDark();
+    var changed = dark !== katemark.isDark();
     document.documentElement.setAttribute("data-pv-scheme", dark ? "dark" : "light");
     document.documentElement.style.setProperty("color-scheme", dark ? "dark" : "light");
     // Diagrams bake their colors into the SVG, so a scheme change redraws them.
-    if (changed && katdown.resetMermaid()) {
+    if (changed && katemark.resetMermaid()) {
       rerender();
     }
   };

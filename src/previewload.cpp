@@ -17,7 +17,7 @@
 
 QString PreviewWidget::buildHtml()
 {
-    const QString base = QStringLiteral(":/katdown/");
+    const QString base = QStringLiteral(":/katemark/");
     QString html = readAsset(base + QStringLiteral("preview.html"));
     html.replace(QLatin1String("/*__GHMD_CSS__*/"), readAsset(base + QStringLiteral("css/github-markdown.css")));
     html.replace(QLatin1String("/*__BASE_CSS__*/"), readAsset(base + QStringLiteral("css/base.css")));
@@ -35,7 +35,7 @@ QUrl PreviewWidget::baseUrl() const
     if (m_url.isLocalFile()) {
         return m_url.adjusted(QUrl::RemoveFilename);
     }
-    return QUrl(QStringLiteral("qrc:/katdown/"));
+    return QUrl(QStringLiteral("qrc:/katemark/"));
 }
 
 void PreviewWidget::loadPage()

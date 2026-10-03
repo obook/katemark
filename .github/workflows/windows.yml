@@ -169,9 +169,9 @@ jobs:
           $version = $match.Matches[0].Groups[1].Value
           .\packaging\windows\make-payload.ps1 `
             -CraftRoot C:\CraftRoot `
-            -PluginDll build\bin\kf6\ktexteditor\katdown.dll `
+            -PluginDll build\bin\kf6\ktexteditor\katemark.dll `
             -OutDir dist `
-            -Zip "dist\katdown-$version-windows-x86_64.zip"
+            -Zip "dist\katemark-$version-windows-x86_64.zip"
           Get-ChildItem dist\*.zip | ForEach-Object { "{0}  {1:N0} bytes" -f $_.Name, $_.Length }
 
       # The packaged artifact is verified against a REAL Kate install, not against Craft's own
@@ -249,7 +249,7 @@ jobs:
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
         with:
-          name: katdown-windows-x86_64
+          name: katemark-windows-x86_64
           path: dist/*.zip
           if-no-files-found: error
 

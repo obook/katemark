@@ -1,14 +1,14 @@
 // mermaid.js
 // Mermaid diagrams: loads the library on first use and draws the ```mermaid blocks.
 //
-// Part of the preview page: adds its functions to window.katdown (see core.js).
+// Part of the preview page: adds its functions to window.katemark (see core.js).
 // Author: Olivier Booklage
 // Date: October 2026
 // License: GPL-3.0-or-later
 (function () {
   "use strict";
 
-  var katdown = window.katdown;
+  var katemark = window.katemark;
 
   // Mermaid weighs about 5 MB, so it loads only once a document has a ```mermaid block.
   var mermaidLoading = null;
@@ -31,7 +31,7 @@
       startOnLoad: false,
       securityLevel: "strict",
       suppressErrorRendering: true,
-      theme: katdown.isDark() ? "dark" : "default",
+      theme: katemark.isDark() ? "dark" : "default",
     });
   }
 
@@ -41,7 +41,7 @@
     if (!mermaidLoading) {
       mermaidLoading = new Promise(function (resolve, reject) {
         var script = document.createElement("script");
-        script.src = "qrc:/katdown/js/mermaid.min.js";
+        script.src = "qrc:/katemark/js/mermaid.min.js";
         script.onload = resolve;
         script.onerror = reject;
         document.head.appendChild(script);
@@ -58,7 +58,7 @@
     mermaidPending++;
     loadMermaid()
       .then(function () {
-        return window.mermaid.render("katdown-mermaid-" + ++mermaidSeq, source);
+        return window.mermaid.render("katemark-mermaid-" + ++mermaidSeq, source);
       })
       .finally(function () {
         mermaidPending--;
@@ -151,7 +151,7 @@
   document.addEventListener("wheel", zoomDiagram, { passive: false });
   document.addEventListener("dblclick", resetDiagramZoom);
 
-  katdown.drawMermaid = drawMermaid;
-  katdown.mermaidBusy = mermaidBusy;
-  katdown.resetMermaid = resetMermaid;
+  katemark.drawMermaid = drawMermaid;
+  katemark.mermaidBusy = mermaidBusy;
+  katemark.resetMermaid = resetMermaid;
 })();

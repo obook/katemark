@@ -1,13 +1,13 @@
 // frontmatter.js
 // GitHub task-list checkboxes and the metadata table made from leading YAML front matter.
 //
-// Part of the preview page: adds its functions to window.katdown (see core.js).
+// Part of the preview page: adds its functions to window.katemark (see core.js).
 // Code by uwuclxdy, moved out of preview.js.
 (function () {
   "use strict";
 
-  var katdown = window.katdown;
-  var escapeHtml = katdown.escapeHtml;
+  var katemark = window.katemark;
+  var escapeHtml = katemark.escapeHtml;
 
   // GitHub-flavored task list checkboxes (adapted from markdown-it-task-lists).
   function taskLists(md) {
@@ -84,6 +84,6 @@
     return { html: "<table>" + rows + "</table>\n", body: src.slice(m[0].length), lines: m[0].split("\n").length - 1 };
   }
 
-  katdown.taskLists = taskLists;
-  katdown.frontMatterTable = frontMatterTable;
+  katemark.taskLists = taskLists;
+  katemark.frontMatterTable = frontMatterTable;
 })();

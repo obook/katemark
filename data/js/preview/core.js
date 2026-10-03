@@ -1,18 +1,18 @@
 // core.js
 // The namespace shared by the files of the preview page, and the helpers that
 // several of them use. Loaded first: every other file adds its functions to
-// window.katdown.
+// window.katemark.
 // Author: Olivier Booklage
 // Date: October 2026
 // License: GPL-3.0-or-later
 (function () {
   "use strict";
 
-  var katdown = (window.katdown = {});
+  var katemark = (window.katemark = {});
 
   // Titles of the alerts and callouts, translated: the host sends them before the first
   // render (see __setLabels in preview.js).
-  katdown.labels = {};
+  katemark.labels = {};
 
   function escapeHtml(s) {
     return s
@@ -36,7 +36,7 @@
     return document.documentElement.getAttribute("data-pv-scheme") === "dark";
   }
 
-  katdown.escapeHtml = escapeHtml;
-  katdown.slugify = slugify;
-  katdown.isDark = isDark;
+  katemark.escapeHtml = escapeHtml;
+  katemark.slugify = slugify;
+  katemark.isDark = isDark;
 })();

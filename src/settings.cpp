@@ -5,7 +5,7 @@
 
 static QString groupName()
 {
-    return QStringLiteral("Katdown");
+    return QStringLiteral("Katemark");
 }
 
 Settings::Settings(QObject *parent)

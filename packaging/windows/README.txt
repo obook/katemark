@@ -1,7 +1,7 @@
-Katdown for Kate on Windows
+Katemark for Kate on Windows
 ===========================
 
-Katdown is a Kate plugin that renders a GitHub-styled preview of the Markdown file you are
+Katemark is a Kate plugin that renders a GitHub-styled preview of the Markdown file you are
 editing, in a tab next to it.
 
 
@@ -41,7 +41,7 @@ It finds Kate on its own. If it cannot, or you have several installs, name one:
 Add -WhatIf to see what it would do without touching anything.
 
 Then start Kate and turn the plugin on: Settings, then Configure Kate, then Plugins, then check
-Katdown. Open a Markdown file and press Ctrl+Shift+M.
+Katemark. Open a Markdown file and press Ctrl+Shift+M.
 
 
 Uninstalling
@@ -57,8 +57,8 @@ If the plugin does not appear in Kate's plugin list
 ---------------------------------------------------
 
 That is what a failed load looks like: Kate does not report it. Check that
-bin\kf6\ktexteditor\katdown.dll exists under your Kate install, that bin\Qt6WebEngineCore.dll is
+bin\kf6\ktexteditor\katemark.dll exists under your Kate install, that bin\Qt6WebEngineCore.dll is
 there next to kate.exe, and that Kate's bin\Qt6Core.dll is version 6.11.x.
 
 
-https://github.com/uwuclxdy/katdown
+https://github.com/obook/katemark

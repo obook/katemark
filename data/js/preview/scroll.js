@@ -2,14 +2,14 @@
 // Scroll sync with the editor: blocks carry their source lines, and the host asks the
 // page to scroll to a line (__scrollToLine) or which line is at its top (__topLine).
 //
-// Part of the preview page: adds its functions to window.katdown (see core.js).
+// Part of the preview page: adds its functions to window.katemark (see core.js).
 // Author: Olivier Booklage
 // Date: October 2026
 // License: GPL-3.0-or-later
 (function () {
   "use strict";
 
-  var katdown = window.katdown;
+  var katemark = window.katemark;
 
   // markdown-it plugin: tag every block with the span of source lines it comes from.
   function sourceLines(md) {
@@ -114,5 +114,5 @@
     return null;
   };
 
-  katdown.sourceLines = sourceLines;
+  katemark.sourceLines = sourceLines;
 })();
