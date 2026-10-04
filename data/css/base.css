@@ -112,9 +112,14 @@ html[data-pv-scheme="dark"] .markdown-body .alert-danger {
   display: block;
 }
 
+/* A wide formula scrolls instead of widening the page. The padding keeps the outer \hline
+   of a table off the edge where overflow-y clips: without it the rule vanishes at some
+   zoom factors. The margin gives the padding back, so the spacing does not change. */
 .markdown-body .katex-display {
   overflow-x: auto;
   overflow-y: hidden;
+  padding: 3px 0;
+  margin: calc(1em - 3px) 0;
 }
 
 .markdown-body pre.mermaid {
