@@ -223,7 +223,7 @@ sudo apt install g++ cmake extra-cmake-modules gettext dpkg-dev qt6-webengine-de
 
 # Arch Linux
 sudo pacman -S --needed base-devel cmake extra-cmake-modules \
-    ktexteditor qt6-webengine kcoreaddons ki18n kconfig kxmlgui ksyntaxhighlighting
+    ktexteditor qt6-webengine kcoreaddons ki18n kconfig kxmlgui syntax-highlighting
 ```
 
 Get the sources:

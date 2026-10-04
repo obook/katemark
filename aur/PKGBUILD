@@ -3,8 +3,8 @@
 
 pkgname=katemark-git
 _pkgbase=katemark
-pkgver=r3.f4f7b4c
-pkgrel=3
+pkgver=0.4.0.r1.g0fc222f
+pkgrel=1
 pkgdesc="GitHub-styled live Markdown preview for Kate (KTextEditor/KF6)"
 arch=('x86_64')
 url="https://github.com/obook/katemark"
