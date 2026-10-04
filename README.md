@@ -270,8 +270,8 @@ Without root. Configure and build as above, then:
 ```bash
 cmake --install build --prefix ~/.local
 mkdir -p ~/.config/environment.d
-printf 'QT_PLUGIN_PATH=%s/.local/lib/qt6/plugins\n' "$HOME" \
-    > ~/.config/environment.d/katemark.conf
+plugins=$(grep -om1 '.*/plugins' build/install_manifest.txt)
+printf 'QT_PLUGIN_PATH=%s\n' "$plugins" > ~/.config/environment.d/katemark.conf
 ```
 
 Log out and back in for Kate to find the plugin.
