@@ -54,6 +54,7 @@ tab of its own.
 | KDE neon | [Install the package](#debian-package) `katemark_<version>_neon_amd64.deb` |
 | Kubuntu 26.04 | [Install the package](#debian-package) `katemark_<version>_ubuntu26.04_amd64.deb` |
 | Windows | [Install the zip](#windows) `katemark-<version>-windows-x86_64.zip` |
+| Arch Linux | [Install from the AUR](#arch-linux) `katemark-git` |
 | Another Debian or Ubuntu release | [Build the package](#build-from-source) with `build.sh` |
 | Any other Linux | [Build from source](#build-from-source) |
 | Kubuntu 24.04 | Not possible: its Kate still uses KDE Frameworks 5 |
@@ -99,10 +100,17 @@ WebEngine, so the runtime comes with the plugin. It installs next to
 
 ### Arch Linux
 
-The AUR package
-[`katdown-git`](https://aur.archlinux.org/packages/katdown-git) installs the
-original Katdown, without the features marked "fork" above. For Katemark,
-[build from source](#build-from-source).
+Install [`katemark-git`](https://aur.archlinux.org/packages/katemark-git)
+from the AUR:
+
+```bash
+git clone https://aur.archlinux.org/katemark-git.git
+cd katemark-git
+makepkg -si
+```
+
+`sudo pacman -R katemark-git` uninstalls it. If you installed Katemark from
+source before, [uninstall](#uninstall) it first.
 
 ## First steps
 
@@ -267,6 +275,18 @@ printf 'QT_PLUGIN_PATH=%s/.local/lib/qt6/plugins\n' "$HOME" \
 ```
 
 Log out and back in for Kate to find the plugin.
+
+### Uninstall
+
+From the source folder, with its `build` folder still there:
+
+```bash
+sudo cmake --build build --target uninstall   # system-wide install
+cmake --build build --target uninstall        # user-local install
+```
+
+After a user-local install, also delete
+`~/.config/environment.d/katemark.conf`.
 
 ## Contributing
 
