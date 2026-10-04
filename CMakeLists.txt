@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(katemark VERSION 0.4.0 LANGUAGES CXX)
+project(katemark VERSION 0.4.1 LANGUAGES CXX)
 
 set(QT_MIN_VERSION 6.5.0)
 set(KF_MIN_VERSION 6.0.0)
