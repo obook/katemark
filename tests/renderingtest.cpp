@@ -111,7 +111,8 @@ void RenderingTest::rendersMathLikeMathJax()
 
 // The added syntaxes must not eat ordinary Markdown: a line in parentheses under a
 // formula, a link whose text is in brackets, a heading id chosen by the author, a callout
-// marker ending in a hard line break, a comment block right under a paragraph.
+// marker ending in a hard line break, a code block without a language, a comment block
+// right under a paragraph.
 void RenderingTest::keepsOrdinaryMarkdownIntact()
 {
     KTextEditor::Document *doc = openDocument();
@@ -123,6 +124,9 @@ void RenderingTest::keepsOrdinaryMarkdownIntact()
                                 "See [[1]](https://example.com/ref) here.\n\n"
                                 "<h2 id=\"install\">Installation</h2>\n\n## What's new?\n\n"
                                 "> [!NOTE]  \n> the callout body\n\n"
+                                "```\nindex.html   Point d'acces HTML\nstate.js   Gestion de l'application\n"
+                                "color-mode.js   Gestion des 10 modes couleur\nui.js   interface utilisateur\n```\n\n"
+                                "```js\nvar a = 'b';\n```\n\n"
                                 "visible para\n%%\nhidden one\n\nhidden two\n%%\n\nafter all\n"));
     QVERIFY(waitForPageText(preview.get(), QLatin1String("after all")));
     const QString text = pageText(preview.get());
@@ -134,6 +138,9 @@ void RenderingTest::keepsOrdinaryMarkdownIntact()
     QCOMPARE(evalJs(preview.get(), QStringLiteral("document.querySelector('.markdown-alert-title').textContent.trim()")), QStringLiteral("Note"));
     QCOMPARE(evalJs(preview.get(), QStringLiteral("document.querySelector('.markdown-alert > p:not(.markdown-alert-title)').textContent.trim()")),
              QStringLiteral("the callout body"));
+    // A code block that names no language is left uncolored; one that names it is not.
+    QCOMPARE(evalJs(preview.get(), QStringLiteral("document.querySelectorAll('pre.hljs')[0].querySelectorAll('span').length")), QStringLiteral("0"));
+    QVERIFY(evalJs(preview.get(), QStringLiteral("document.querySelectorAll('pre.hljs')[1].querySelectorAll('span').length")).toInt() > 0);
 
     delete doc;
 }

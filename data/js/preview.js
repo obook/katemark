@@ -72,13 +72,9 @@
           } catch (e) {
             body = escapeHtml(str);
           }
-        } else if (hljs) {
-          try {
-            body = hljs.highlightAuto(str).value;
-          } catch (e) {
-            body = escapeHtml(str);
-          }
         } else {
+          // No language named, or one hljs does not know: plain text. Guessing a
+          // language colors prose, where an apostrophe opens a string.
           body = escapeHtml(str);
         }
         return '<pre class="hljs"><code>' + body + "</code></pre>";
