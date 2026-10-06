@@ -29,23 +29,33 @@ sponsor, but it recommends going through Debian.
 ### Bundled JavaScript
 
 Debian rejects a minified file that comes without its source and `data/js`
-holds 12 of them. Checked against the Ubuntu 24.04 archive on 2026-10-05:
+holds 12 of them. Checked against Debian unstable on 2026-10-06:
 
-| Library | Package |
-|---|---|
-| KaTeX | `libjs-katex`, `fonts-katex` |
-| highlight.js | `libjs-highlight.js` |
-| markdown-it | `libjs-markdown-it` |
-| markdown-it-sub, markdown-it-sup | `libjs-markdown-it-sub`, `libjs-markdown-it-sup` |
-| js-yaml | `node-js-yaml` |
-| markdown-it-container, -emoji, -footnote, -ins, -mark | none |
-| Mermaid | none |
+| Library | Bundled | Debian unstable |
+|---|---|---|
+| KaTeX | 0.19.0 | `libjs-katex`, `fonts-katex` 0.16.10 |
+| highlight.js | 11.10.0 | `libjs-highlight.js` 10.7.3 |
+| markdown-it | 14.1.0 | `node-markdown-it` 10.0.0, no `libjs` package |
+| markdown-it-sub | 2.0.0 | `libjs-markdown-it-sub` 1.0.0 |
+| markdown-it-sup | 2.0.0 | none |
+| js-yaml | 4.1.0 | `node-js-yaml` 4.3.2 |
+| markdown-it-container, -footnote, -ins, -mark | 4.0.0 | none |
+| markdown-it-emoji | 3.1.0 | none |
+| Mermaid | 12.1.0 | `node-mermaid` 9.2.2 |
 
-- [ ] Run the same check against Debian unstable and compare the packaged
+Debian has an older version of KaTeX, highlight.js, markdown-it,
+markdown-it-sub and Mermaid, and Katemark has only been tested with the
+bundled ones. The `node-markdown-it` package is numbered 22.2.3 but its
+changelog stops at markdown-it 10.0.0. Ubuntu 24.04 still had
+`libjs-markdown-it` and `libjs-markdown-it-sup`; Debian has dropped both
+since.
+
+- [x] Run the same check against Debian unstable and compare the packaged
       versions with the bundled ones.
-- [ ] For each library with no package, either ship the unminified source
-      next to the file or package the library first. Mermaid is the largest
-      and brings many dependencies of its own.
+- [ ] For each library with no package or an older one, either ship the
+      unminified source next to the file or get the bundled version
+      packaged first. Mermaid is the largest and brings many dependencies
+      of its own.
 
 ### KDE neon
 
