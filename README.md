@@ -301,7 +301,7 @@ are welcome.
 
 Author of this fork: Olivier Booklage (<olivier.booklage@ac-bordeaux.fr>).
 
-It is a fork of [Katdown](https://github.com/uwuclxdy/katdown) by uwuclxdy
+Original project: [Katdown](https://github.com/uwuclxdy/katdown) by uwuclxdy
 (GPL-3.0-or-later).
 
 The Arch Linux package is maintained by Matija Šuklje.
