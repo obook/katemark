@@ -306,6 +306,9 @@ Original project: [Katdown](https://github.com/uwuclxdy/katdown) by uwuclxdy
 
 The Arch Linux package is maintained by Matija Šuklje.
 
+The openSUSE package, submitted to `KDE:Extra`, is maintained by Olivier
+Belleux (Wolfheri).
+
 Bundled libraries:
 
 | Library | Version | License | URL |
