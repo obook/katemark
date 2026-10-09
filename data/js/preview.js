@@ -189,6 +189,8 @@
 
   window.__setGithubOnly = function (on) {
     githubOnly = on;
+    document.body.classList.toggle("github-only", !!on); // base.css narrows it
+
     rerender();
   };
 

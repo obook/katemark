@@ -26,12 +26,18 @@
   // the wrong colors and is dropped when it arrives.
   var mermaidScheme = 0;
 
+  // Mermaid measures labels on document.body and draws them in the article:
+  // same font both sides, or the text is clipped. base.css sets it on
+  // pre.mermaid. Local fonts, no network.
+  var FONT = '"trebuchet ms", verdana, arial, sans-serif';
+
   function configureMermaid() {
     window.mermaid.initialize({
       startOnLoad: false,
       securityLevel: "strict",
       suppressErrorRendering: true,
       theme: katemark.isDark() ? "dark" : "default",
+      fontFamily: FONT,
     });
   }
 

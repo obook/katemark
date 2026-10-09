@@ -16,10 +16,14 @@ body {
 .markdown-body {
   box-sizing: border-box;
   width: 100%;
-  max-width: 980px;
   margin: 0;
   padding: 32px 32px 96px;
   background: var(--bgColor-default, #ffffff);
+}
+
+/* "GitHub only" shows what GitHub shows, column width included. */
+body.github-only .markdown-body {
+  max-width: 980px;
 }
 
 @media (max-width: 767px) {
@@ -122,10 +126,12 @@ html[data-pv-scheme="dark"] .markdown-body .alert-danger {
   margin: calc(1em - 3px) 0;
 }
 
+/* Font must match the one mermaid.js passes to Mermaid. */
 .markdown-body pre.mermaid {
   padding: 0;
   text-align: center;
   background: transparent;
+  font-family: "trebuchet ms", verdana, arial, sans-serif;
 }
 
 .markdown-body pre.mermaid-error {
