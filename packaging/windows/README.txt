@@ -19,8 +19,8 @@ Requirements
 ------------
 
   * Kate for Windows from the installer at https://kate-editor.org/get-it/
-  * Kate built on Qt 6.11.x. install.ps1 refuses another version: Kate would not load the plugin
-    and would not say why.
+  * Kate built on the Qt version this zip was built against. install.ps1 refuses another one and
+    names both: Kate would not load the plugin and would not say why.
 
 The Microsoft Store version of Kate is not supported: Windows locks its install directory.
 
@@ -56,7 +56,7 @@ If the plugin does not appear in Kate's plugin list
 
 Kate does not report a plugin that failed to load. Check that bin\kf6\ktexteditor\katemark.dll
 exists under your Kate install, that bin\Qt6WebEngineCore.dll is there next to kate.exe, and that
-Kate's bin\Qt6Core.dll is version 6.11.x.
+Kate's bin\Qt6Core.dll has the Qt version install.ps1 expects.
 
 
 https://github.com/obook/katemark

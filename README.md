@@ -95,8 +95,8 @@ WebEngine, so the runtime comes with the plugin. It installs next to
 
 - Kate has to come from the [installer](https://kate-editor.org/get-it/).
   The Microsoft Store version is not supported.
-- The build targets the Qt 6.11 of Kate's own Windows build. `install.ps1`
-  refuses to install on another version.
+- The build targets the Qt of Kate's own Windows build, 6.12 in November
+  2026. `install.ps1` refuses to install on another version.
 - A workflow builds the zip. One user runs it on Windows 11, where the
   preview and both exports work: please report what you see on yours.
 
