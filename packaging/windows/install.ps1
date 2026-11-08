@@ -41,9 +41,10 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 
-# Qt minor series the payload was built against. A plugin built for 6.11 loads fine against a
-# 6.11.x Kate; across a minor bump Qt makes no such promise, and WebEngine is the strictest of all.
-$RequiredQtMinor = '6.11'
+# Qt minor series the payload was built against, written in by make-payload.ps1. A plugin built
+# for 6.12 loads fine against a 6.12.x Kate; across a minor bump Qt makes no such promise, and
+# WebEngine is the strictest of all.
+$RequiredQtMinor = '@QT_MINOR@'
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $PayloadDir = Join-Path $ScriptDir 'payload'

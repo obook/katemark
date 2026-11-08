@@ -1,6 +1,7 @@
 # Build the Windows plugin and package it with the Qt WebEngine runtime Kate for Windows does not
-# ship. Kate's own build is Craft-made (MSVC 2022, Qt 6.11.1, KF 6.28.0), so this uses the same
-# Craft binary cache to get an ABI-identical plugin; nothing compiles from source except src/*.cpp.
+# ship. Kate's own build is Craft-made with MSVC 2022, so this uses the same Craft binary cache to
+# get an ABI-identical plugin; nothing compiles from source except src/*.cpp. The cache moves to a
+# new Qt now and then: make-payload.ps1 writes that Qt into install.ps1.
 #
 # Why this is not on every push: one run pulls a couple of GB of prebuilt Qt and Chromium from
 # files.kde.org. It runs on tags (to attach the release artifact), on changes to the build inputs,

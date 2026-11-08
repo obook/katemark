@@ -141,7 +141,16 @@ foreach ($mo in $catalogs) {
     $total += $mo.Length
 }
 
-Copy-Item -LiteralPath (Join-Path $ScriptDir 'install.ps1') -Destination (Join-Path $OutDir 'install.ps1') -Force
+# install.ps1 checks Kate's Qt against the Qt of this Craft tree. A fixed version went stale when
+# Craft moved its binary cache from Qt 6.11 to 6.12.
+$qtVersion = (Get-Item (Join-Path $CraftRoot 'bin\Qt6Core.dll')).VersionInfo.FileVersion
+$qtMinor = ($qtVersion.Split('.')[0..1]) -join '.'
+$installer = Get-Content -LiteralPath (Join-Path $ScriptDir 'install.ps1') -Raw
+if (-not $installer.Contains('@QT_MINOR@')) {
+    throw 'No @QT_MINOR@ in install.ps1.'
+}
+Set-Content -LiteralPath (Join-Path $OutDir 'install.ps1') -Value $installer.Replace('@QT_MINOR@', $qtMinor) -NoNewline -Encoding ascii
+Write-Host "install.ps1 accepts a Kate on Qt $qtMinor.x"
 Copy-Item -LiteralPath (Join-Path $ScriptDir 'README.txt') -Destination (Join-Path $OutDir 'README.txt') -Force
 
 $count = $Files.Count + 1 + $catalogs.Count
