@@ -137,7 +137,35 @@
     };
   }
 
+  // markdown-it copies a raw HTML block untouched, so "$x$" in a <td> stayed text; MathJax
+  // renders it. This renders the formulas found in the text between the tags.
+  // shortcut: a formula cut by a tag ("$a<sub>1</sub>$") stays text; join the text nodes
+  // in the DOM if a document needs it.
+  function mathInHtml(md, texmathOptions) {
+    // Nothing but the math rules, so "*" or "_" in the HTML keep their meaning.
+    var mathOnly = window.markdownit("zero").use(window.texmath, texmathOptions);
+    // The text, then what is copied as is: comments, code and scripts, tags. A "<" not
+    // followed by a tag name ("a < b") is text.
+    var PARTS = /((?:[^<]|<(?![A-Za-z!/?]))+)|<!--[\s\S]*?-->|<(script|style|pre|code|textarea)\b[\s\S]*?<\/\2\s*>|<[^>]*>/gi;
+    var decoder = document.createElement("textarea");
+
+    function withMath(text) {
+      if (text.indexOf("$") < 0 && text.indexOf("\\") < 0) {
+        return text;
+      }
+      decoder.innerHTML = text; // decodes "&lt;" and the like, creates no element
+      return mathOnly.renderInline(decoder.value);
+    }
+
+    md.renderer.rules.html_block = function (tokens, idx) {
+      return tokens[idx].content.replace(PARTS, function (part, text) {
+        return text ? withMath(text) : part;
+      });
+    };
+  }
+
   katemark.lenientMath = lenientMath;
+  katemark.mathInHtml = mathInHtml;
   katemark.mathOptions = mathOptions;
   katemark.resetMath = resetMath;
   katemark.setGlobalMacros = setGlobalMacros;

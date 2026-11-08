@@ -212,7 +212,7 @@ void RenderingTest::keepsFoldingAndUniqueIds()
 }
 
 // Macros defined in the document or in the settings, LaTeX's own delimiters, and an
-// equation numbered on the line of its closing delimiter.
+// equation numbered on the line of its closing delimiter, formulas in a raw HTML table.
 void RenderingTest::rendersMathExtras()
 {
     KTextEditor::Document *doc = openDocument();
@@ -222,12 +222,16 @@ void RenderingTest::rendersMathExtras()
 
     evalJs(preview.get(), QStringLiteral("window.__setMacros('\\\\newcommand{\\\\N}{\\\\mathbb{N}}'); 1"));
     doc->setText(QStringLiteral("$\\newcommand{\\R}{\\mathbb{R}}$ then $x \\in \\R$ and $n \\in \\N$\n\n"
-                                "inline \\(a+b\\) and\n\n\\[ c = d \\]\n\n$$ e = mc^2 $$ (1)\n\nthe last line\n"));
+                                "inline \\(a+b\\) and\n\n\\[ c = d \\]\n\n$$ e = mc^2 $$ (1)\n\n"
+                                "<table>\n<tr><td> $4 \\times 8$ </td><td>$a &lt; b$</td><td><code>$x$</code></td></tr>\n</table>\n\n"
+                                "the last line\n"));
     QVERIFY(waitForPageText(preview.get(), QLatin1String("the last line")));
     // A macro KaTeX does not know is shown in red: none may be.
     QCOMPARE(countElements(preview.get(), ".katex-error, .katex [style*=\"color:#cc0000\"]"), 0);
     QCOMPARE(countElements(preview.get(), ".katex .mathbb"), 2);
-    QCOMPARE(countElements(preview.get(), ".katex"), 6);
+    // Two of them in the raw HTML table; the one in <code> stays text.
+    QCOMPARE(countElements(preview.get(), ".katex"), 8);
+    QCOMPARE(evalJs(preview.get(), QStringLiteral("document.querySelector('td code').textContent")), QStringLiteral("$x$"));
     QCOMPARE(evalJs(preview.get(), QStringLiteral("document.querySelector('section.eqno > span').textContent")), QStringLiteral("(1)"));
 
     delete doc;

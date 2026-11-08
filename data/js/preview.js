@@ -107,7 +107,9 @@
     // ":/" into emoji, which bites in ordinary text, so they are off.
     md.use(window.markdownitEmoji, { shortcuts: {} });
     // Math between $...$ and $$...$$, and between \(...\) and \[...\] as in LaTeX.
-    md.use(window.texmath, { engine: mathEngine, delimiters: ["dollars", "brackets"], katexOptions: katemark.mathOptions });
+    var texmathOptions = { engine: mathEngine, delimiters: ["dollars", "brackets"], katexOptions: katemark.mathOptions };
+    md.use(window.texmath, texmathOptions);
+    md.use(katemark.mathInHtml, texmathOptions);
     if (!githubOnly) {
       md.use(katemark.codimdContainers);
       md.use(katemark.admonitions);
