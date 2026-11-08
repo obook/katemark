@@ -10,6 +10,8 @@ katemark (0.4.7) unstable; urgency=medium
   * Translate the titles of the teaching callouts.
   * Refuse pictures on network paths, and reload the preview after a
     renderer crash.
+  * Windows: install on a Kate built on Qt 6.12, which install.ps1
+    refused.
 
  -- Olivier Booklage <olivier.booklage@ac-bordeaux.fr>  Sun, 08 Nov 2026 21:11:50 +0000
 
