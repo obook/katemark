@@ -1,3 +1,18 @@
+katemark (0.4.7) unstable; urgency=medium
+
+  * Render math inside raw HTML, such as a table written in HTML.
+  * Add the callout types of Academic Notes: lemma, proposition,
+    corollary, axiom, claim, assumption, conjecture and hypothesis, and
+    short names such as def, thm and pf.
+  * Ask before a link starts another program (zotero:, obsidian:...).
+  * Zoom the preview as one page, diagrams included. Ctrl+0 resets it.
+  * Add a Close button to the "Preview exported" message.
+  * Translate the titles of the teaching callouts.
+  * Refuse pictures on network paths, and reload the preview after a
+    renderer crash.
+
+ -- Olivier Booklage <olivier.booklage@ac-bordeaux.fr>  Sun, 08 Nov 2026 21:11:50 +0000
+
 katemark (0.4.6) unstable; urgency=medium
 
   * Add teaching callouts: definition, theorem, property, proof, exercise,
