@@ -199,8 +199,10 @@ void PreviewWidget::applyTheme()
     if (!m_loaded || isExporting()) {
         return;
     }
+    // Two statements: in one call, the compiler may copy "dark" before lookVars() sets it.
     bool dark = false;
-    applyLook(lookVars(dark), dark);
+    const QJsonObject vars = lookVars(dark);
+    applyLook(vars, dark);
 }
 
 // Colors of the page and of its code: GitHub's code theme with GitHub's colors (always
