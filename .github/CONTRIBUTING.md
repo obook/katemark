@@ -14,8 +14,8 @@ the whole diff.
 ## Building and running
 
 The build dependencies and the three ways to install are in the
-[installation guide](../docs/install.md#build-from-source). To try a change, run a Kate that loads the freshly
-built plugin without installing it:
+[installation guide](../docs/install.md#build-from-source). To try a change, run a Kate that
+loads the freshly built plugin without installing it:
 
 ```bash
 cmake -B build -S . -DCMAKE_BUILD_TYPE=Debug
@@ -50,6 +50,20 @@ One file per language: `po/<language>/katemark.po`. After changing a string in t
 `bash po/update.sh` from the repository root: it refreshes `po/katemark.pot` and merges it into
 every translation.
 
+## Bundled libraries
+
+markdown-it, KaTeX and highlight.js are copied unchanged from their npm packages: the
+`dist/*.min.js` files of the first two, and `@highlightjs/cdn-assets` for highlight.js and its
+two GitHub themes. KaTeX's stylesheet is rebuilt with its fonts inlined:
+
+```bash
+npm pack katex@<version> && tar xzf katex-<version>.tgz
+python3 packaging/inline_katex_fonts.py package/dist > data/css/katex.min.css
+```
+
+After an update, change the version in `THIRD-PARTY-NOTICES.md` and in the Debian table of
+`ROADMAP.md`, and run the tests.
+
 ## Releases
 
 A release needs its version in three places: `project(VERSION)` in `CMakeLists.txt`, `Version`
@@ -80,6 +94,7 @@ zip.
 | `data/js/preview.js` | The page's rendering and the functions the plugin calls |
 | `data/js/preview/` | One file per concern: shared helpers, GitHub task lists and front matter, callouts, CodiMD, Obsidian, MkDocs, math, Mermaid, scroll sync, blocked pictures and picture sizes |
 | `data/` | The other bundled HTML, CSS, JS and the qrc |
+| `docs/` | User documentation: installation, usage and syntax. The README links to it |
 | `tests/` | Five test programs; the four that need a preview share `testhelpers.h` |
 
 A comment that starts with `ponytail:` marks a shortcut taken on purpose: it names the limit
