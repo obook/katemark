@@ -12,6 +12,8 @@
 #include <QCheckBox>
 #include <QLabel>
 #include <QScopeGuard>
+#include <QSignalSpy> // SPIKE (spike/formel)
+#include "previewutil.h" // SPIKE (spike/formel)
 
 class RenderingTest : public PreviewTest
 {
@@ -33,7 +35,38 @@ private Q_SLOTS:
     void keepsMathOnItsFeet();
     void saysWhenARenderTakesLong();
     void survivesElementsNamedLikeDocumentMethods();
+    void spikeFormel();
 };
+
+// SPIKE (spike/formel): renders FORMEL_TEST_FILE with FORMEL_MACROS as the global macros,
+// prints what formel made of it, then exports it to FORMEL_OUT.pdf and FORMEL_OUT.html.
+void RenderingTest::spikeFormel()
+{
+    QFile source(qEnvironmentVariable("FORMEL_TEST_FILE"));
+    QVERIFY(source.open(QIODevice::ReadOnly));
+    const QString out = qEnvironmentVariable("FORMEL_OUT");
+    QVERIFY(!out.isEmpty());
+    KTextEditor::Document *doc = openDocument();
+    QTRY_VERIFY(doc->text().contains(SampleBodyLine));
+    auto preview = std::make_unique<PreviewWidget>(nullptr, nullptr, doc);
+    QVERIFY(waitForPageText(preview.get(), SampleBodyLine));
+    evalJs(preview.get(), QStringLiteral("window.__setMacros(%1); 'ok'").arg(jsLiteral(qEnvironmentVariable("FORMEL_MACROS"))));
+    doc->setText(QString::fromUtf8(source.readAll()));
+    QTRY_VERIFY_WITH_TIMEOUT(evalJs(preview.get(), QStringLiteral("typeof katemark.formel")) == QLatin1String("function"), 10000);
+    QTest::qWait(2000);
+    qInfo().noquote() << evalJs(preview.get(), QStringLiteral(
+        "JSON.stringify({ svg: document.querySelectorAll('#content svg').length,"
+        " katex: document.querySelectorAll('#content .katex').length,"
+        " fallback: Array.prototype.map.call(document.querySelectorAll('.formel-fallback'), function (e) { return e.title; }) })"));
+
+    QSignalSpy exported(preview.get(), &PreviewWidget::exported);
+    preview->exportPdf(out + QStringLiteral(".pdf"));
+    QVERIFY(exported.wait(ExportTimeoutMs));
+    QCOMPARE(exported.takeFirst().at(1).toBool(), true);
+    preview->exportHtml(out + QStringLiteral(".html"));
+    QVERIFY(exported.wait(ExportTimeoutMs));
+    QCOMPARE(exported.takeFirst().at(1).toBool(), true);
+}
 
 // The libraries tested here come from qrc rather than the inlined page: the markdown-it plugins
 // and KaTeX at page start, Mermaid on demand. A library that failed to load leaves its

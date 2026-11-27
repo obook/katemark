@@ -6,7 +6,7 @@
          handlers, javascript: links, frames, forms and <base> are refused. -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="script-src qrc:; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'"
+      content="script-src qrc: 'wasm-unsafe-eval'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="qrc:/katemark/css/katex.min.css" />
@@ -50,6 +50,14 @@
     <script src="qrc:/katemark/js/preview/media.js"></script>
     <script src="qrc:/katemark/js/preview/zoom.js"></script>
     <script src="qrc:/katemark/js/preview.js"></script>
+    <script src="qrc:/katemark/js/formel/formel_wasm.classic.js"></script>
+    <script src="qrc:/katemark/js/formel/dom.classic.js"></script>
+    <script src="qrc:/katemark/js/formel/bytes.classic.js"></script>
+    <script src="qrc:/katemark/js/preview/formel.js"></script>
+    <style>
+      /* SPIKE (spike/formel): a formula formel could not read, rendered by KaTeX. */
+      .formel-fallback { outline: 1px dashed #d1242f; }
+    </style>
   </head>
   <body>
     <article class="markdown-body" id="content"></article>

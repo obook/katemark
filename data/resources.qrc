@@ -32,6 +32,10 @@
     <file>js/preview/media.js</file>
     <file>js/preview/zoom.js</file>
     <file>js/preview.js</file>
+    <file>js/preview/formel.js</file>
+    <file>js/formel/formel_wasm.classic.js</file>
+    <file>js/formel/dom.classic.js</file>
+    <file>js/formel/bytes.classic.js</file>
     <file>ui.rc</file>
   </qresource>
 </RCC>

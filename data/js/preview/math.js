@@ -20,6 +20,48 @@
   // The one options object handed to KaTeX for every formula.
   var mathOptions = { globalGroup: true, macros: macros, throwOnError: false };
 
+  // SPIKE (spike/formel): formel forgets macros between formulas and refuses to redefine with
+  // \newcommand. Each formula gets the definitions met before it, written as \def, which
+  // always defines.
+  var formelDefs = "";
+
+  // ponytail: an optional argument with a default ("[1][x]") is not converted.
+  function toDef(tex) {
+    return tex.replace(
+      /\\(?:re)?newcommand\s*(?:\{\s*(\\[A-Za-z]+)\s*\}|(\\[A-Za-z]+))\s*(?:\[(\d)\])?/g,
+      function (whole, braced, bare, count) {
+        var params = "";
+        for (var i = 1; i <= (parseInt(count, 10) || 0); i++) {
+          params += "#" + i;
+        }
+        return "\\def" + (braced || bare) + params;
+      }
+    );
+  }
+
+  // The \def statements of tex, bodies included.
+  function defsOf(tex) {
+    var found = "";
+    var start = /\\def\s*\\[A-Za-z]+[^{]*\{/g;
+    var match;
+    while ((match = start.exec(tex))) {
+      var depth = 1;
+      var i = start.lastIndex;
+      for (; i < tex.length && depth > 0; i++) {
+        if (tex[i] === "\\") {
+          i++;
+        } else if (tex[i] === "{") {
+          depth++;
+        } else if (tex[i] === "}") {
+          depth--;
+        }
+      }
+      found += tex.slice(match.index, i) + " ";
+      start.lastIndex = i;
+    }
+    return found;
+  }
+
   // Returns whether the macros changed.
   function setGlobalMacros(tex) {
     var changed = tex !== globalMacros;
@@ -58,6 +100,7 @@
       delete macros[name];
     });
     macros["\\newcommand"] = lenientNewcommand;
+    formelDefs = defsOf(toDef(globalMacros));
     if (globalMacros) {
       // The output is thrown away: only the definitions it leaves in "macros" matter.
       try {
@@ -130,9 +173,22 @@
       return escapeDollars(tex.replace(/\\require\s*\{[^}]*\}/g, ""));
     }
 
+    // SPIKE (spike/formel): formel when preview/formel.js has loaded it. A formula formel
+    // cannot read falls back to KaTeX, framed so that it shows.
     return {
       renderToString: function (tex, options) {
-        return window.katex.renderToString(toKatex(tex), options);
+        var source = toKatex(tex);
+        if (katemark.formel) {
+          var withDefs = formelDefs + toDef(source);
+          formelDefs += defsOf(toDef(source));
+          try {
+            return katemark.formel(withDefs, !!options.displayMode);
+          } catch (e) {
+            return '<span class="formel-fallback" title="' + katemark.escapeHtml(String(e)) + '">' +
+              window.katex.renderToString(withDefs, options) + "</span>";
+          }
+        }
+        return window.katex.renderToString(source, options);
       },
     };
   }

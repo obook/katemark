@@ -177,6 +177,7 @@
     restoreFoldStates(el, folds, newSourceFolds);
     sourceFolds = newSourceFolds;
   }
+  katemark.rerender = rerender; // SPIKE (spike/formel): preview/formel.js, once loaded
 
   // The rendered article for an HTML export, cleaned on a copy: the page is left as is.
   window.__exportBody = function () {

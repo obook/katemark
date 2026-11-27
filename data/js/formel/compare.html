@@ -1,0 +1,115 @@
+<!doctype html>
+<!-- SPIKE (spike/formel): KaTeX and formel side by side on the same formulas.
+     From the repository root: python3 -m http.server 8765, then open
+     http://127.0.0.1:8765/data/js/formel/compare.html?font=<file in data/fonts/>
+     Fonts tried: NotoSansMath-Regular.otf, latinmodern-math.otf, Erewhon-Math.otf
+     (the last two from TeX Live, copy them into data/fonts/ first). -->
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>formel vs KaTeX</title>
+<link rel="stylesheet" href="../../css/katex.min.css">
+<script src="../katex.min.js"></script>
+<style>
+  body { font: 16px/1.5 "Noto Sans", sans-serif; margin: 1em; color: #1f2328; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid #d0d7de; padding: 0.4em 0.8em; vertical-align: middle; }
+  th { background: #f6f8fa; }
+  td.src { font: 12px monospace; white-space: pre-wrap; width: 28%; color: #57606a; }
+  td.out { width: 36%; }
+  .err { color: #d1242f; font: 12px monospace; }
+</style>
+</head>
+<body>
+<p id="status">Chargement...</p>
+<table>
+  <thead><tr><th>Source</th><th>KaTeX</th><th>formel</th></tr></thead>
+  <tbody id="rows"></tbody>
+</table>
+<script type="module">
+import init, { MathRenderer } from "./formel_wasm.js";
+import { inlineHtml } from "./dom.js";
+
+// [tex, display]; "text" renders the $...$ found in a sentence.
+const FORMULAS = [
+  ["Inline $x^2 + y^2 = r^2$ dans une phrase, puis $\\frac{1}{2}$ et $\\sqrt{2}$.", "text"],
+  ["\\int_0^\\infty e^{-x^2}\\,dx = \\frac{\\sqrt{\\pi}}{2}", true],
+  ["\\sum_{k=1}^{n} k = \\frac{n(n+1)}{2}", true],
+  ["\\lim_{x \\to 0} \\frac{\\sin x}{x} = 1", true],
+  ["\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix} \\begin{pmatrix} x \\\\ y \\end{pmatrix}", true],
+  ["\\det \\begin{vmatrix} 1 & 2 & 3 \\\\ 4 & 5 & 6 \\\\ 7 & 8 & 9 \\end{vmatrix} = 0", true],
+  ["f(x) = \\begin{cases} x^2 & \\text{si } x \\ge 0 \\\\ -x & \\text{sinon} \\end{cases}", true],
+  ["\\begin{aligned} (a+b)^2 &= a^2 + 2ab + b^2 \\\\ (a-b)^2 &= a^2 - 2ab + b^2 \\end{aligned}", true],
+  ["x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}", true],
+  ["\\left( \\frac{a}{b} \\right)^{n} \\left[ \\int_a^b f \\right] \\left\\{ x \\mid x > 0 \\right\\}", true],
+  ["\\mathbb{N} \\subset \\mathbb{Z} \\subset \\mathbb{Q} \\subset \\mathbb{R} \\subset \\mathbb{C}", true],
+  ["\\mathcal{L}, \\mathfrak{g}, \\mathscr{F}, \\mathrm{d}x, \\mathbf{v}, \\boldsymbol{\\alpha}", true],
+  ["\\alpha \\beta \\gamma \\delta \\varepsilon \\theta \\lambda \\mu \\pi \\sigma \\varphi \\omega \\Gamma \\Delta \\Omega", true],
+  ["\\vec{u} \\cdot \\vec{v} = \\|\\vec{u}\\| \\, \\|\\vec{v}\\| \\cos\\theta", true],
+  ["\\overrightarrow{AB} + \\overrightarrow{BC} = \\overrightarrow{AC}", true],
+  ["\\hat{x}, \\bar{x}, \\tilde{x}, \\dot{x}, \\ddot{x}, \\widehat{ABC}, \\overline{z}", true],
+  ["A \\xrightarrow{f} B \\xrightarrow{g} C, \\quad x \\mapsto y, \\quad \\Rightarrow \\iff", true],
+  ["\\binom{n}{k} = \\frac{n!}{k!\\,(n-k)!}", true],
+  ["\\prod_{i=1}^{n} x_i \\le \\left( \\frac{1}{n} \\sum_{i=1}^{n} x_i \\right)^n", true],
+  ["\\oint_{\\partial S} \\mathbf{F} \\cdot d\\mathbf{r} = \\iint_S (\\nabla \\times \\mathbf{F}) \\cdot d\\mathbf{S}", true],
+  ["e^{i\\pi} + 1 = 0, \\quad 10^{-3}, \\quad x_{i,j}^{(k)}, \\quad a_{n_{k}}", true],
+  ["\\frac{1}{1 + \\frac{1}{1 + \\frac{1}{1 + x}}}", true],
+  ["\\underbrace{1 + 2 + \\cdots + n}_{n \\text{ termes}}, \\quad \\overbrace{a+b}^{c}", true],
+  ["\\forall \\varepsilon > 0,\\ \\exists \\delta > 0,\\ |x - a| < \\delta \\implies |f(x) - f(a)| < \\varepsilon", true],
+  ["\\operatorname{rg}(A) + \\dim \\ker A = n, \\quad \\ln, \\exp, \\max_{x \\in I}", true],
+  ["\\sqrt[3]{x^3 + y^3}, \\quad \\sqrt{\\frac{a}{b}}", true],
+  ["\\{1, 2, 3\\} \\cap \\emptyset = \\varnothing, \\quad A \\cup B, \\quad \\complement_E A", true],
+  ["\\text{Prix TTC} = \\text{HT} \\times 1{,}2", true],
+  ["\\newcommand{\\K}{\\mathbb{K}} f : \\K \\to \\K", true],
+  ["\\cancel{x} + \\color{red}{y} + \\boxed{z}", true],
+];
+
+const rows = document.getElementById("rows");
+const cells = FORMULAS.map(([tex, display]) => {
+  const tr = rows.insertRow();
+  tr.insertCell().textContent = tex;
+  tr.cells[0].className = "src";
+  const k = tr.insertCell(), f = tr.insertCell();
+  k.className = f.className = "out";
+  return { tex, display, k, f };
+});
+
+function katexCell(cell) {
+  try {
+    if (cell.display === "text") {
+      cell.k.innerHTML = cell.tex.replace(/\$([^$]+)\$/g, (_, t) => katex.renderToString(t, { throwOnError: true }));
+    } else {
+      cell.k.innerHTML = katex.renderToString(cell.tex, { displayMode: cell.display, throwOnError: true });
+    }
+  } catch (e) {
+    cell.k.innerHTML = `<span class="err">${e.message}</span>`;
+  }
+}
+
+const bytes = async (url) => new Uint8Array(await (await fetch(url)).arrayBuffer());
+
+cells.forEach(katexCell);
+await init({ module_or_path: await bytes("formel_wasm_bg.wasm") });
+const font = new URLSearchParams(location.search).get("font") || "NotoSansMath-Regular.otf";
+document.querySelector("th:last-child").textContent = `formel (${font})`;
+const renderer = new MathRenderer(await bytes("../../fonts/" + font));
+// 1.21em: the size KaTeX gives its formulas.
+const formel = (tex, display) => {
+  const r = renderer.render_latex(tex, display);
+  try { return inlineHtml(r, { display, size: "1.21em" }); } finally { r.free(); }
+};
+let failures = 0;
+for (const cell of cells) {
+  try {
+    cell.f.innerHTML = cell.display === "text"
+      ? cell.tex.replace(/\$([^$]+)\$/g, (_, t) => formel(t, false))
+      : formel(cell.tex, cell.display);
+  } catch (e) {
+    failures++;
+    cell.f.innerHTML = `<span class="err">${String(e)}</span>`;
+  }
+}
+document.getElementById("status").textContent = `${cells.length} formules, ${failures} refusée(s) par formel.`;
+</script>
+</body>
+</html>
