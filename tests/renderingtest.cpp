@@ -21,6 +21,7 @@ private Q_SLOTS:
     {
         createFixture();
     }
+    void drawsDiagramsDarkInADarkPreview();
     void rendersCodimdExtensions();
     void rendersObsidianSyntax();
     void rendersMathLikeMathJax();
@@ -34,6 +35,31 @@ private Q_SLOTS:
     void saysWhenARenderTakesLong();
     void survivesElementsNamedLikeDocumentMethods();
 };
+
+// The page learns it is dark from the same call that gives it its dark colors. Mermaid and
+// the code highlighting read that, and draw light on a dark page when it is missed.
+void RenderingTest::drawsDiagramsDarkInADarkPreview()
+{
+    Settings *settings = Settings::self();
+    const auto restore = qScopeGuard([settings, source = settings->colorSource(), variant = settings->githubVariant()]() {
+        settings->setColorSource(source);
+        settings->setGithubVariant(variant);
+    });
+    settings->setColorSource(Settings::GitHub);
+    settings->setGithubVariant(Settings::Dark);
+
+    const std::unique_ptr<KTextEditor::Document> doc(openDocument());
+    QTRY_VERIFY(doc->text().contains(SampleBodyLine));
+    auto preview = std::make_unique<PreviewWidget>(nullptr, nullptr, doc.get());
+    QVERIFY(waitForPageText(preview.get(), SampleBodyLine));
+    QCOMPARE(evalJs(preview.get(), QStringLiteral("document.documentElement.getAttribute('data-pv-scheme')")), QStringLiteral("dark"));
+
+    doc->setText(QStringLiteral("```mermaid\ngraph LR\n  A --> B\n```\n"));
+    QTRY_COMPARE_WITH_TIMEOUT(evalJs(preview.get(), QStringLiteral("document.querySelectorAll('pre.mermaid svg').length")), QStringLiteral("1"), PageTimeoutMs);
+    // Mermaid's light theme fills a box with rgb(236, 236, 255). A box not found reads as no color.
+    const QString fill = evalJs(preview.get(), QStringLiteral("getComputedStyle(document.querySelector('pre.mermaid svg .node rect')).fill"));
+    QVERIFY2(fill.startsWith(QLatin1String("rgb")) && fill != QLatin1String("rgb(236, 236, 255)"), qPrintable(fill));
+}
 
 // The libraries tested here come from qrc rather than the inlined page: the markdown-it plugins
 // and KaTeX at page start, Mermaid on demand. A library that failed to load leaves its
