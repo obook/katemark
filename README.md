@@ -105,8 +105,8 @@ Matija Šuklje maintains the Arch Linux package.
 Olivier Belleux (Wolfheri) made the openSUSE package and Christophe Marin
 added it to `KDE:Extra`.
 
-The bundled libraries and their licenses are listed in
-[THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+[THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) lists the bundled libraries and their
+licenses.
 
 ## License
 

@@ -31,7 +31,7 @@ WebEngine, so the runtime comes with the plugin. It installs next to
 `kate.exe`, where Windows looks for the libraries a plugin needs.
 
 - Kate has to come from the [installer](https://kate-editor.org/get-it/).
-  The Microsoft Store version is not supported.
+  Katemark does not support the Microsoft Store version.
 - The build targets the Qt of Kate's own Windows build, 6.12 in November
   2026. `install.ps1` refuses to install on another version.
 - A workflow builds the zip. One user runs it on Windows 11, where the

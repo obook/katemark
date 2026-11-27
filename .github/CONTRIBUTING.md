@@ -24,7 +24,7 @@ QT_PLUGIN_PATH="$PWD/build/bin" kate some-file.md
 ```
 
 On Windows the plugin has to match the ABI of Kate's own build, and Kate ships no headers, so
-it is built with [KDE Craft](https://community.kde.org/Craft) and MSVC 2022.
+you build it with [KDE Craft](https://community.kde.org/Craft) and MSVC 2022.
 `.github/workflows/windows.yml` is the working recipe.
 
 ## Tests
@@ -39,8 +39,8 @@ ctest --test-dir build --output-on-failure
 
 On a desktop they open windows that take the keyboard: do not type while they run, or run them
 without a display, `QT_QPA_PLATFORM=offscreen ctest --test-dir build`. The tests that read a
-PDF back need `pdftotext` (package `poppler-utils`, `poppler` on Arch) and are skipped without
-it.
+PDF back need `pdftotext` (package `poppler-utils`, `poppler` on Arch) and skip themselves
+without it.
 
 `./build.sh` runs them too, before it makes the Debian package.
 
@@ -52,9 +52,9 @@ every translation.
 
 ## Bundled libraries
 
-markdown-it, KaTeX and highlight.js are copied unchanged from their npm packages: the
+Copy markdown-it, KaTeX and highlight.js unchanged from their npm packages: the
 `dist/*.min.js` files of the first two, and `@highlightjs/cdn-assets` for highlight.js and its
-two GitHub themes. KaTeX's stylesheet is rebuilt with its fonts inlined:
+two GitHub themes. Rebuild KaTeX's stylesheet with its fonts inlined:
 
 ```bash
 npm pack katex@<version> && tar xzf katex-<version>.tgz
@@ -68,9 +68,9 @@ After an update, change the version in `THIRD-PARTY-NOTICES.md` and in the Debia
 
 A release needs its version in three places: `project(VERSION)` in `CMakeLists.txt`, `Version`
 in `src/katemark.json` and a new first entry in `packaging/changelog`, which the Debian packages
-carry. A tag `v<version>` that matches them starts three workflows: `release.yml` creates the GitHub release, `deb.yml`
-attaches the Debian packages for KDE neon and Ubuntu 26.04, `windows.yml` attaches the Windows
-zip.
+carry. A tag `v<version>` that matches them starts three workflows: `release.yml` creates the
+GitHub release, `deb.yml` attaches the Debian packages for KDE neon and Ubuntu 26.04 and
+`windows.yml` attaches the Windows zip.
 
 ## Source layout
 
@@ -105,8 +105,8 @@ and what to do when that limit is reached.
 The preview is a `QWebEngineView` inside a tool view created through
 `KTextEditor::MainWindow::createToolView`. The page is one HTML document whose assets are
 inlined or loaded from the plugin's own resources, so nothing loads over the network. Its
-content security policy lets only the plugin's scripts run: a document's raw HTML is shown,
-its scripts are not.
+content security policy lets only the plugin's scripts run: the page shows a document's raw
+HTML but not its scripts.
 
 ```mermaid
 flowchart LR
@@ -118,14 +118,15 @@ flowchart LR
     G["Editor theme / GitHub palette"] -->|"CSS variables"| C
 ```
 
-- Layout and typography come from `github-markdown-css`. Its color values are stripped out so
-  that the plugin drives them from CSS custom properties.
+- Layout and typography come from `github-markdown-css`, stripped of its color values: the
+  plugin sets the colors through CSS custom properties.
 - [markdown-it](https://github.com/markdown-it/markdown-it) parses the Markdown. Bundled
-  plugins add task-list checkboxes and GitHub alerts, and a leading YAML front matter is parsed
-  with [js-yaml](https://github.com/nodeca/js-yaml) into a metadata table.
+  plugins add task-list checkboxes and GitHub alerts, and
+  [js-yaml](https://github.com/nodeca/js-yaml) reads a leading YAML front matter into a
+  metadata table.
 - Code highlighting uses [highlight.js](https://github.com/highlightjs/highlight.js). In GitHub
-  style it uses the github and github-dark themes. In theme-matched style the token colors are
-  generated at runtime from `KTextEditor::View::theme()`, so they line up with the editor.
+  style it uses the github and github-dark themes. In theme-matched style the plugin generates
+  the token colors at runtime from `KTextEditor::View::theme()`, so they match the editor.
 
 Code highlighting is close to GitHub's without being identical, because GitHub uses its own
 server-side highlighter. [starry-night](https://github.com/wooorm/starry-night) is a faithful

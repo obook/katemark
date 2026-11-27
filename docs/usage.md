@@ -16,8 +16,8 @@
   Markdown, and stays open until you hide it.
 - Both exports use GitHub's light colors, whatever the preview shows. The
   HTML file embeds the pictures of the document's folder and holds no script.
-- Raw HTML in a document is shown, but its scripts, frames and forms are
-  not run.
+- The preview shows raw HTML from a document, but runs none of its
+  scripts, frames or forms.
 - Katemark saves a pasted picture as `image-<date>-<time>.png` in the folder
   of the document, so save the document first. It inserts the link
   `![](image-<date>-<time>.png)` and leaves the cursor between the brackets.

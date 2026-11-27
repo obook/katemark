@@ -45,8 +45,8 @@ holds 12 of them. Checked against Debian unstable on 2026-10-06:
 | Mermaid | 12.1.0 | `node-mermaid` 9.2.2 |
 
 Debian has an older version of KaTeX, highlight.js, markdown-it,
-markdown-it-sub and Mermaid, and Katemark has only been tested with the
-bundled ones. The `node-markdown-it` package is numbered 22.2.3 but its
+markdown-it-sub and Mermaid, and the tests only cover the bundled
+versions. The `node-markdown-it` package is numbered 22.2.3 but its
 changelog stops at markdown-it 10.0.0. Ubuntu 24.04 still had
 `libjs-markdown-it` and `libjs-markdown-it-sup`; Debian has dropped both
 since.

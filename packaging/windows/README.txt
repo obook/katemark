@@ -22,7 +22,7 @@ Requirements
   * Kate built on the Qt version this zip was built against. install.ps1 refuses another one and
     names both: Kate would not load the plugin and would not say why.
 
-The Microsoft Store version of Kate is not supported: Windows locks its install directory.
+Katemark does not support the Microsoft Store version of Kate: Windows locks its install directory.
 
 
 Installing
