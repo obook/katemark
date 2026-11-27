@@ -40,6 +40,21 @@ A picture at a chosen width, with `![[image.png|300]]`:
 
 ![[image.png|300]]
 
+## Block ids
+
+A paragraph named by its id, which stays in the source. ^first-paragraph
+
+> A quotation named on the line under it.
+
+^the-quote
+
+Links to a block: [[#^first-paragraph]], [[#^the-quote|the quotation]].
+
+## Highlight colors
+
+==🔴Important==, ==🟠follow up==, ==🟡remember this==, ==🟢completed==,
+==🔵reference==, ==🟣idea== and a plain ==highlight==.
+
 ## Comments
 
 This text shows. %%This one stays in the source only.%%

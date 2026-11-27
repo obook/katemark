@@ -93,7 +93,9 @@ void RenderingTest::rendersObsidianSyntax()
 
     doc->setText(QStringLiteral("> [!faq]- Why *now*?\n> the folded answer\n\n> [!bug]\n> the bug line\n\n"
                                 "See [[Other Note|the other]] and ![[%1|40]] %%hidden words%% end.\n\n%%\na hidden block\n%%\n\n"
-                                "> [!théorème]\n> a teaching block\n\n> [!lem]\n> a short name\n\n![](%1){width=50%} ![](%1){#fig:a width=\"30%\"} and ![](%1){.wide}\n\nlast line\n")
+                                "> [!théorème]\n> a teaching block\n\n> [!lem]\n> a short name\n\n![](%1){width=50%} ![](%1){#fig:a width=\"30%\"} and ![](%1){.wide}\n\n"
+                                "a named paragraph ^para-1\n\n> [!note]\n> a named callout\n\n^callout-1\n\n- a named item ^item-1\n\n"
+                                "go to [[#^para-1]] and ==\U0001F534red== words\n\nlast line\n")
                      .arg(ImageName));
     QVERIFY(waitForPageText(preview.get(), QLatin1String("last line")));
     QCOMPARE(countElements(preview.get(), "details.markdown-alert:not([open]) > summary.markdown-alert-title > em"), 1);
@@ -114,6 +116,14 @@ void RenderingTest::rendersObsidianSyntax()
     QVERIFY2(!text.contains(QLatin1String("width=")) && text.contains(QLatin1String("{.wide}")), qPrintable(text));
     QVERIFY(text.contains(QLatin1String("the other")));
     QVERIFY2(!text.contains(QLatin1String("hidden")), qPrintable(text));
+    // Block ids leave the page and name their block: the paragraph, the callout above a
+    // lone marker, the item of a tight list. A wiki link to one keeps the caret.
+    QCOMPARE(countElements(preview.get(), "p[id=\"^para-1\"], div.markdown-alert[id=\"^callout-1\"], li[id=\"^item-1\"]"), 3);
+    QVERIFY2(!text.contains(QLatin1String("paragraph ^")) && !text.contains(QLatin1String("^callout")) && !text.contains(QLatin1String("item ^")),
+             qPrintable(text));
+    QCOMPARE(evalJs(preview.get(), QStringLiteral("document.querySelector('a.wikilink[href^=\"#\"]').getAttribute('href')")), QStringLiteral("#%5Epara-1"));
+    // A color emoji after "==" colors the highlight and leaves the text.
+    QCOMPARE(evalJs(preview.get(), QStringLiteral("document.querySelector('mark.highlight-red').textContent")), QStringLiteral("red"));
 
     delete doc;
 }

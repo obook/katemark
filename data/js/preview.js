@@ -94,9 +94,11 @@
     } else {
       md.use(katemark.wikiLinks);
       md.use(katemark.comments);
+      md.use(katemark.blockIds);
       md.use(katemark.imageSize);
       // markdown-it plugins: ==mark==, ++ins++, H~2~O, 19^th^.
       md.use(window.markdownitMark);
+      md.use(katemark.highlightColors);
       md.use(window.markdownitIns);
       md.use(window.markdownitSub);
       md.use(window.markdownitSup);

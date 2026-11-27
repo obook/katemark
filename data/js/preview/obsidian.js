@@ -1,5 +1,6 @@
 // obsidian.js
-// Obsidian syntax: wiki links, image embeds with a size, %%comments%%.
+// Obsidian syntax: wiki links, image embeds with a size, %%comments%%, block ids,
+// highlight colors.
 // The callouts are in callouts.js, with the GitHub alerts they extend.
 //
 // Part of the preview page: adds its functions to window.katemark (see core.js).
@@ -63,7 +64,10 @@
         var hasExtension = /\.\w+$/.test(file);
         href = encodeURI(hasExtension ? file : file + ".md");
       }
-      if (heading) {
+      // "#^id" points at a block named by blockIds below, whose id keeps the caret.
+      if (heading.charAt(0) === "^") {
+        href += "#" + encodeURIComponent(heading);
+      } else if (heading) {
         href += "#" + encodeURIComponent(headingSlug(heading));
       }
 
@@ -167,6 +171,84 @@
     }
   }
 
+  // Obsidian block ids: " ^id" at the end of a paragraph or of a list item names it, and
+  // "^id" alone in a paragraph names the block just above it (a quote, a callout, a
+  // table, a list). The marker leaves the page and the block gets the id "^id", which
+  // [[Note#^id]] points at.
+  function blockIds(md) {
+    var BLOCK_ID = /(?:^|\s+)\^([A-Za-z0-9-]+)$/;
+
+    // The token that opens the block ending at tokens[last], or the block itself when it
+    // holds no other (a rule, a code block).
+    function blockEndingAt(tokens, last) {
+      var end = tokens[last];
+      if (!end || end.nesting !== -1) {
+        return end;
+      }
+      for (var i = last - 1; i >= 0; i--) {
+        if (tokens[i].nesting === 1 && tokens[i].level === end.level) {
+          return tokens[i];
+        }
+      }
+      return null;
+    }
+
+    // After the blocks are cut and before their text is parsed, so that the marker is
+    // still plain text at the end of the paragraph.
+    md.core.ruler.after("block", "block_id", function (state) {
+      var tokens = state.tokens;
+      for (var i = 1; i < tokens.length; i++) {
+        var inline = tokens[i];
+        if (inline.type !== "inline" || tokens[i - 1].type !== "paragraph_open") {
+          continue;
+        }
+        var match = BLOCK_ID.exec(inline.content);
+        if (!match) {
+          continue;
+        }
+        inline.content = inline.content.slice(0, match.index);
+        var target = tokens[i - 1];
+        if (!inline.content) {
+          tokens.splice(i - 1, 3); // the paragraph held the marker only
+          target = blockEndingAt(tokens, i - 2);
+          i -= 2;
+        } else if (target.hidden) {
+          target = tokens[i - 2]; // the <li> of a tight list, which renders no <p>
+        }
+        if (target) {
+          target.attrSet("id", "^" + match[1]);
+        }
+      }
+    });
+  }
+
+  // Obsidian highlight colors: a color emoji right after "==" gives the highlight that
+  // color, ==🔴Important==. Runs after markdown-it-mark has made the <mark> tokens.
+  function highlightColors(md) {
+    var COLORS = { "🔴": "red", "🟠": "orange", "🟡": "yellow", "🟢": "green", "🔵": "blue", "🟣": "purple" };
+
+    md.core.ruler.after("inline", "highlight_color", function (state) {
+      state.tokens.forEach(function (block) {
+        if (block.type !== "inline") {
+          return;
+        }
+        block.children.forEach(function (token, i) {
+          var text = block.children[i + 1];
+          if (token.type !== "mark_open" || !text || text.type !== "text") {
+            return;
+          }
+          var emoji = text.content.slice(0, 2); // each of these emoji is two UTF-16 units
+          if (COLORS[emoji]) {
+            text.content = text.content.slice(2);
+            token.attrSet("class", "highlight-" + COLORS[emoji]);
+          }
+        });
+      });
+    });
+  }
+
   katemark.wikiLinks = wikiLinks;
+  katemark.blockIds = blockIds;
+  katemark.highlightColors = highlightColors;
   katemark.comments = comments;
 })();
