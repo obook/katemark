@@ -38,6 +38,7 @@ void PreviewWidget::loadPage()
 {
     if (m_doc) {
         m_url = m_doc->url();
+        m_mermaid = isMermaid(m_doc);
     }
     const QString root = m_url.isLocalFile() ? QFileInfo(m_url.toLocalFile()).absolutePath() : QString();
     m_guard->setRoot(root);

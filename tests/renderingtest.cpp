@@ -23,6 +23,7 @@ private Q_SLOTS:
     }
     void drawsDiagramsDarkInADarkPreview();
     void rendersCodimdExtensions();
+    void rendersAMermaidFile();
     void rendersObsidianSyntax();
     void rendersMathLikeMathJax();
     void keepsOrdinaryMarkdownIntact();
@@ -59,6 +60,36 @@ void RenderingTest::drawsDiagramsDarkInADarkPreview()
     // Mermaid's light theme fills a box with rgb(236, 236, 255). A box not found reads as no color.
     const QString fill = evalJs(preview.get(), QStringLiteral("getComputedStyle(document.querySelector('pre.mermaid svg .node rect')).fill"));
     QVERIFY2(fill.startsWith(QLatin1String("rgb")) && fill != QLatin1String("rgb(236, 236, 255)"), qPrintable(fill));
+}
+
+// A .mmd file holds a bare diagram, here with a Markdown label in backticks. In Markdown mode
+// the same file is MultiMarkdown, which older syntax definitions assume for .mmd.
+void RenderingTest::rendersAMermaidFile()
+{
+    const QString path = m_dir.filePath(QStringLiteral("diagram.mmd"));
+    QFile file(path);
+    QVERIFY(file.open(QIODevice::WriteOnly));
+    QVERIFY(file.write("graph LR\n  A[\"`**bold** label`\"] --> B\n") > 0);
+    file.close();
+    std::unique_ptr<KTextEditor::Document> doc(KTextEditor::Editor::instance()->createDocument(nullptr));
+    QVERIFY(doc->openUrl(QUrl::fromLocalFile(path)));
+
+    auto preview = std::make_unique<PreviewWidget>(nullptr, nullptr, doc.get());
+    const QString diagrams = QStringLiteral("document.querySelectorAll('pre.mermaid svg').length");
+    QTRY_COMPARE_WITH_TIMEOUT(evalJs(preview.get(), diagrams), QStringLiteral("1"), PageTimeoutMs);
+    QVERIFY(evalJs(preview.get(), QStringLiteral("document.querySelector('pre.mermaid svg').textContent")).contains(QLatin1String("bold label")));
+
+    QVERIFY(doc->setHighlightingMode(QStringLiteral("Markdown")));
+    QTRY_COMPARE_WITH_TIMEOUT(evalJs(preview.get(), diagrams), QStringLiteral("0"), PageTimeoutMs);
+    QVERIFY(waitForPageText(preview.get(), QLatin1String("graph LR")));
+
+    // Closing the tab resets the mode: the diagram stays.
+    QVERIFY(doc->setHighlightingMode(QStringLiteral("Mermaid")));
+    QTRY_COMPARE_WITH_TIMEOUT(evalJs(preview.get(), diagrams), QStringLiteral("1"), PageTimeoutMs);
+    QVERIFY(doc->closeUrl());
+    doc.reset();
+    QTest::qWait(2000); // past the render debounce
+    QCOMPARE(evalJs(preview.get(), diagrams), QStringLiteral("1"));
 }
 
 // The libraries tested here come from qrc rather than the inlined page: the markdown-it plugins

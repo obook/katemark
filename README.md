@@ -69,7 +69,8 @@ installed Katemark from source before,
 1. Enable the plugin: Settings > Configure Kate > Plugins, check
    **Katemark**, click OK.
 2. Open a Markdown document: a file ending in `.md`, `.markdown` or `.mkd`.
-   A document whose highlighting mode is Markdown counts too.
+   A document whose highlighting mode is Markdown counts too. A Mermaid file
+   (`.mmd`, `.mermaid`) shows its diagram.
 3. Press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>M</kbd>. The preview opens on
    the right of the editor.
 

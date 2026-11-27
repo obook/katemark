@@ -14,6 +14,8 @@
 #include <QString>
 #include <QUrl>
 
+#include <KTextEditor/Document>
+
 inline QString readAsset(const QString &path)
 {
     QFile f(path);
@@ -34,6 +36,31 @@ inline QString jsLiteral(const QString &s)
 inline QString compactJson(const QJsonObject &obj)
 {
     return QString::fromUtf8(QJsonDocument(obj).toJson(QJsonDocument::Compact));
+}
+
+// A document holding one Mermaid diagram and no Markdown. The mode decides first: older
+// syntax definitions give .mmd, also a MultiMarkdown extension, to Markdown.
+inline bool isMermaid(KTextEditor::Document *doc)
+{
+    const QString mode = doc->highlightingMode();
+    if (mode.compare(QLatin1String("Mermaid"), Qt::CaseInsensitive) == 0) {
+        return true;
+    }
+    if (mode.compare(QLatin1String("Markdown"), Qt::CaseInsensitive) == 0) {
+        return false;
+    }
+    const QString path = doc->url().path();
+    return path.endsWith(QLatin1String(".mmd"), Qt::CaseInsensitive) || path.endsWith(QLatin1String(".mermaid"), Qt::CaseInsensitive);
+}
+
+// The diagram as a Markdown code block. An empty one stays empty: Mermaid would show an error.
+// ponytail: a line of three backticks in the diagram ends the block; a longer fence if one does.
+inline QString mermaidAsMarkdown(const QString &diagram)
+{
+    if (diagram.trimmed().isEmpty()) {
+        return diagram;
+    }
+    return QLatin1String("```mermaid\n") + diagram + QLatin1String("\n```\n");
 }
 
 // "//host/share/x" or "\\host\share\x": a file on another machine under Windows. Looking

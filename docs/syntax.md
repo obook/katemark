@@ -9,7 +9,7 @@
 | MkDocs | `!!! note "Title"` admonitions with an indented body, `??? note` for a folded one, `???+ note` for one that starts open | Python-Markdown's `admonition` extension, Material for MkDocs; `???` comes from `pymdownx.details` |
 | Teaching | Callouts `definition`, `theorem`, `lemma`, `proposition`, `corollary`, `proof`, `exercise`, `solution`, `remark`... and their short names (`def`, `thm`, `pf`...), plus `method`; also under their French names, with or without accents (`théorème`, `propriété`, `démonstration`, `correction`...); a picture's size, `![](image.png){width=50%}` | Callouts: the Obsidian plugin [Academic Notes](https://github.com/Kristal-Boltinn/academic-notes/wiki/Mathematical-environments); sizes: Pandoc |
 | Math | `$...$`, `$$...$$`, `\(...\)` and `\[...\]`, rendered by [KaTeX](https://github.com/KaTeX/KaTeX) | |
-| Diagrams | [Mermaid](https://github.com/mermaid-js/mermaid) in ` ```mermaid ` blocks | |
+| Diagrams | [Mermaid](https://github.com/mermaid-js/mermaid) in ` ```mermaid ` blocks, and Mermaid files (`.mmd`, `.mermaid`) | |
 
 - Obsidian links resolve against the folder of the document, not across a
   vault.

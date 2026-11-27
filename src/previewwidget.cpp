@@ -223,6 +223,15 @@ void PreviewWidget::attachDocument(KTextEditor::Document *doc, KTextEditor::View
         connect(doc, &KTextEditor::Document::textChanged, this, &PreviewWidget::scheduleRender);
         connect(doc, &KTextEditor::Document::documentUrlChanged, this, &PreviewWidget::onDocumentUrlChanged);
         connect(doc, &KTextEditor::Document::aboutToClose, this, &PreviewWidget::snapshotSource);
+        // Switching the mode between Markdown and Mermaid changes how the same text reads.
+        // Closing resets the mode once the url is cleared: that one is not a switch.
+        connect(doc, &KTextEditor::Document::highlightingModeChanged, this, [this]() {
+            if (m_doc->url().isEmpty() && !m_url.isEmpty()) {
+                return;
+            }
+            m_mermaid = isMermaid(m_doc);
+            scheduleRender();
+        });
     }
     // Reloading the page costs a blank flash and the diagrams already drawn. It is only
     // needed when the document's folder changes, because relative images and the file
@@ -230,6 +239,7 @@ void PreviewWidget::attachDocument(KTextEditor::Document *doc, KTextEditor::View
     const QUrl previousBase = baseUrl();
     if (doc) {
         m_url = doc->url();
+        m_mermaid = isMermaid(doc);
     }
     if (m_loaded && baseUrl() == previousBase) {
         render();
@@ -340,7 +350,8 @@ void PreviewWidget::render()
     if (m_doc) {
         m_text = m_doc->text();
     }
-    runJs(QStringLiteral("window.__setMarkdown(%1);").arg(jsLiteral(m_text)));
+    const QString markdown = m_mermaid ? mermaidAsMarkdown(m_text) : m_text;
+    runJs(QStringLiteral("window.__setMarkdown(%1);").arg(jsLiteral(markdown)));
     syncFromEditor();
 }
 
