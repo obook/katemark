@@ -203,12 +203,12 @@ void PluginView::togglePreview()
 }
 
 // Point the preview at the active view's document. Only while the tool view is showing,
-// so the web view is not created until the preview is first used. A non-Markdown view
-// leaves the last preview in place.
+// so the web view is not created until the preview is first used. A view that is neither
+// Markdown nor Mermaid leaves the last preview in place.
 void PluginView::syncPreview()
 {
     KTextEditor::View *view = m_mainWindow->activeView();
-    if (!m_toolView->isVisible() || !view || !isMarkdown(view->document())) {
+    if (!m_toolView->isVisible() || !view || !(isMarkdown(view->document()) || isMermaid(view->document()))) {
         return;
     }
     if (m_preview) {
