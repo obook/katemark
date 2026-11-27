@@ -1,0 +1,7 @@
+%% A Mermaid file holds one diagram and nothing else. The preview draws it.
+flowchart LR
+  write["`Write the **diagram**`"] --> save[Save as .mmd]
+  save --> preview{Preview open?}
+  preview -- yes --> look[Look at it beside the editor]
+  preview -- no --> keys[Press Ctrl+Shift+M]
+  keys --> look
