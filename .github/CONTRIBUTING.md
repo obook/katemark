@@ -14,7 +14,7 @@ the whole diff.
 ## Building and running
 
 The build dependencies and the three ways to install are in the
-[README](../README.md#build-from-source). To try a change, run a Kate that loads the freshly
+[installation guide](../docs/install.md#build-from-source). To try a change, run a Kate that loads the freshly
 built plugin without installing it:
 
 ```bash

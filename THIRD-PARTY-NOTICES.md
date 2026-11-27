@@ -2,6 +2,29 @@
 
 This plugin bundles the following libraries in `data/`. Their licenses are reproduced below.
 
+| Library | Version | License | URL |
+|---|---|---|---|
+| markdown-it | 14.1.0 | MIT | https://github.com/markdown-it/markdown-it |
+| markdown-it-container | 4.0.0 | MIT | https://github.com/markdown-it/markdown-it-container |
+| markdown-it-mark | 4.0.0 | MIT | https://github.com/markdown-it/markdown-it-mark |
+| markdown-it-ins | 4.0.0 | MIT | https://github.com/markdown-it/markdown-it-ins |
+| markdown-it-sub | 2.0.0 | MIT | https://github.com/markdown-it/markdown-it-sub |
+| markdown-it-sup | 2.0.0 | MIT | https://github.com/markdown-it/markdown-it-sup |
+| markdown-it-footnote | 4.0.0 | MIT | https://github.com/markdown-it/markdown-it-footnote |
+| markdown-it-emoji | 3.1.0 | MIT | https://github.com/markdown-it/markdown-it-emoji |
+| markdown-it-texmath | 1.0.0 | MIT | https://github.com/goessner/markdown-it-texmath |
+| KaTeX | 0.19.0 | MIT (fonts: SIL OFL 1.1) | https://github.com/KaTeX/KaTeX |
+| Mermaid | 12.1.0 | MIT | https://github.com/mermaid-js/mermaid |
+| highlight.js | 11.10.0 | BSD-3-Clause | https://github.com/highlightjs/highlight.js |
+| js-yaml | 4.1.0 | MIT | https://github.com/nodeca/js-yaml |
+| github-markdown-css, by Sindre Sorhus | | MIT | https://github.com/sindresorhus/github-markdown-css |
+
+This fork reimplements the Obsidian syntax and three parts of CodiMD: its
+alert areas, its spoiler and its table of contents. No code comes from
+either project. The other text extensions come from the markdown-it plugins
+listed above. The colors of the CodiMD alert areas are those of [Bootstrap
+3](https://github.com/twbs/bootstrap) alerts (MIT).
+
 ## markdown-it
 
 `data/js/markdown-it.min.js`, MIT License.
