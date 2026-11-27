@@ -4,7 +4,7 @@ This plugin bundles the following libraries in `data/`. Their licenses are repro
 
 | Library | Version | License | URL |
 |---|---|---|---|
-| markdown-it | 14.1.0 | MIT | https://github.com/markdown-it/markdown-it |
+| markdown-it | 14.3.3 | MIT | https://github.com/markdown-it/markdown-it |
 | markdown-it-container | 4.0.0 | MIT | https://github.com/markdown-it/markdown-it-container |
 | markdown-it-mark | 4.0.0 | MIT | https://github.com/markdown-it/markdown-it-mark |
 | markdown-it-ins | 4.0.0 | MIT | https://github.com/markdown-it/markdown-it-ins |
@@ -13,9 +13,9 @@ This plugin bundles the following libraries in `data/`. Their licenses are repro
 | markdown-it-footnote | 4.0.0 | MIT | https://github.com/markdown-it/markdown-it-footnote |
 | markdown-it-emoji | 3.1.0 | MIT | https://github.com/markdown-it/markdown-it-emoji |
 | markdown-it-texmath | 1.0.0 | MIT | https://github.com/goessner/markdown-it-texmath |
-| KaTeX | 0.19.0 | MIT (fonts: SIL OFL 1.1) | https://github.com/KaTeX/KaTeX |
+| KaTeX | 0.19.1 | MIT (fonts: SIL OFL 1.1) | https://github.com/KaTeX/KaTeX |
 | Mermaid | 12.1.0 | MIT | https://github.com/mermaid-js/mermaid |
-| highlight.js | 11.10.0 | BSD-3-Clause | https://github.com/highlightjs/highlight.js |
+| highlight.js | 11.12.0 | BSD-3-Clause | https://github.com/highlightjs/highlight.js |
 | js-yaml | 4.1.0 | MIT | https://github.com/nodeca/js-yaml |
 | github-markdown-css, by Sindre Sorhus | | MIT | https://github.com/sindresorhus/github-markdown-css |
 

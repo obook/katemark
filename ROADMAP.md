@@ -34,9 +34,9 @@ holds 12 of them. Checked against Debian unstable on 2026-10-06:
 
 | Library | Bundled | Debian unstable |
 |---|---|---|
-| KaTeX | 0.19.0 | `libjs-katex`, `fonts-katex` 0.16.10 |
-| highlight.js | 11.10.0 | `libjs-highlight.js` 10.7.3 |
-| markdown-it | 14.1.0 | `node-markdown-it` 10.0.0, no `libjs` package |
+| KaTeX | 0.19.1 | `libjs-katex`, `fonts-katex` 0.16.10 |
+| highlight.js | 11.12.0 | `libjs-highlight.js` 10.7.3 |
+| markdown-it | 14.3.3 | `node-markdown-it` 10.0.0, no `libjs` package |
 | markdown-it-sub | 2.0.0 | `libjs-markdown-it-sub` 1.0.0 |
 | markdown-it-sup | 2.0.0 | none |
 | js-yaml | 4.1.0 | `node-js-yaml` 4.3.2 |
