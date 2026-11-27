@@ -11,9 +11,9 @@
 | Zoom the preview, diagrams included | <kbd>Ctrl</kbd> + mouse wheel over it; <kbd>Ctrl</kbd>+<kbd>0</kbd> or **Reset Zoom** in its context menu puts it back to 100% |
 | Paste a picture | Copy an image, then paste in the editor |
 
-- The preview follows the active Markdown document. It keeps its last
-  content when you close that document or switch to one that is not
-  Markdown, and stays open until you hide it.
+- The preview follows the active Markdown document or Mermaid file. It
+  keeps its last content when you close that document or switch to one
+  that is neither, and stays open until you hide it.
 - Both exports use GitHub's light colors, whatever the preview shows. The
   HTML file embeds the pictures of the document's folder and holds no script.
 - The preview shows raw HTML from a document, but runs none of its
@@ -66,7 +66,7 @@ enable the plugin.
 | Problem | Cause and remedy |
 |---|---|
 | Katemark is not in the list of plugins | Check in Help > About Kate that Kate uses KDE Frameworks 6. After a user-local install, log out and back in |
-| The preview stays empty or shows another document | The active document is not Markdown: see [First steps](../README.md#first-steps) |
+| The preview stays empty or shows another document | The active document is neither Markdown nor a Mermaid file: see [First steps](../README.md#first-steps) |
 | `apt` reports unmet dependencies | The package is for another system: see [Install](../README.md#install) |
 | A picture from the web is missing | Enable "Load media previews from remote URLs" in the [settings](#settings) |
 | <kbd>Ctrl</kbd>+<kbd>B</kbd> does not make bold | See [Editing shortcuts](#editing-shortcuts) |
