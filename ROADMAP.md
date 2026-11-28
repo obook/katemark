@@ -2,6 +2,12 @@
 
 Ideas and open work, not scheduled yet.
 
+## Known limits
+
+- [ ] Format Table counts widths in characters, so a column holding
+      Chinese, Japanese or emoji comes out ragged. Count display cells
+      instead.
+
 ## Distribution packages
 
 Today CPack makes the `.deb` files and they sit on the GitHub release page,

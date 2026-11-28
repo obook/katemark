@@ -15,7 +15,7 @@
 
   // Obsidian wiki links: [[Note]], [[Note|label]], [[Note#Heading]], and image embeds
   // ![[image.png|300]] or ![[image.png|300x200]].
-  // ponytail: targets resolve against the document's folder, not across a whole vault,
+  // Limit: targets resolve against the document's folder, not across a whole vault,
   // and embedding a note shows a link to it. Resolve by file name on the host side if
   // vault-wide links are needed.
   function wikiLinks(md) {

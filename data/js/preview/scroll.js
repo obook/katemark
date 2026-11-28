@@ -57,7 +57,7 @@
     hostScrollY = window.scrollY; // read back: the page clamps y to its own height
   }
 
-  // ponytail: the top line of one side maps to the top of the other and the two ends are
+  // Limit: the top line of one side maps to the top of the other and the two ends are
   // pinned together, so the last screenful snaps instead of gliding. Map on the scroll
   // fraction of both viewports if that jump gets in the way.
   window.__scrollToLine = function (line, atEnd) {
@@ -70,7 +70,7 @@
       return;
     }
     // The last block that starts at or before the line; blocks come in source order.
-    // ponytail: every block is looked at on each scroll of the editor. Keep the list
+    // Limit: every block is looked at on each scroll of the editor. Keep the list
     // from one render to the next and search it by halves if long documents lag.
     var block = null;
     katemark.byId("content").querySelectorAll(BLOCKS).forEach(function (candidate) {

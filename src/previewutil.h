@@ -54,7 +54,7 @@ inline bool isMermaid(KTextEditor::Document *doc)
 }
 
 // The diagram as a Markdown code block. An empty one stays empty: Mermaid would show an error.
-// ponytail: a line of three backticks in the diagram ends the block; a longer fence if one does.
+// Limit: a line of three backticks in the diagram ends the block; a longer fence if one does.
 inline QString mermaidAsMarkdown(const QString &diagram)
 {
     if (diagram.trimmed().isEmpty()) {

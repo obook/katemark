@@ -84,7 +84,7 @@ QString padDelimiter(int width, const QString &delimiter)
 }
 
 // The lines of the table, each cell padded to the width of its column.
-// ponytail: widths are counted in characters, so a column holding wide characters
+// Limit: widths are counted in characters, so a column holding wide characters
 // (Chinese, Japanese, emoji) comes out ragged. Count display cells if that matters.
 QStringList alignedRows(QList<QStringList> rows, const QString &indent)
 {

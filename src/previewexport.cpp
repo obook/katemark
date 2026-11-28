@@ -176,7 +176,7 @@ void PreviewWidget::endExport(bool ok)
         applyTheme();
         whenSettled(
             [this, run = m_exportRun]() {
-                // ponytail: settled is not yet painted, so the picture stays one interval
+                // Limit: settled is not yet painted, so the picture stays one interval
                 // more. A slow machine could still show a light frame; watch the page's
                 // pixels if it does.
                 QTimer::singleShot(SettleIntervalMs, this, [this, run]() {

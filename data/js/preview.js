@@ -24,7 +24,7 @@
   var escapeHtml = katemark.escapeHtml;
 
   // GitHub strikes text between single tildes too; markdown-it only knows "~~".
-  // ponytail: the closing tilde is the next one, without the flanking rules of the
+  // Limit: the closing tilde is the next one, without the flanking rules of the
   // specification. Write a delimiter rule if a real document trips on it.
   function singleTildeStrike(md) {
     var TILDE = 0x7e;

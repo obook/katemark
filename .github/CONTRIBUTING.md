@@ -97,7 +97,7 @@ GitHub release, `deb.yml` attaches the Debian packages for KDE neon and Ubuntu 2
 | `docs/` | User documentation: installation, usage and syntax. The README links to it |
 | `tests/` | Five test programs; the four that need a preview share `testhelpers.h` |
 
-A comment that starts with `ponytail:` marks a shortcut taken on purpose: it names the limit
+A comment that starts with `Limit:` marks a shortcut taken on purpose: it names the limit
 and what to do when that limit is reached.
 
 ## How it works
