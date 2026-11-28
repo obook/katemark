@@ -11,6 +11,12 @@ set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDECompilerSettings NO_POLICY_SCOPE)
+include(KDEClangFormat)
+
+# "cmake --build build --target clang-format" applies the KDE style. ECM writes its
+# .clang-format into the sources at configure time, so .gitignore lists it.
+file(GLOB KATEMARK_CLANG_FORMAT_FILES src/*.cpp src/*.h tests/*.cpp tests/*.h)
+kde_clang_format(${KATEMARK_CLANG_FORMAT_FILES})
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
