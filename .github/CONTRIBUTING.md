@@ -44,6 +44,17 @@ without it.
 
 `./build.sh` runs them too, before it makes the Debian package.
 
+## Formatting
+
+The C++ follows the KDE style that ECM provides. Format it before a commit:
+
+```bash
+cmake --build build --target clang-format
+```
+
+The output varies a little between versions of clang-format, so the CI does not check it. A
+commit that only reformats goes in `.git-blame-ignore-revs`.
+
 ## Translations
 
 One file per language: `po/<language>/katemark.po`. After changing a string in the sources, run

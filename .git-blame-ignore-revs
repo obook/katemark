@@ -1,0 +1,5 @@
+# Commits that only change formatting. GitHub reads this file; for a local git blame:
+# git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# style: Apply the KDE clang-format style
+615aaa47a7a78cba2fe0045d02789d80eb5b586a
