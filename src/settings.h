@@ -18,11 +18,11 @@ class Settings : public QObject
     Q_OBJECT
 public:
     enum ColorSource {
-        GitHub,      // GitHub's own light/dark palette
+        GitHub, // GitHub's own light/dark palette
         Application, // match the active editor/system theme
     };
     enum GithubVariant {
-        Auto,  // follow the application palette (dark vs light)
+        Auto, // follow the application palette (dark vs light)
         Light,
         Dark,
     };

@@ -64,8 +64,8 @@ public:
             }
             return;
         }
-        const bool isMedia = info.resourceType() == QWebEngineUrlRequestInfo::ResourceTypeImage
-            || info.resourceType() == QWebEngineUrlRequestInfo::ResourceTypeMedia;
+        const bool isMedia =
+            info.resourceType() == QWebEngineUrlRequestInfo::ResourceTypeImage || info.resourceType() == QWebEngineUrlRequestInfo::ResourceTypeMedia;
         if (!(m_allowRemote && isMedia)) {
             info.block(true);
         }

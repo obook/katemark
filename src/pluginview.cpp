@@ -17,11 +17,11 @@
 
 #include <KActionCollection>
 #include <KLocalizedString>
-#include <KXMLGUIFactory>
 #include <KTextEditor/Document>
 #include <KTextEditor/MainWindow>
 #include <KTextEditor/Plugin>
 #include <KTextEditor/View>
+#include <KXMLGUIFactory>
 
 namespace
 {

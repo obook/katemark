@@ -40,9 +40,7 @@ QString rgba(const QColor &c, qreal a)
 
 QColor blend(const QColor &a, const QColor &b, qreal t)
 {
-    return QColor::fromRgbF(a.redF() + (b.redF() - a.redF()) * t,
-                            a.greenF() + (b.greenF() - a.greenF()) * t,
-                            a.blueF() + (b.blueF() - a.blueF()) * t);
+    return QColor::fromRgbF(a.redF() + (b.redF() - a.redF()) * t, a.greenF() + (b.greenF() - a.greenF()) * t, a.blueF() + (b.blueF() - a.blueF()) * t);
 }
 
 struct VarPair {
@@ -73,13 +71,19 @@ bool githubLookIsDark()
 QJsonObject githubVars(bool dark)
 {
     static const VarPair darkVars[] = {
-        {"--fgColor-default", "#f0f6fc"},     {"--fgColor-muted", "#9198a1"},
-        {"--fgColor-accent", "#4493f8"},      {"--fgColor-danger", "#f85149"},
-        {"--fgColor-success", "#3fb950"},     {"--fgColor-attention", "#d29922"},
-        {"--fgColor-done", "#ab7df8"},        {"--bgColor-default", "#0d1117"},
-        {"--bgColor-muted", "#151b23"},       {"--bgColor-neutral-muted", "#656c7633"},
+        {"--fgColor-default", "#f0f6fc"},
+        {"--fgColor-muted", "#9198a1"},
+        {"--fgColor-accent", "#4493f8"},
+        {"--fgColor-danger", "#f85149"},
+        {"--fgColor-success", "#3fb950"},
+        {"--fgColor-attention", "#d29922"},
+        {"--fgColor-done", "#ab7df8"},
+        {"--bgColor-default", "#0d1117"},
+        {"--bgColor-muted", "#151b23"},
+        {"--bgColor-neutral-muted", "#656c7633"},
         {"--bgColor-attention-muted", "#bb800926"},
-        {"--borderColor-default", "#3d444d"}, {"--borderColor-muted", "#3d444db3"},
+        {"--borderColor-default", "#3d444d"},
+        {"--borderColor-muted", "#3d444db3"},
         {"--borderColor-neutral-muted", "#3d444db3"},
         {"--borderColor-accent-emphasis", "#1f6feb"},
         {"--borderColor-attention-emphasis", "#9e6a03"},
@@ -88,13 +92,19 @@ QJsonObject githubVars(bool dark)
         {"--borderColor-done-emphasis", "#8957e5"},
     };
     static const VarPair lightVars[] = {
-        {"--fgColor-default", "#1f2328"},     {"--fgColor-muted", "#59636e"},
-        {"--fgColor-accent", "#0969da"},      {"--fgColor-danger", "#d1242f"},
-        {"--fgColor-success", "#1a7f37"},     {"--fgColor-attention", "#9a6700"},
-        {"--fgColor-done", "#8250df"},        {"--bgColor-default", "#ffffff"},
-        {"--bgColor-muted", "#f6f8fa"},       {"--bgColor-neutral-muted", "#818b981f"},
+        {"--fgColor-default", "#1f2328"},
+        {"--fgColor-muted", "#59636e"},
+        {"--fgColor-accent", "#0969da"},
+        {"--fgColor-danger", "#d1242f"},
+        {"--fgColor-success", "#1a7f37"},
+        {"--fgColor-attention", "#9a6700"},
+        {"--fgColor-done", "#8250df"},
+        {"--bgColor-default", "#ffffff"},
+        {"--bgColor-muted", "#f6f8fa"},
+        {"--bgColor-neutral-muted", "#818b981f"},
         {"--bgColor-attention-muted", "#fff8c5"},
-        {"--borderColor-default", "#d1d9e0"}, {"--borderColor-muted", "#d1d9e0b3"},
+        {"--borderColor-default", "#d1d9e0"},
+        {"--borderColor-muted", "#d1d9e0b3"},
         {"--borderColor-neutral-muted", "#d1d9e0b3"},
         {"--borderColor-accent-emphasis", "#0969da"},
         {"--borderColor-attention-emphasis", "#9a6700"},
@@ -165,8 +175,9 @@ QString applicationCodeCss(const Theme &theme)
     css += QStringLiteral(".hljs{color:%1;background:transparent}").arg(hex(fg));
     css += QStringLiteral(".hljs-comment,.hljs-quote{color:%1;font-style:italic}").arg(tokenColor(Theme::Comment));
     css += QStringLiteral(".hljs-doctag,.hljs-meta .hljs-doctag{color:%1}").arg(tokenColor(Theme::Documentation));
-    css += QStringLiteral(".hljs-keyword,.hljs-selector-tag,.hljs-literal,.hljs-section,.hljs-name,.hljs-tag,.hljs-meta "
-                          ".hljs-keyword{color:%1}")
+    css += QStringLiteral(
+               ".hljs-keyword,.hljs-selector-tag,.hljs-literal,.hljs-section,.hljs-name,.hljs-tag,.hljs-meta "
+               ".hljs-keyword{color:%1}")
                .arg(tokenColor(Theme::Keyword));
     css += QStringLiteral(".hljs-built_in,.hljs-builtin-name,.hljs-title.class_,.hljs-class .hljs-title{color:%1}").arg(tokenColor(Theme::BuiltIn));
     css += QStringLiteral(".hljs-type,.hljs-class{color:%1}").arg(tokenColor(Theme::DataType));
@@ -174,8 +185,9 @@ QString applicationCodeCss(const Theme &theme)
     css += QStringLiteral(".hljs-number{color:%1}").arg(tokenColor(Theme::DecVal));
     css += QStringLiteral(".hljs-symbol,.hljs-bullet,.hljs-link,.hljs-char,.hljs-char.escape_{color:%1}").arg(tokenColor(Theme::Char));
     css += QStringLiteral(".hljs-title,.hljs-title.function_,.hljs-function .hljs-title{color:%1}").arg(tokenColor(Theme::Function));
-    css += QStringLiteral(".hljs-variable,.hljs-template-variable,.hljs-attr,.hljs-attribute,.hljs-selector-attr,.hljs-selector-class,"
-                          ".hljs-selector-id{color:%1}")
+    css += QStringLiteral(
+               ".hljs-variable,.hljs-template-variable,.hljs-attr,.hljs-attribute,.hljs-selector-attr,.hljs-selector-class,"
+               ".hljs-selector-id{color:%1}")
                .arg(tokenColor(Theme::Variable));
     css += QStringLiteral(".hljs-meta{color:%1}").arg(tokenColor(Theme::Preprocessor));
     css += QStringLiteral(".hljs-deletion{color:%1}").arg(tokenColor(Theme::Error));

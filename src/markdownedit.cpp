@@ -76,8 +76,8 @@ void toggleInlineMarker(KTextEditor::View *view, const QString &marker)
 
     // All the changes below count as one for undo.
     KTextEditor::Document::EditingTransaction transaction(doc);
-    const bool markedOutside = repeatsHoldMarker(repeatCountBefore(lineText, start, markerChar), marker)
-        && repeatsHoldMarker(repeatCountAfter(lineText, end, markerChar), marker);
+    const bool markedOutside =
+        repeatsHoldMarker(repeatCountBefore(lineText, start, markerChar), marker) && repeatsHoldMarker(repeatCountAfter(lineText, end, markerChar), marker);
     const bool markedInside = text.size() > 2 * size && repeatsHoldMarker(repeatCountAfter(text, 0, markerChar), marker)
         && repeatsHoldMarker(repeatCountBefore(text, text.size(), markerChar), marker);
     if (markedOutside) {

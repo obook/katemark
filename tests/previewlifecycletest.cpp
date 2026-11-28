@@ -126,8 +126,9 @@ void PreviewLifecycleTest::runsNoScriptOfTheDocument()
     auto preview = std::make_unique<PreviewWidget>(nullptr, nullptr, doc);
     QVERIFY(waitForPageText(preview.get(), SampleBodyLine));
 
-    doc->setText(QStringLiteral("<img src=\"missing.png\" onerror=\"document.body.dataset.ran = 'yes'\">\n\n"
-                                "<svg onload=\"document.body.dataset.ran = 'yes'\"></svg>\n\nthe last line\n"));
+    doc->setText(
+        QStringLiteral("<img src=\"missing.png\" onerror=\"document.body.dataset.ran = 'yes'\">\n\n"
+                       "<svg onload=\"document.body.dataset.ran = 'yes'\"></svg>\n\nthe last line\n"));
     QVERIFY(waitForPageText(preview.get(), QLatin1String("the last line")));
     QTest::qWait(500); // time for the picture to fail and for its handler to run, were it allowed
     QCOMPARE(evalJs(preview.get(), QStringLiteral("document.body.dataset.ran || 'no'")), QStringLiteral("no"));

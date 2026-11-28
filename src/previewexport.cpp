@@ -73,7 +73,9 @@ QString embedLocalImages(const QString &html, const LocalFileGuard &guard)
 void printPdf(QWebEnginePage *page, const QString &path)
 {
     const QPageSize size(QLocale().measurementSystem() == QLocale::MetricSystem ? QPageSize::A4 : QPageSize::Letter);
-    page->printToPdf(path, QPageLayout(size, QPageLayout::Portrait, QMarginsF(ExportMarginMm, ExportMarginMm, ExportMarginMm, ExportMarginMm), QPageLayout::Millimeter));
+    page->printToPdf(
+        path,
+        QPageLayout(size, QPageLayout::Portrait, QMarginsF(ExportMarginMm, ExportMarginMm, ExportMarginMm, ExportMarginMm), QPageLayout::Millimeter));
 }
 
 // How many pages a PDF written by Chromium has, 0 when the file cannot be read. Chromium
@@ -105,11 +107,12 @@ QString standaloneHtml(const QString &title, const QString &body)
     for (auto it = light.begin(); it != light.end(); ++it) {
         vars += it.key() + QLatin1Char(':') + it.value().toString() + QLatin1Char(';');
     }
-    return QStringLiteral("<!DOCTYPE html>\n<html data-pv-scheme=\"light\" style=\"%1\">\n<head>\n<meta charset=\"utf-8\">\n"
-                          "<meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; img-src data: http: https: file:; "
-                          "media-src http: https: file:; style-src 'unsafe-inline'; font-src data:; base-uri 'none'; form-action 'none'\">\n"
-                          "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>%2</title>\n<style>%3</style>\n"
-                          "</head>\n<body>\n<article class=\"markdown-body\" id=\"content\">%4</article>\n</body>\n</html>\n")
+    return QStringLiteral(
+               "<!DOCTYPE html>\n<html data-pv-scheme=\"light\" style=\"%1\">\n<head>\n<meta charset=\"utf-8\">\n"
+               "<meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; img-src data: http: https: file:; "
+               "media-src http: https: file:; style-src 'unsafe-inline'; font-src data:; base-uri 'none'; form-action 'none'\">\n"
+               "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>%2</title>\n<style>%3</style>\n"
+               "</head>\n<body>\n<article class=\"markdown-body\" id=\"content\">%4</article>\n</body>\n</html>\n")
         .arg(vars, title.toHtmlEscaped(), css, body);
 }
 } // namespace
@@ -216,11 +219,12 @@ void PreviewWidget::onPdfPrinted(const QString &path, bool ok)
     }
     if (ok && !m_printsUnnumbered && pdfPageCount(path) == 1) {
         m_printsUnnumbered = true;
-        m_web->page()->runJavaScript(QStringLiteral("window.__setPageNumbers(false)"), [self = QPointer<PreviewWidget>(this), path, run = m_exportRun](const QVariant &) {
-            if (self && run == self->m_exportRun && self->isExporting()) {
-                printPdf(self->m_web->page(), path);
-            }
-        });
+        m_web->page()->runJavaScript(QStringLiteral("window.__setPageNumbers(false)"),
+                                     [self = QPointer<PreviewWidget>(this), path, run = m_exportRun](const QVariant &) {
+                                         if (self && run == self->m_exportRun && self->isExporting()) {
+                                             printPdf(self->m_web->page(), path);
+                                         }
+                                     });
         return;
     }
     endExport(ok);

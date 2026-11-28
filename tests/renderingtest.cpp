@@ -103,7 +103,8 @@ void RenderingTest::rendersCodimdExtensions()
     auto preview = std::make_unique<PreviewWidget>(nullptr, nullptr, doc);
     QVERIFY(waitForPageText(preview.get(), SampleBodyLine));
 
-    doc->setText(QStringLiteral(":::info\nthe boxed line\n:::\n\n==marked== and $a^2$\n\n> :warning: mind `:smile:` in code\n\n```mermaid\ngraph LR\n  A --> B\n```\n"));
+    doc->setText(
+        QStringLiteral(":::info\nthe boxed line\n:::\n\n==marked== and $a^2$\n\n> :warning: mind `:smile:` in code\n\n```mermaid\ngraph LR\n  A --> B\n```\n"));
     QVERIFY(waitForPageText(preview.get(), QLatin1String("the boxed line")));
     QCOMPARE(evalJs(preview.get(), QStringLiteral("document.querySelectorAll('.alert.alert-info, mark, .katex').length")), QStringLiteral("3"));
     // An emoji shortcode becomes the emoji, except inside code.
@@ -115,8 +116,9 @@ void RenderingTest::rendersCodimdExtensions()
     // A notch of Ctrl + wheel over the diagram zooms the whole article; half a notch, as a
     // touchpad sends, does not yet. Ctrl+0 puts it back, "à" on a French keyboard.
     const QString zoom = QStringLiteral("getComputedStyle(document.getElementById('content')).zoom");
-    const QString halfNotch = QStringLiteral("document.querySelector('pre.mermaid svg').dispatchEvent("
-                                             "new WheelEvent('wheel', { deltaY: -50, wheelDeltaY: 60, ctrlKey: true, bubbles: true, cancelable: true })); 1");
+    const QString halfNotch = QStringLiteral(
+        "document.querySelector('pre.mermaid svg').dispatchEvent("
+        "new WheelEvent('wheel', { deltaY: -50, wheelDeltaY: 60, ctrlKey: true, bubbles: true, cancelable: true })); 1");
     evalJs(preview.get(), halfNotch);
     QCOMPARE(evalJs(preview.get(), zoom), QStringLiteral("1"));
     evalJs(preview.get(), halfNotch);
@@ -148,11 +150,12 @@ void RenderingTest::rendersObsidianSyntax()
     auto preview = std::make_unique<PreviewWidget>(nullptr, nullptr, doc);
     QVERIFY(waitForPageText(preview.get(), SampleBodyLine));
 
-    doc->setText(QStringLiteral("> [!faq]- Why *now*?\n> the folded answer\n\n> [!bug]\n> the bug line\n\n"
-                                "See [[Other Note|the other]] and ![[%1|40]] %%hidden words%% end.\n\n%%\na hidden block\n%%\n\n"
-                                "> [!théorème]\n> a teaching block\n\n> [!lem]\n> a short name\n\n![](%1){width=50%} ![](%1){#fig:a width=\"30%\"} and ![](%1){.wide}\n\n"
-                                "a named paragraph ^para-1\n\n> [!note]\n> a named callout\n\n^callout-1\n\n- a named item ^item-1\n\n"
-                                "go to [[#^para-1]] and ==\U0001F534red== words\n\nlast line\n")
+    doc->setText(QStringLiteral(
+                     "> [!faq]- Why *now*?\n> the folded answer\n\n> [!bug]\n> the bug line\n\n"
+                     "See [[Other Note|the other]] and ![[%1|40]] %%hidden words%% end.\n\n%%\na hidden block\n%%\n\n"
+                     "> [!théorème]\n> a teaching block\n\n> [!lem]\n> a short name\n\n![](%1){width=50%} ![](%1){#fig:a width=\"30%\"} and ![](%1){.wide}\n\n"
+                     "a named paragraph ^para-1\n\n> [!note]\n> a named callout\n\n^callout-1\n\n- a named item ^item-1\n\n"
+                     "go to [[#^para-1]] and ==\U0001F534red== words\n\nlast line\n")
                      .arg(ImageName));
     QVERIFY(waitForPageText(preview.get(), QLatin1String("last line")));
     QCOMPARE(countElements(preview.get(), "details.markdown-alert:not([open]) > summary.markdown-alert-title > em"), 1);
@@ -194,9 +197,10 @@ void RenderingTest::rendersMathLikeMathJax()
     auto preview = std::make_unique<PreviewWidget>(nullptr, nullptr, doc);
     QVERIFY(waitForPageText(preview.get(), SampleBodyLine));
 
-    doc->setText(QStringLiteral("struck $\\require{cancel} \\cancel{5}$\n\n"
-                                "$\\begin{matrix}\n1 & 2 & 3\\\\\na & b & c\n\\end{matrix}$\n\n"
-                                "$$\n\\begin{align*}\n&D=2x+6$ \\qquad & E=25x+10 \\\\\n&F=x^2-3x \\qquad & G=x^2\n\\end{align*}\n$$\n\nthe last line\n"));
+    doc->setText(
+        QStringLiteral("struck $\\require{cancel} \\cancel{5}$\n\n"
+                       "$\\begin{matrix}\n1 & 2 & 3\\\\\na & b & c\n\\end{matrix}$\n\n"
+                       "$$\n\\begin{align*}\n&D=2x+6$ \\qquad & E=25x+10 \\\\\n&F=x^2-3x \\qquad & G=x^2\n\\end{align*}\n$$\n\nthe last line\n"));
     QVERIFY(waitForPageText(preview.get(), QLatin1String("the last line")));
     QCOMPARE(countElements(preview.get(), ".katex"), 3);
     QCOMPARE(countElements(preview.get(), ".katex-error, .katex [style*=\"color:#cc0000\"]"), 0);
@@ -223,14 +227,15 @@ void RenderingTest::keepsOrdinaryMarkdownIntact()
     auto preview = std::make_unique<PreviewWidget>(nullptr, nullptr, doc);
     QVERIFY(waitForPageText(preview.get(), SampleBodyLine));
 
-    doc->setText(QStringLiteral("$$\nx = 1\n$$\n\n(a) the kept line\n\n"
-                                "See [[1]](https://example.com/ref) here.\n\n"
-                                "<h2 id=\"install\">Installation</h2>\n\n## What's new?\n\n"
-                                "> [!NOTE]  \n> the callout body\n\n"
-                                "```\nindex.html   Point d'accès HTML\nstate.js   Gestion de l'application\n"
-                                "color-mode.js   Gestion des 10 modes couleur\nui.js   interface utilisateur\n```\n\n"
-                                "```js\nvar a = 'b';\n```\n\n"
-                                "visible para\n%%\nhidden one\n\nhidden two\n%%\n\nafter all\n"));
+    doc->setText(
+        QStringLiteral("$$\nx = 1\n$$\n\n(a) the kept line\n\n"
+                       "See [[1]](https://example.com/ref) here.\n\n"
+                       "<h2 id=\"install\">Installation</h2>\n\n## What's new?\n\n"
+                       "> [!NOTE]  \n> the callout body\n\n"
+                       "```\nindex.html   Point d'accès HTML\nstate.js   Gestion de l'application\n"
+                       "color-mode.js   Gestion des 10 modes couleur\nui.js   interface utilisateur\n```\n\n"
+                       "```js\nvar a = 'b';\n```\n\n"
+                       "visible para\n%%\nhidden one\n\nhidden two\n%%\n\nafter all\n"));
     QVERIFY(waitForPageText(preview.get(), QLatin1String("after all")));
     const QString text = pageText(preview.get());
     QVERIFY2(text.contains(QLatin1String("(a) the kept line")), qPrintable(text));
@@ -260,7 +265,8 @@ void RenderingTest::keepsFoldingAndUniqueIds()
     const QString source = QStringLiteral("## Setup\n\n## Setup\n\n## Setup 1\n\n> [!faq]- Folded\n> the answer\n\nfirst version\n");
     doc->setText(source);
     QVERIFY(waitForPageText(preview.get(), QLatin1String("first version")));
-    QCOMPARE(evalJs(preview.get(), QStringLiteral("new Set([].map.call(document.querySelectorAll('h2'), function (h) { return h.id; })).size")), QStringLiteral("3"));
+    QCOMPARE(evalJs(preview.get(), QStringLiteral("new Set([].map.call(document.querySelectorAll('h2'), function (h) { return h.id; })).size")),
+             QStringLiteral("3"));
 
     QCOMPARE(countElements(preview.get(), "details[open]"), 0);
     evalJs(preview.get(), QStringLiteral("document.querySelector('details').open = true; 1"));
@@ -288,10 +294,11 @@ void RenderingTest::rendersMathExtras()
     QVERIFY(waitForPageText(preview.get(), SampleBodyLine));
 
     evalJs(preview.get(), QStringLiteral("window.__setMacros('\\\\newcommand{\\\\N}{\\\\mathbb{N}}'); 1"));
-    doc->setText(QStringLiteral("$\\newcommand{\\R}{\\mathbb{R}}$ then $x \\in \\R$ and $n \\in \\N$\n\n"
-                                "inline \\(a+b\\) and\n\n\\[ c = d \\]\n\n$$ e = mc^2 $$ (1)\n\n"
-                                "<table>\n<tr><td> $4 \\times 8$ </td><td>$a &lt; b$</td><td><code>$x$</code></td></tr>\n</table>\n\n"
-                                "the last line\n"));
+    doc->setText(
+        QStringLiteral("$\\newcommand{\\R}{\\mathbb{R}}$ then $x \\in \\R$ and $n \\in \\N$\n\n"
+                       "inline \\(a+b\\) and\n\n\\[ c = d \\]\n\n$$ e = mc^2 $$ (1)\n\n"
+                       "<table>\n<tr><td> $4 \\times 8$ </td><td>$a &lt; b$</td><td><code>$x$</code></td></tr>\n</table>\n\n"
+                       "the last line\n"));
     QVERIFY(waitForPageText(preview.get(), QLatin1String("the last line")));
     // A macro KaTeX does not know is shown in red: none may be.
     QCOMPARE(countElements(preview.get(), ".katex-error, .katex [style*=\"color:#cc0000\"]"), 0);
@@ -312,8 +319,9 @@ void RenderingTest::rendersMkdocsAdmonitions()
     auto preview = std::make_unique<PreviewWidget>(nullptr, nullptr, doc);
     QVERIFY(waitForPageText(preview.get(), SampleBodyLine));
 
-    doc->setText(QStringLiteral("intro\n!!! note \"Custom *title*\"\n    inside the note\n\n    second paragraph\n\n"
-                                "??? tip\n    folded tip body\n\n!!! danger \"\"\n    no title here\n\nthe last line\n"));
+    doc->setText(
+        QStringLiteral("intro\n!!! note \"Custom *title*\"\n    inside the note\n\n    second paragraph\n\n"
+                       "??? tip\n    folded tip body\n\n!!! danger \"\"\n    no title here\n\nthe last line\n"));
     QVERIFY(waitForPageText(preview.get(), QLatin1String("the last line")));
     QCOMPARE(countElements(preview.get(), "div.markdown-alert-note > p.markdown-alert-title > em"), 1);
     QCOMPARE(countElements(preview.get(), "div.markdown-alert-note > p:not(.markdown-alert-title)"), 2);
@@ -342,10 +350,11 @@ void RenderingTest::rendersGithubOnly()
     auto preview = std::make_unique<PreviewWidget>(nullptr, nullptr, doc);
     QVERIFY(waitForPageText(preview.get(), SampleBodyLine));
 
-    doc->setText(QStringLiteral("# Title\n\n[TOC]\n\n:::info\nboxed\n:::\n\n==marked== ++inserted++ H~2~O [[Note]]\n\n"
-                                "!!! note\n    admonition body\n\n> [!faq] Obsidian title\n> callout body\n\n"
-                                "> [!thm]\n> theorem body\n\n![](a.png){width=50%}\n\n"
-                                "> [!NOTE]\n> alert body\n\n~struck out~ and $a^2$\n\nthe last line\n"));
+    doc->setText(
+        QStringLiteral("# Title\n\n[TOC]\n\n:::info\nboxed\n:::\n\n==marked== ++inserted++ H~2~O [[Note]]\n\n"
+                       "!!! note\n    admonition body\n\n> [!faq] Obsidian title\n> callout body\n\n"
+                       "> [!thm]\n> theorem body\n\n![](a.png){width=50%}\n\n"
+                       "> [!NOTE]\n> alert body\n\n~struck out~ and $a^2$\n\nthe last line\n"));
     QVERIFY(waitForPageText(preview.get(), QLatin1String("the last line")));
     QCOMPARE(countElements(preview.get(), "ul.toc, .alert-info, mark, ins, sub"), 5);
     QCOMPARE(countElements(preview.get(), ".markdown-alert"), 4);
@@ -386,7 +395,8 @@ void RenderingTest::agreesWithGithubOnDatesAndAnchors()
     auto preview = std::make_unique<PreviewWidget>(nullptr, nullptr, doc);
     QVERIFY(waitForPageText(preview.get(), SampleBodyLine));
 
-    doc->setText(QStringLiteral("---\ndate: 2026-10-03\n---\n\n## Foo & Bar\n\n## Formula $E=mc^2$\n\n## _Big_ deal\n\n[TOC]\n\n[[#_Big_ deal]]\n\nthe last line\n"));
+    doc->setText(
+        QStringLiteral("---\ndate: 2026-10-03\n---\n\n## Foo & Bar\n\n## Formula $E=mc^2$\n\n## _Big_ deal\n\n[TOC]\n\n[[#_Big_ deal]]\n\nthe last line\n"));
     QVERIFY(waitForPageText(preview.get(), QLatin1String("the last line")));
     QCOMPARE(evalJs(preview.get(), QStringLiteral("document.querySelector('table td:last-child').textContent")), QStringLiteral("2026-10-03"));
     QCOMPARE(evalJs(preview.get(), QStringLiteral("document.querySelectorAll('h2')[0].id")), QStringLiteral("foo--bar"));
@@ -456,8 +466,9 @@ void RenderingTest::survivesElementsNamedLikeDocumentMethods()
     auto preview = std::make_unique<PreviewWidget>(nullptr, nullptr, doc);
     QVERIFY(waitForPageText(preview.get(), SampleBodyLine));
 
-    const QString source = QStringLiteral("<img name=\"getElementById\" src=\"\"><img name=\"createElement\" src=\"\"><img name=\"images\" src=\"\">\n\n"
-                                          "## Title\n\n[TOC]\n\n");
+    const QString source = QStringLiteral(
+        "<img name=\"getElementById\" src=\"\"><img name=\"createElement\" src=\"\"><img name=\"images\" src=\"\">\n\n"
+        "## Title\n\n[TOC]\n\n");
     doc->setText(source + QStringLiteral("first version\n"));
     QVERIFY(waitForPageText(preview.get(), QLatin1String("first version")));
     doc->setText(source + QStringLiteral("second version\n"));

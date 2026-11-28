@@ -201,7 +201,8 @@ void PreviewWidget::showContextMenu(const QPoint &position)
         m_web->triggerPageAction(QWebEnginePage::Copy);
     });
     if (link.isValid()) {
-        QAction *copyLink = menu.addAction(QIcon::fromTheme(QStringLiteral("edit-link")), QCoreApplication::translate("QWidgetTextControl", "Copy &Link Location"));
+        QAction *copyLink =
+            menu.addAction(QIcon::fromTheme(QStringLiteral("edit-link")), QCoreApplication::translate("QWidgetTextControl", "Copy &Link Location"));
         connect(copyLink, &QAction::triggered, this, [link]() {
             QGuiApplication::clipboard()->setText(link.toString());
         });
@@ -211,7 +212,8 @@ void PreviewWidget::showContextMenu(const QPoint &position)
         m_web->triggerPageAction(QWebEnginePage::SelectAll);
     });
     // The shortcut is only shown here: the page handles Ctrl+0 itself (zoom.js).
-    QAction *resetZoom = menu.addAction(QIcon::fromTheme(QStringLiteral("zoom-original")), i18nc("@action:inmenu put the preview back to 100 % zoom", "Reset Zoom"));
+    QAction *resetZoom =
+        menu.addAction(QIcon::fromTheme(QStringLiteral("zoom-original")), i18nc("@action:inmenu put the preview back to 100 % zoom", "Reset Zoom"));
     resetZoom->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_0));
     connect(resetZoom, &QAction::triggered, this, [this]() {
         runJs(QStringLiteral("window.__resetZoom();"));

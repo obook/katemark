@@ -81,10 +81,9 @@ void ConfigPage::addColorSettings(QVBoxLayout *layout)
     m_variant->addItem(i18n("Dark"), Settings::Dark);
     form->addRow(i18n("GitHub variant:"), m_variant);
 
-    auto *hint = new QLabel(
-        i18n("\"GitHub\" uses GitHub's own colors. \"Match editor / system theme\" recolors the "
-             "same layout from the active editor theme, so the preview blends with the rest of Kate."),
-        this);
+    auto *hint = new QLabel(i18n("\"GitHub\" uses GitHub's own colors. \"Match editor / system theme\" recolors the "
+                                 "same layout from the active editor theme, so the preview blends with the rest of Kate."),
+                            this);
     hint->setWordWrap(true);
     hint->setEnabled(false);
     layout->addWidget(hint);

@@ -93,7 +93,8 @@ void InteractionTest::followsScrollBothWays()
     // Scrolled with the wheel, because the view only announces scrolls the user made:
     // setScrollPosition() moves it silently.
     QWidget *editor = view->focusProxy();
-    QWheelEvent wheel(QPointF(50, 50), editor->mapToGlobal(QPointF(50, 50)), QPoint(), QPoint(0, -120 * 20), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false);
+    QWheelEvent
+        wheel(QPointF(50, 50), editor->mapToGlobal(QPointF(50, 50)), QPoint(), QPoint(0, -120 * 20), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false);
     QCoreApplication::sendEvent(editor, &wheel);
     const int first = view->firstDisplayedLine();
     QVERIFY2(first > 20, qPrintable(QStringLiteral("the wheel did not scroll the editor, top line is %1").arg(first)));
@@ -177,12 +178,14 @@ void InteractionTest::loadsRemoteImageOnlyWhenAllowed()
         QTcpSocket *socket = server.nextPendingConnection();
         connect(socket, &QTcpSocket::readyRead, socket, [socket]() {
             socket->readAll();
-            socket->write("HTTP/1.1 200 OK\r\nContent-Type: image/png\r\nConnection: close\r\nContent-Length: " + QByteArray::number(RedPng.size()) + "\r\n\r\n" + RedPng);
+            socket->write("HTTP/1.1 200 OK\r\nContent-Type: image/png\r\nConnection: close\r\nContent-Length: " + QByteArray::number(RedPng.size()) + "\r\n\r\n"
+                          + RedPng);
             socket->disconnectFromHost();
         });
     });
-    const QString source = QStringLiteral("<div style=\"text-align:center\">\n    <img width=\"20%\" src=\"http://127.0.0.1:%1/red.png\">\n</div>\n\n"
-                                          "<div style=\"background-image:url(http://127.0.0.1:%1/bg.png)\">x</div>\n\nthe last line\n")
+    const QString source = QStringLiteral(
+                               "<div style=\"text-align:center\">\n    <img width=\"20%\" src=\"http://127.0.0.1:%1/red.png\">\n</div>\n\n"
+                               "<div style=\"background-image:url(http://127.0.0.1:%1/bg.png)\">x</div>\n\nthe last line\n")
                                .arg(server.serverPort());
 
     Settings::self()->setLoadRemoteMedia(false);

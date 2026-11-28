@@ -95,9 +95,10 @@ void ExportTest::exportsPdfAndHtml()
     QTRY_VERIFY(doc->text().contains(SampleBodyLine));
     auto preview = std::make_unique<PreviewWidget>(nullptr, nullptr, doc);
     QVERIFY(waitForPageText(preview.get(), SampleBodyLine));
-    doc->setText(QStringLiteral(":::info\nthe boxed line\n:::\n\nand $a^2$\n\n![red](%1)\n\n<img src=\"%2\">\n\n![odd](<a&b c.png>)\n\n<img src=\".env\" width=\"0\">\n\n"
-                                "<script>var leaked = 1;</script>\n\n"
-                                "<meta http-equiv=\"refresh\" content=\"999;url=https://example.org/\">\n\n<p onclick=\"leak()\">tail</p>\n")
+    doc->setText(QStringLiteral(
+                     ":::info\nthe boxed line\n:::\n\nand $a^2$\n\n![red](%1)\n\n<img src=\"%2\">\n\n![odd](<a&b c.png>)\n\n<img src=\".env\" width=\"0\">\n\n"
+                     "<script>var leaked = 1;</script>\n\n"
+                     "<meta http-equiv=\"refresh\" content=\"999;url=https://example.org/\">\n\n<p onclick=\"leak()\">tail</p>\n")
                      .arg(ImageName, QUrl::fromLocalFile(outside.fileName()).toString()));
     QCOMPARE(waitForImageWidth(preview.get()), ImageWidth);
     QVERIFY(waitForPageText(preview.get(), QLatin1String("the boxed line")));

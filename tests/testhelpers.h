@@ -18,9 +18,9 @@
 
 #include <memory>
 
-#include <KTextEditor/Document>
 #include <KLocalizedString>
 #include <KSharedConfig>
+#include <KTextEditor/Document>
 #include <KTextEditor/Editor>
 
 // How long the tests wait, in milliseconds.
@@ -35,10 +35,10 @@ const QLatin1String ImageName("red.png");
 constexpr int ImageWidth = 2;
 // A 2x1 red PNG, inline so the test carries no fixture file. Two pixels wide because a
 // failed load reports naturalWidth 0 and a placeholder reports 1.
-const QByteArray RedPng =
-    QByteArray::fromHex("89504e470d0a1a0a0000000d494844520000000200000001080200000"
-                        "07b40e8dd0000000d4944415478da63f8cfc000440008fe01ff19c06be"
-                        "70000000049454e44ae426082");
+const QByteArray RedPng = QByteArray::fromHex(
+    "89504e470d0a1a0a0000000d494844520000000200000001080200000"
+    "07b40e8dd0000000d4944415478da63f8cfc000440008fe01ff19c06be"
+    "70000000049454e44ae426082");
 
 // What the page answers to evalJs(), and whether the answer has come yet.
 struct JsAnswer {
