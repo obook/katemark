@@ -1,3 +1,13 @@
+katemark (0.5.0) unstable; urgency=medium
+
+  * Show the diagram of a Mermaid file (.mmd, .mermaid).
+  * Render Obsidian block ids, links to them and highlight colors.
+  * Fix a dark preview that drew diagrams and code in light colors.
+  * Update KaTeX to 0.19.1, highlight.js to 11.12.0 and markdown-it to
+    14.3.3.
+
+ -- Olivier Booklage <olivier.booklage@ac-bordeaux.fr>  Sat, 28 Nov 2026 00:10:03 +0000
+
 katemark (0.4.7) unstable; urgency=medium
 
   * Render math inside raw HTML, such as a table written in HTML.
