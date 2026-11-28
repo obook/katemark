@@ -87,6 +87,7 @@ protected:
 private Q_SLOTS:
     void scheduleRender();
     void onDocumentUrlChanged();
+    void onHighlightingModeChanged();
     void snapshotSource();
     void syncFromEditor();
     void syncFromPreview();
@@ -94,15 +95,12 @@ private Q_SLOTS:
 private:
     // previewwidget.cpp
     void createBar();
-    void createWebView();
-    void onLoadFinished(bool ok);
     void render();
     void applyMacros();
     void applySyntax();
     void runJs(const QString &code);
     void onScriptAnswered(int script);
     void setIdle();
-    void openLink(const QUrl &url);
 
     // previewtheme.cpp
     QJsonObject lookVars(bool &dark) const;
@@ -116,6 +114,8 @@ private:
     void whenSettled(std::function<void()> then, int checksLeft);
 
     // previewload.cpp
+    void createWebView();
+    void onLoadFinished(bool ok);
     void loadPage();
     void applyMediaPolicy();
     QUrl baseUrl() const;
@@ -132,6 +132,7 @@ private:
     bool forwardMouseEvent(QMouseEvent *event);
     QAction *kateActionFor(const QKeySequence &seq) const;
     void showContextMenu(const QPoint &position);
+    void openLink(const QUrl &url);
 
     QPointer<KTextEditor::MainWindow> m_mainWindow;
     QWebEngineView *m_web = nullptr;

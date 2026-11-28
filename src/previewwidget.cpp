@@ -1,5 +1,5 @@
 // previewwidget.cpp
-// PreviewWidget: building the bar and the web view, attaching a document, rendering.
+// PreviewWidget: building the bar, attaching a document, rendering.
 // Code by uwuclxdy and Olivier Booklage.
 // License: GPL-3.0-or-later
 
@@ -10,24 +10,15 @@
 
 #include <QAction>
 #include <QCheckBox>
-#include <QCursor>
-#include <QDesktopServices>
 #include <QIcon>
-#include <QJsonObject>
 #include <QLabel>
 #include <QTimer>
 #include <QToolBar>
-#include <QToolTip>
-#include <QUrl>
 #include <QVBoxLayout>
-#include <QWebEngineNewWindowRequest>
 #include <QWebEngineProfile>
-#include <QWebEngineSettings>
 #include <QWebEngineView>
 
 #include <KLocalizedString>
-#include <KMessageBox>
-#include <KStandardGuiItem>
 #include <KTextEditor/Document>
 #include <KTextEditor/MainWindow>
 #include <KTextEditor/View>
@@ -43,44 +34,6 @@ constexpr int BarIconSizePx = 16;
 // the word move at this pace.
 constexpr int BusyTickMs = 400;
 constexpr int BusyLabelMarginPx = 8;
-
-// Default titles of the alerts and callouts, in the user's language. The page has no
-// access to the translations, so it gets them from here.
-QJsonObject calloutLabels()
-{
-    return QJsonObject{
-        {QStringLiteral("note"), i18nc("@title GitHub alert", "Note")},
-        {QStringLiteral("tip"), i18nc("@title GitHub alert", "Tip")},
-        {QStringLiteral("important"), i18nc("@title GitHub alert", "Important")},
-        {QStringLiteral("warning"), i18nc("@title GitHub alert", "Warning")},
-        {QStringLiteral("caution"), i18nc("@title GitHub alert", "Caution")},
-        {QStringLiteral("abstract"), i18nc("@title Obsidian callout", "Abstract")},
-        {QStringLiteral("info"), i18nc("@title Obsidian callout", "Info")},
-        {QStringLiteral("todo"), i18nc("@title Obsidian callout", "Todo")},
-        {QStringLiteral("success"), i18nc("@title Obsidian callout", "Success")},
-        {QStringLiteral("question"), i18nc("@title Obsidian callout", "Question")},
-        {QStringLiteral("failure"), i18nc("@title Obsidian callout", "Failure")},
-        {QStringLiteral("danger"), i18nc("@title Obsidian callout", "Danger")},
-        {QStringLiteral("bug"), i18nc("@title Obsidian callout", "Bug")},
-        {QStringLiteral("example"), i18nc("@title Obsidian callout", "Example")},
-        {QStringLiteral("quote"), i18nc("@title Obsidian callout", "Quote")},
-        {QStringLiteral("definition"), i18nc("@title teaching callout", "Definition")},
-        {QStringLiteral("theorem"), i18nc("@title teaching callout", "Theorem")},
-        {QStringLiteral("lemma"), i18nc("@title teaching callout", "Lemma")},
-        {QStringLiteral("proposition"), i18nc("@title teaching callout", "Proposition")},
-        {QStringLiteral("corollary"), i18nc("@title teaching callout", "Corollary")},
-        {QStringLiteral("axiom"), i18nc("@title teaching callout", "Axiom")},
-        {QStringLiteral("claim"), i18nc("@title teaching callout", "Claim")},
-        {QStringLiteral("assumption"), i18nc("@title teaching callout", "Assumption")},
-        {QStringLiteral("conjecture"), i18nc("@title teaching callout", "Conjecture")},
-        {QStringLiteral("hypothesis"), i18nc("@title teaching callout", "Hypothesis")},
-        {QStringLiteral("proof"), i18nc("@title teaching callout", "Proof")},
-        {QStringLiteral("exercise"), i18nc("@title teaching callout", "Exercise")},
-        {QStringLiteral("method"), i18nc("@title teaching callout", "Method")},
-        {QStringLiteral("remark"), i18nc("@title teaching callout", "Remark")},
-        {QStringLiteral("solution"), i18nc("@title teaching callout", "Solution")},
-    };
-}
 } // namespace
 
 PreviewWidget::PreviewWidget(KTextEditor::MainWindow *mainWindow, KTextEditor::View *view, KTextEditor::Document *doc, QWidget *parent)
@@ -140,74 +93,6 @@ void PreviewWidget::createBar()
     m_bar->addWidget(spacer);
 }
 
-void PreviewWidget::createWebView()
-{
-    // Each preview has its own off-the-record profile and guard, so it stays inside its
-    // own document folder.
-    m_guard = new LocalFileGuard(this);
-    m_profile = new QWebEngineProfile(this);
-    m_profile->setUrlRequestInterceptor(m_guard);
-
-    m_web = new QWebEngineView(this);
-    auto *page = new PreviewPage(m_profile, m_web);
-    page->onLinkActivated = [this](const QUrl &url) {
-        openLink(url);
-    };
-    // A link that asks for a window of its own (target="_blank", a middle click) opens
-    // like any other, later as a click does: the question some links ask must not wait
-    // inside Qt WebEngine's call.
-    connect(page, &QWebEnginePage::newWindowRequested, this, [this](QWebEngineNewWindowRequest &request) {
-        QMetaObject::invokeMethod(
-            this,
-            [this, url = request.requestedUrl()]() {
-                openLink(url);
-            },
-            Qt::QueuedConnection);
-    });
-    // Where a link goes, shown while the pointer is on it. Leaving the link sends an
-    // empty address, which hides the tip.
-    connect(page, &QWebEnginePage::linkHovered, this, [this](const QString &address) {
-        QToolTip::showText(QCursor::pos(), linkHint(QUrl(address), baseUrl()), m_web);
-    });
-    m_web->setPage(page);
-    // The menu is built in showContextMenu() instead of being left to Qt WebEngine.
-    m_web->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(m_web, &QWidget::customContextMenuRequested, this, &PreviewWidget::showContextMenu);
-    connect(page, &QWebEnginePage::scrollPositionChanged, this, &PreviewWidget::syncFromPreview);
-    connect(page, &QWebEnginePage::pdfPrintingFinished, this, &PreviewWidget::onPdfPrinted);
-    // A page whose process died answers nothing more: an export would wait for ever.
-    connect(page, &QWebEnginePage::renderProcessTerminated, this, [this]() {
-        m_loaded = false;
-        setIdle();
-        endExport(false);
-    });
-    m_web->settings()->setAttribute(QWebEngineSettings::FocusOnNavigationEnabled, false);
-    m_web->settings()->setAttribute(QWebEngineSettings::LocalContentCanAccessFileUrls, true);
-    // Watch the view for the lazily-created render widget so we can attach to it.
-    m_web->installEventFilter(this);
-    installInputFilter();
-    connect(m_web, &QWebEngineView::loadFinished, this, &PreviewWidget::onLoadFinished);
-}
-
-void PreviewWidget::onLoadFinished(bool ok)
-{
-    if (!ok) {
-        return;
-    }
-    m_loaded = true;
-    installInputFilter();
-    runJs(QStringLiteral("window.__setLabels(%1);").arg(compactJson(calloutLabels())));
-    // While pictures from the web are kept out, the page names the setting that lets them
-    // in, in place of each one: the same text as on the settings page (configpage.cpp).
-    // A change of that setting reloads the page.
-    const QString mediaHint = Settings::self()->loadRemoteMedia() ? QString() : i18n("Load media previews from remote URLs");
-    runJs(QStringLiteral("window.__setRemoteMediaHint(%1);").arg(jsLiteral(mediaHint)));
-    applyTheme();
-    applyMacros();
-    applySyntax();
-    render();
-}
-
 void PreviewWidget::attachDocument(KTextEditor::Document *doc, KTextEditor::View *view)
 {
     setView(view); // the same document can come back under another view (split views)
@@ -223,15 +108,7 @@ void PreviewWidget::attachDocument(KTextEditor::Document *doc, KTextEditor::View
         connect(doc, &KTextEditor::Document::textChanged, this, &PreviewWidget::scheduleRender);
         connect(doc, &KTextEditor::Document::documentUrlChanged, this, &PreviewWidget::onDocumentUrlChanged);
         connect(doc, &KTextEditor::Document::aboutToClose, this, &PreviewWidget::snapshotSource);
-        // Switching the mode between Markdown and Mermaid changes how the same text reads.
-        // Closing resets the mode once the url is cleared: that one is not a switch.
-        connect(doc, &KTextEditor::Document::highlightingModeChanged, this, [this]() {
-            if (m_doc->url().isEmpty() && !m_url.isEmpty()) {
-                return;
-            }
-            m_mermaid = isMermaid(m_doc);
-            scheduleRender();
-        });
+        connect(doc, &KTextEditor::Document::highlightingModeChanged, this, &PreviewWidget::onHighlightingModeChanged);
     }
     // Reloading the page costs a blank flash and the diagrams already drawn. It is only
     // needed when the document's folder changes, because relative images and the file
@@ -267,39 +144,6 @@ PreviewWidget::~PreviewWidget()
     m_profile = nullptr;
     delete m_guard;
     m_guard = nullptr;
-}
-
-// The addresses a pasted link may have (markdownedit.cpp) open at once. Any other kind,
-// "zotero:" as well as "smb:" or "search-ms:", starts a program of the system: the reader
-// is asked first, as a browser does, and "Do not ask again" is kept for each kind.
-void PreviewWidget::openLink(const QUrl &url)
-{
-    static const QStringList openable{QStringLiteral("http"), QStringLiteral("https"), QStringLiteral("ftp"), QStringLiteral("mailto")};
-    if (url.isLocalFile()) {
-        if (m_mainWindow) {
-            m_mainWindow->openUrl(localLinkTarget(url, baseUrl()));
-        }
-        return;
-    }
-    if (url.scheme().isEmpty()) {
-        return;
-    }
-    if (!openable.contains(url.scheme())) {
-        const QString question =
-            i18nc("@info %1 is the start of a link, such as zotero or smb", "Open this link with the application set for \"%1:\" links?", url.scheme());
-        // The address goes after the question: a label reads its text as plain when the
-        // first line holds no tag, so an address cannot pass for formatting.
-        const int answer = KMessageBox::warningContinueCancel(this,
-                                                              question + QStringLiteral("\n\n") + url.toDisplayString(),
-                                                              QString(),
-                                                              KStandardGuiItem::open(),
-                                                              KStandardGuiItem::cancel(),
-                                                              QStringLiteral("OpenLinks_") + url.scheme());
-        if (answer != KMessageBox::Continue) {
-            return;
-        }
-    }
-    QDesktopServices::openUrl(url);
 }
 
 // The page runs its scripts one after the other, so an answer to the last one sent means

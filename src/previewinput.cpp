@@ -1,14 +1,16 @@
 // previewinput.cpp
 // PreviewWidget: handing back to Kate the keys and mouse buttons the page does not use,
-// and the context menu of the page.
-// Code by uwuclxdy, moved out of previewwidget.cpp.
+// the context menu of the page and the links clicked in it.
+// Code by uwuclxdy and Olivier Booklage, moved out of previewwidget.cpp.
 // License: GPL-3.0-or-later
 
+#include "previewutil.h"
 #include "previewwidget.h"
 
 #include <QAction>
 #include <QClipboard>
 #include <QCoreApplication>
+#include <QDesktopServices>
 #include <QEvent>
 #include <QGuiApplication>
 #include <QIcon>
@@ -23,6 +25,8 @@
 
 #include <KActionCollection>
 #include <KLocalizedString>
+#include <KMessageBox>
+#include <KStandardGuiItem>
 #include <KTextEditor/MainWindow>
 #include <KXMLGUIClient>
 #include <KXMLGUIFactory>
@@ -217,4 +221,37 @@ void PreviewWidget::showContextMenu(const QPoint &position)
         menu.addActions(actions());
     }
     menu.exec(m_web->mapToGlobal(position));
+}
+
+// The addresses a pasted link may have (markdownedit.cpp) open at once. Any other kind,
+// "zotero:" as well as "smb:" or "search-ms:", starts a program of the system: the reader
+// is asked first, as a browser does, and "Do not ask again" is kept for each kind.
+void PreviewWidget::openLink(const QUrl &url)
+{
+    static const QStringList openable{QStringLiteral("http"), QStringLiteral("https"), QStringLiteral("ftp"), QStringLiteral("mailto")};
+    if (url.isLocalFile()) {
+        if (m_mainWindow) {
+            m_mainWindow->openUrl(localLinkTarget(url, baseUrl()));
+        }
+        return;
+    }
+    if (url.scheme().isEmpty()) {
+        return;
+    }
+    if (!openable.contains(url.scheme())) {
+        const QString question =
+            i18nc("@info %1 is the start of a link, such as zotero or smb", "Open this link with the application set for \"%1:\" links?", url.scheme());
+        // The address goes after the question: a label reads its text as plain when the
+        // first line holds no tag, so an address cannot pass for formatting.
+        const int answer = KMessageBox::warningContinueCancel(this,
+                                                              question + QStringLiteral("\n\n") + url.toDisplayString(),
+                                                              QString(),
+                                                              KStandardGuiItem::open(),
+                                                              KStandardGuiItem::cancel(),
+                                                              QStringLiteral("OpenLinks_") + url.scheme());
+        if (answer != KMessageBox::Continue) {
+            return;
+        }
+    }
+    QDesktopServices::openUrl(url);
 }
